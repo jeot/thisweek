@@ -1,0 +1,3 @@
+[submodule "days_core"]
+	path = days_core
+	url = .\\days_core\\
