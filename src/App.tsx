@@ -41,8 +41,8 @@ function App() {
 
   return (
     <div className="container">
-      <h1 dir="auto">{weekState.week_title}</h1>
-      <h2 dir="auto">{weekState.today_title}</h2>
+      <h3 dir="auto">{weekState.today_title}</h3>
+      <h2 dir="auto">{weekState.week_title}</h2>
 
       <GoalList goals={weekState.goals} onSubmit={handleGoalSubmit} />
 

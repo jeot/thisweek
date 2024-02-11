@@ -1,0 +1,11 @@
+.goal {
+  direction: rtl;
+  color: #aa7722;
+  display: block flex;
+}
+
+.goal-list-container {
+  direction: rtl;
+  display: grid;
+  /* background-color: #117722; */
+}

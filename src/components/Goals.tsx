@@ -16,9 +16,11 @@ function Goal({data, index, onSubmit}) {
     <>
     <div className="goal">
       <span>{index}</span>
+      {data.done && <div>done</div>}
+      {!data.done && <div>todo</div>}
       <input
         dir="auto"
-        id={data.id}
+        id={index}  /* {data.id} */
         onChange={(e) => setText(e.currentTarget.value)}
         value={text}
         placeholder="Enter a goal..."
@@ -34,7 +36,7 @@ export default function GoalList({goals, onSubmit}) {
   const item = (data, index) => <Goal data={data} index={index} onSubmit={onSubmit} />;
 
   return (
-    <div>
+    <div className="goal-list-container">
       {goals.map(item)}
     </div>
     );
