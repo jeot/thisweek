@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import { appWindow } from '@tauri-apps/api/window'
 import GoalList from "./components/Goals.tsx"
-// import "./App.css";
+import "./App.css";
 
 const keyDownHandler = event => {
   // console.log('User pressed: ', event.key);

@@ -1,6 +1,7 @@
 import { useState } from "react";
+import "./Goals.css";
 
-function Goal({data, onSubmit}) {
+function Goal({data, index, onSubmit}) {
 
   const [text, setText] = useState(data.text);
 
@@ -13,6 +14,8 @@ function Goal({data, onSubmit}) {
     //   }}
     // >
     <>
+    <div className="goal">
+      <span>{index}</span>
       <input
         dir="auto"
         id={data.id}
@@ -20,6 +23,7 @@ function Goal({data, onSubmit}) {
         value={text}
         placeholder="Enter a goal..."
       />
+    </div>
     </>
     // </form>
   );
@@ -27,7 +31,7 @@ function Goal({data, onSubmit}) {
 
 export default function GoalList({goals, onSubmit}) {
 
-  const item = (data) => <Goal data={data} onSubmit={onSubmit} />;
+  const item = (data, index) => <Goal data={data} index={index} onSubmit={onSubmit} />;
 
   return (
     <div>
