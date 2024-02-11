@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import { appWindow } from '@tauri-apps/api/window'
+import GoalList from "./components/Goals.tsx"
 // import "./App.css";
 
 const keyDownHandler = event => {
@@ -29,25 +30,21 @@ function App() {
 
   useEffect(() => {
     invoke("get_week_state").then((result) => {
-      // console.log(result);
+      console.log(result);
       setWeekState(result);
     });
   }, []);
 
-  const Goal = ({id, text, done}) =>
-    <p dir="auto">{text}</p>
-
-  const GoalList = () =>
-    <div>
-      {weekState.goals.map(Goal)}
-    </div>
+  const handleGoalSubmit = function () {
+    console.log("todo: handle goal submit...");
+  }
 
   return (
     <div className="container">
       <h1 dir="auto">{weekState.week_title}</h1>
       <h2 dir="auto">{weekState.today_title}</h2>
 
-        {GoalList()}
+      <GoalList goals={weekState.goals} onSubmit={handleGoalSubmit} />
 
     </div>
   );
