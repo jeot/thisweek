@@ -5,6 +5,11 @@
   src: local('B Nazanin'), url(./assets/fonts/B Nazanin.ttf) format('truetype');
 }
 
+body {
+    display: block;
+    margin: 0px;
+}
+
 :root {
   font-family: "B Nazanin", Helvetica, Arial, sans-serif;
   font-size: 18px;
@@ -13,7 +18,7 @@
 
   color: #0f0f0f;
   background-color: #f6f6f6;
-  /* padding: 5px; */
+  padding: 0px;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;

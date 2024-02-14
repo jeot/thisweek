@@ -1,0 +1,9 @@
+.header {
+  direction: rtl;
+  color: #aa7722;
+  display: block flex;
+  color: #abcded;
+  background-color: #000000;
+  padding: 0.4em 1em;
+}
+
