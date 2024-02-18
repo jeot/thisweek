@@ -5,21 +5,7 @@ import GoalList from "./components/Goals.tsx"
 import Header from "./components/Header.tsx"
 import "./App.css";
 
-const keyDownHandler = event => {
-  // console.log('User pressed: ', event.key);
 
-  if (event.key === 'Enter') {
-    event.preventDefault();
-    appWindow.toggleMaximize();
-  }
-
-  if (event.key === 'q') {
-    event.preventDefault();
-    appWindow.close();
-  }
-};
-
-document.addEventListener('keydown', keyDownHandler);
 
 function App() {
 
@@ -29,9 +15,45 @@ function App() {
     goals: [],
     });
 
+  const keyDownHandler = event => {
+    // console.log('User pressed: ', event.key);
+
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      appWindow.toggleMaximize();
+    }
+
+    if (event.key === 'q') {
+      event.preventDefault();
+      appWindow.close();
+    }
+
+    if (event.key === 'w') {
+      event.preventDefault();
+      invoke("get_next_week").then((result) => {
+        setWeekState(result);
+      });
+    }
+
+    if (event.key === 'W') {
+      event.preventDefault();
+      invoke("get_previous_week").then((result) => {
+        setWeekState(result);
+      });
+    }
+
+    if (event.key === 't') {
+      event.preventDefault();
+      invoke("get_current_week").then((result) => {
+        setWeekState(result);
+      });
+    }
+  };
+
   useEffect(() => {
+    document.addEventListener('keydown', keyDownHandler);
     invoke("get_week_state").then((result) => {
-      console.log(result);
+      // console.log(result);
       setWeekState(result);
     });
   }, []);
