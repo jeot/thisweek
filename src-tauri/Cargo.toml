@@ -1,5 +1,5 @@
 [package]
-name = "days_v001"
+name = "weeks"
 version = "0.0.0"
 description = "A Tauri App"
 authors = ["you"]
@@ -14,7 +14,7 @@ tauri-build = { version = "1.5", features = [] }
 tauri = { version = "1.5", features = [ "window-unminimize", "window-minimize", "window-maximize", "window-start-dragging", "window-close", "window-unmaximize", "window-show", "window-hide", "shell-open"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-days_core = { path = "../days_core/" }
+weeks_core = { path = "../weeks_core/" }
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem

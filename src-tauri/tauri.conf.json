@@ -6,7 +6,7 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "days_v001",
+    "productName": "weeks",
     "version": "0.0.0"
   },
   "tauri": {
@@ -32,7 +32,7 @@
       {
         "fullscreen": false,
         "resizable": true,
-        "title": "days_v001",
+        "title": "Weeks",
         "width": 800,
         "height": 600
       }

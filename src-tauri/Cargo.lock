@@ -526,27 +526,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "days_core"
-version = "0.1.0"
-dependencies = [
- "ptime",
- "redb",
- "serde",
- "time 0.1.45",
-]
-
-[[package]]
-name = "days_v001"
-version = "0.0.0"
-dependencies = [
- "days_core",
- "serde",
- "serde_json",
- "tauri",
- "tauri-build",
-]
-
-[[package]]
 name = "deranged"
 version = "0.3.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3366,6 +3345,27 @@ dependencies = [
  "windows 0.39.0",
  "windows-bindgen",
  "windows-metadata",
+]
+
+[[package]]
+name = "weeks"
+version = "0.0.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tauri",
+ "tauri-build",
+ "weeks_core",
+]
+
+[[package]]
+name = "weeks_core"
+version = "0.1.0"
+dependencies = [
+ "ptime",
+ "redb",
+ "serde",
+ "time 0.1.45",
 ]
 
 [[package]]

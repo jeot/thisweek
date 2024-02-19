@@ -3,7 +3,7 @@
 use std::sync::Mutex;
 use tauri::State;
 
-use days_core::week::{WeekState, WeekStateJs};
+use weeks_core::week::{WeekState, WeekStateJs};
 
 struct ManagedState {
     week: Mutex<WeekState>,
