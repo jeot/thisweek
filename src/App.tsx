@@ -5,8 +5,6 @@ import GoalList from "./components/Goals.tsx"
 import Header from "./components/Header.tsx"
 import "./App.css";
 
-
-
 function App() {
 
   const [weekState, setWeekState] = useState({
@@ -18,12 +16,12 @@ function App() {
   const keyDownHandler = event => {
     // console.log('User pressed: ', event.key);
 
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter' && event.altKey) {
       event.preventDefault();
       appWindow.toggleMaximize();
     }
 
-    if (event.key === 'q') {
+    if (event.key === 'q' && event.altKey) {
       event.preventDefault();
       appWindow.close();
     }
@@ -58,8 +56,13 @@ function App() {
     });
   }, []);
 
-  const handleGoalSubmit = function () {
+  const handleGoalSubmit = function (value) {
     console.log("todo: handle goal submit...");
+    console.log(value);
+    invoke("add_new_goal", { goalText: value.text }).then((result) => {
+      console.log(result);
+      setWeekState(result);
+    });
   }
 
   return (

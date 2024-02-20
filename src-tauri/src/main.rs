@@ -36,12 +36,25 @@ fn get_current_week(managed_state: State<ManagedState>) -> WeekStateJs {
     week.week_state_js_object()
 }
 
+#[tauri::command]
+fn add_new_goal(goal_text: String, managed_state: State<ManagedState>) -> WeekStateJs {
+    let mut week = managed_state.week.lock().unwrap();
+    week.add_new_goal(goal_text);
+    week.week_state_js_object()
+}
+
 fn main() {
     println!("Hello, tauri.");
 
     tauri::Builder::default()
         .manage(ManagedState { week: Mutex::new(WeekState::new()) })
-        .invoke_handler(tauri::generate_handler![get_week_state, get_next_week, get_previous_week, get_current_week])
+        .invoke_handler(tauri::generate_handler![
+            get_week_state,
+            get_next_week,
+            get_previous_week,
+            get_current_week,
+            add_new_goal,
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 

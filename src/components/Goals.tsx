@@ -1,18 +1,41 @@
 import { useState } from "react";
 import "./Goals.css";
 
+function NewGoal({onSubmit}) {
+
+  const [text, setText] = useState("");
+  const [submitted, setSubmitted] = useState("");
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      // setSubmitted(event.target.value);
+      setText("");
+      setSubmitted(text);
+      onSubmit({ index: 0, text: text });
+    }
+  };
+
+  return (
+    <div className="goal">
+      <input
+        dir="auto"
+        type="text"
+        id="new-goal-input"
+        onChange={(e) => setText(e.currentTarget.value)}
+        onKeyDown={handleKeyDown}
+        value={text}
+        placeholder="Enter your new week goal..."
+      />
+    </div>
+  );
+
+}
+
 function Goal({data, index, onSubmit}) {
 
   const [text, setText] = useState(data.text);
 
   return (
-    // <form
-    //   className="row"
-    //   onSubmit={(e) => {
-    //     e.preventDefault();
-    //     console.log("goal submit");
-    //   }}
-    // >
     <>
     <div className="goal">
       <span>{index}</span>
@@ -27,7 +50,6 @@ function Goal({data, index, onSubmit}) {
       />
     </div>
     </>
-    // </form>
   );
 }
 
@@ -38,6 +60,7 @@ export default function GoalList({goals, onSubmit}) {
   return (
     <div className="goal-list-container">
       {goals.map(item)}
+      <NewGoal onSubmit={onSubmit} />
     </div>
     );
 
