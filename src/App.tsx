@@ -7,15 +7,15 @@ import "./App.css";
 
 function App() {
 
+  const [editing, setEditing] = useState(false);
+
   const [weekState, setWeekState] = useState({
     week_title: "",
     today_title: "",
     goals: [],
     });
 
-  const keyDownHandler = event => {
-    // console.log('User pressed: ', event.key);
-
+  const handleUserKeyPress = event => {
     if (event.key === 'Enter' && event.altKey) {
       event.preventDefault();
       appWindow.toggleMaximize();
@@ -26,41 +26,52 @@ function App() {
       appWindow.close();
     }
 
-    if (event.key === 'w') {
-      event.preventDefault();
-      invoke("get_next_week").then((result) => {
-        setWeekState(result);
-      });
-    }
+    if (!editing) {
+      if (event.key === 'w') {
+        event.preventDefault();
+        invoke("get_next_week").then((result) => {
+          setWeekState(result);
+        });
+      }
 
-    if (event.key === 'W') {
-      event.preventDefault();
-      invoke("get_previous_week").then((result) => {
-        setWeekState(result);
-      });
-    }
+      if (event.key === 'W') {
+        event.preventDefault();
+        invoke("get_previous_week").then((result) => {
+          setWeekState(result);
+        });
+      }
 
-    if (event.key === 't') {
-      event.preventDefault();
-      invoke("get_current_week").then((result) => {
-        setWeekState(result);
-      });
+      if (event.key === 't') {
+        event.preventDefault();
+        invoke("get_current_week").then((result) => {
+          setWeekState(result);
+        });
+      }
     }
   };
 
   useEffect(() => {
-    document.addEventListener('keydown', keyDownHandler);
     invoke("get_week_state").then((result) => {
-      // console.log(result);
       setWeekState(result);
     });
   }, []);
 
+  useEffect(() => {
+    console.log(`adding new keydown event listener with editing: ${editing}.`);
+    window.addEventListener("keydown", handleUserKeyPress);
+    return () => {
+      console.log("removing keydown event listener.");
+      window.removeEventListener("keydown", handleUserKeyPress);
+    };
+  }, [editing]);
+
+  const handleOnEditing = function (isEditing) {
+    setEditing(isEditing);
+  }
+
   const handleGoalSubmit = function (value) {
-    console.log("todo: handle goal submit...");
-    console.log(value);
     invoke("add_new_goal", { goalText: value.text }).then((result) => {
-      console.log(result);
+      // console.log(result);
       setWeekState(result);
     });
   }
@@ -71,7 +82,11 @@ function App() {
     <div className="container">
       <h2 dir="auto">{weekState.week_title}</h2>
 
-      <GoalList goals={weekState.goals} onSubmit={handleGoalSubmit} />
+      <GoalList
+        goals={weekState.goals}
+        onSubmit={handleGoalSubmit}
+        onEditing={handleOnEditing}
+      />
 
     </div>
     </>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./Goals.css";
 
-function NewGoal({onSubmit}) {
+function NewGoal({onSubmit, onEditing}) {
 
   const [text, setText] = useState("");
   const [editing, setEditing] = useState(false);
@@ -10,29 +10,33 @@ function NewGoal({onSubmit}) {
     if (editing && event.key === 'Enter') {
       setText("");
       setEditing(false);
+      onEditing(false);
       onSubmit({ index: 0, text: text });
     }
     if (editing && event.key === 'Escape') {
       setText("");
       setEditing(false);
+      onEditing(false);
     }
   };
 
   const handleNewGoalClick = (event) => {
-    if (!editing) { 
+    if (!editing) {
       setEditing(true);
+      onEditing(true);
       setTimeout(() => {
           document.getElementById("new-goal-input").focus();
         }, 100)
     } else {
       setEditing(false);
+      onEditing(false);
     }
-    console.log("button clicked: editing: ", editing);
+    // console.log("button clicked: editing: ", editing);
   };
 
   return (
     <div className="goal">
-      {editing && 
+      {editing &&
         <input
           dir="auto"
           type="text"
@@ -43,10 +47,10 @@ function NewGoal({onSubmit}) {
           placeholder="Enter your new week goal..."
         />
       }
-      {!editing && 
-        <button 
-          type="button" 
-          className="btn-green" 
+      {!editing &&
+        <button
+          type="button"
+          className="btn-green"
           onClick={handleNewGoalClick}
         >Add Goal</button>
       }
@@ -55,20 +59,18 @@ function NewGoal({onSubmit}) {
 
 }
 
-function Goal({data, index, onSubmit}) {
+function Goal({id, done, text, onSubmit, onEditing}) {
 
-  const [text, setText] = useState(data.text);
+  // const [text, setText] = useState(data.text);
 
   return (
     <>
     <div className="goal">
-      <span>{index}</span>
-      {data.done && <div>done</div>}
-      {!data.done && <div>todo</div>}
+      {done && <div>DONE</div>}
+      {!done && <div>TODO</div>}
       <input
         dir="auto"
-        id={index}  /* {data.id} */
-        onChange={(e) => setText(e.currentTarget.value)}
+        onChange={(e) => { /* setText(e.currentTarget.value) */} }
         value={text}
         placeholder="Enter a goal..."
       />
@@ -77,15 +79,21 @@ function Goal({data, index, onSubmit}) {
   );
 }
 
-export default function GoalList({goals, onSubmit}) {
-
-  const item = (data, index) => <Goal data={data} index={index} onSubmit={onSubmit} />;
+export default function GoalList({goals, onSubmit, onEditing}) {
 
   return (
     <div className="goal-list-container">
-      {goals.map(item)}
-      <NewGoal onSubmit={onSubmit} />
+      {goals.map(goal =>
+        <Goal
+          key={goal.id}
+          id={goal.id}
+          done={goal.done}
+          text={goal.text}
+          onSubmit={onSubmit}
+          onEditing={onEditing}
+        />
+      )}
+      <NewGoal onSubmit={onSubmit} onEditing={onEditing} />
     </div>
     );
-
 }
