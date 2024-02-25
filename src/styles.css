@@ -58,12 +58,22 @@ button {
 
   margin: 3px;
   display: flex;
-  width: 100%;
   /* outline: none; */
+}
+
+input {
+  width: 100%;
 }
 
 button {
   cursor: pointer;
+  outline: none;
+  border: none;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  padding: 3px;
+  transition-duration: 0.4s;
 }
 button:hover {
   border-color: #396cd8;
@@ -73,6 +83,7 @@ button:active {
   background-color: #e8e8e8;
 }
 
+.btn-green {background-color: #04AA6D;} /* Green */
 
 @media (prefers-color-scheme: dark) {
   :root {
@@ -88,6 +99,12 @@ button:active {
   button {
     color: #f6f6f6;
     background-color: #0f0f0f88;
+    /* background-color: #ffaabb; */
+  }
+  button:hover {
+    border-color: #396cd8;
+    border-color: #ff0000;
+    background-color: #0f0f0f69;
   }
   button:active {
     background-color: #0f0f0f69;

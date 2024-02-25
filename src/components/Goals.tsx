@@ -4,28 +4,52 @@ import "./Goals.css";
 function NewGoal({onSubmit}) {
 
   const [text, setText] = useState("");
-  const [submitted, setSubmitted] = useState("");
+  const [editing, setEditing] = useState(false);
 
   const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      // setSubmitted(event.target.value);
+    if (editing && event.key === 'Enter') {
       setText("");
-      setSubmitted(text);
+      setEditing(false);
       onSubmit({ index: 0, text: text });
     }
+    if (editing && event.key === 'Escape') {
+      setText("");
+      setEditing(false);
+    }
+  };
+
+  const handleNewGoalClick = (event) => {
+    if (!editing) { 
+      setEditing(true);
+      setTimeout(() => {
+          document.getElementById("new-goal-input").focus();
+        }, 100)
+    } else {
+      setEditing(false);
+    }
+    console.log("button clicked: editing: ", editing);
   };
 
   return (
     <div className="goal">
-      <input
-        dir="auto"
-        type="text"
-        id="new-goal-input"
-        onChange={(e) => setText(e.currentTarget.value)}
-        onKeyDown={handleKeyDown}
-        value={text}
-        placeholder="Enter your new week goal..."
-      />
+      {editing && 
+        <input
+          dir="auto"
+          type="text"
+          id="new-goal-input"
+          onChange={(e) => setText(e.currentTarget.value)}
+          onKeyDown={handleKeyDown}
+          value={text}
+          placeholder="Enter your new week goal..."
+        />
+      }
+      {!editing && 
+        <button 
+          type="button" 
+          className="btn-green" 
+          onClick={handleNewGoalClick}
+        >Add Goal</button>
+      }
     </div>
   );
 
