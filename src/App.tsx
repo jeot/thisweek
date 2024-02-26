@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import { appWindow } from '@tauri-apps/api/window'
-import GoalList from "./components/Goals.tsx"
 import Header from "./components/Header.tsx"
-import "./App.css";
+import Week from "./components/Week.tsx"
 
 function App() {
 
@@ -79,16 +78,12 @@ function App() {
   return (
     <>
     <Header today={weekState.today_title} />
-    <div className="container">
-      <h2 dir="auto">{weekState.week_title}</h2>
-
-      <GoalList
-        goals={weekState.goals}
-        onSubmit={handleGoalSubmit}
-        onEditing={handleOnEditing}
-      />
-
-    </div>
+    <Week
+      title={weekState.week_title}
+      goals={weekState.goals}
+      onSubmit={handleGoalSubmit}
+      onEditing={handleOnEditing}
+    />
     </>
   );
 }

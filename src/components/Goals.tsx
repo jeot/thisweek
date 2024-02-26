@@ -37,22 +37,30 @@ function NewGoal({onSubmit, onEditing}) {
   return (
     <div className="goal">
       {editing &&
+        <>
+        <input
+          type="checkbox"
+          checked={false}
+          onChange={() => {}}
+        />
         <input
           dir="auto"
           type="text"
           id="new-goal-input"
+          className="text"
           onChange={(e) => setText(e.currentTarget.value)}
           onKeyDown={handleKeyDown}
           value={text}
           placeholder="Enter your new week goal..."
         />
+        </>
       }
       {!editing &&
         <button
           type="button"
-          className="btn-green"
+          className="btn-primary"
           onClick={handleNewGoalClick}
-        >Add Goal</button>
+        >+</button>
       }
     </div>
   );
@@ -60,22 +68,28 @@ function NewGoal({onSubmit, onEditing}) {
 }
 
 function Goal({id, done, text, onSubmit, onEditing}) {
-
   // const [text, setText] = useState(data.text);
+  const [checked, setChecked] = useState(false);
+
+  const onCheckBoxChanged = () => {
+    setChecked(!checked);
+  }
 
   return (
-    <>
     <div className="goal">
-      {done && <div>DONE</div>}
-      {!done && <div>TODO</div>}
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={onCheckBoxChanged}
+      />
       <input
         dir="auto"
+        className="text"
         onChange={(e) => { /* setText(e.currentTarget.value) */} }
         value={text}
         placeholder="Enter a goal..."
       />
     </div>
-    </>
   );
 }
 

@@ -1,0 +1,14 @@
+.week-container {
+  margin: 6px;
+  padding: 1vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #222222;
+}
+
+.week-title {
+  font-size: 4vw;
+  /* color: #4400bb; */
+  /* background-color: #4400bb; */
+}

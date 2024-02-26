@@ -1,11 +1,65 @@
-.goal {
+.goal-list-container {
+  margin: 0px;
+  padding: 2px;
   direction: rtl;
-  color: #aa7722;
-  display: block flex;
+  /* background-color: #117722; */
 }
 
-.goal-list-container {
+.goal {
+  margin: 2px;
+  padding: 2px;
   direction: rtl;
-  display: grid;
-  /* background-color: #117722; */
+  color: #aa7722;
+  /* background-color: #44bbcc; */
+}
+
+button, input {
+  /* margin: 2px; */
+  padding: 0.2em 1em;
+  border-radius: 5px;
+  border: 2px solid transparent;
+  /* border: 2px solid; */
+  font-size: 1em;
+  font-family: inherit;
+  color: #f6f6f6;
+  background-color: #4f4f4f88;
+  vertical-align: middle;
+  transition-duration: 0.2s;
+  /* transition: border-color 0.25s; */
+  /* box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2); */
+  /* background-color: #aabbccdd; */
+}
+
+input[type=checkbox] {
+  width: 5%;
+  box-sizing: border-box;
+  -webkit-box-sizing:border-box;
+  -moz-box-sizing: border-box;
+}
+
+input.text {
+  width: 88%;
+  box-sizing: border-box;
+  -webkit-box-sizing:border-box;
+  -moz-box-sizing: border-box;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
+}
+
+button:hover {
+  /* border-color: #ff0000; */
+  background-color: #0f0f0f69;
+}
+
+button:active {
+  /* border-color: #396cd8; */
+  background-color: #ff0f0f69;
+}
+
+button.btn-primary {
+  background-color: #0faf0f88;
 }
