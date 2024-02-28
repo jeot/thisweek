@@ -1,6 +1,6 @@
 .week-container {
   margin: 6px;
-  padding: 1vh;
+  padding: 5px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -8,7 +8,7 @@
 }
 
 .week-title {
-  font-size: 4vw;
+  font-size: 1.5em
   /* color: #4400bb; */
   /* background-color: #4400bb; */
 }
