@@ -12,6 +12,7 @@ function App() {
     week_title: "",
     today_title: "",
     goals: [],
+    notes: [],
     });
 
   const handleUserKeyPress = event => {
@@ -51,6 +52,7 @@ function App() {
 
   useEffect(() => {
     invoke("get_week_state").then((result) => {
+      console.log("get_week_state result: ", result);
       setWeekState(result);
     });
   }, []);
@@ -75,12 +77,15 @@ function App() {
     });
   }
 
+  const goals = weekState.goals.map((x) => x.Goal);
+  const notes = weekState.notes.map((x) => x.Note);
+
   return (
     <>
     <Header today={weekState.today_title} />
     <Week
       title={weekState.week_title}
-      goals={weekState.goals}
+      goals={goals}
       onSubmit={handleGoalSubmit}
       onEditing={handleOnEditing}
     />
