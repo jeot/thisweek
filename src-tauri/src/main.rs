@@ -43,6 +43,15 @@ fn add_new_goal(goal_text: String, managed_state: State<ManagedState>) -> WeekSt
     week.week_state_js_object()
 }
 
+#[tauri::command]
+fn goal_checkbox_changed(text: String, checked: bool, managed_state: State<ManagedState>) -> String {
+    // let mut week = managed_state.week.lock().unwrap();
+    // week.add_new_goal(goal_text);
+    // week.week_state_js_object()
+    println!("processing checkbox: {text}, {checked}");
+    return String::from("gotcha!");
+}
+
 fn main() {
     println!("Hello, tauri.");
 
@@ -54,6 +63,7 @@ fn main() {
             get_previous_week,
             get_current_week,
             add_new_goal,
+            goal_checkbox_changed,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

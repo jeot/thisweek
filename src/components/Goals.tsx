@@ -1,6 +1,8 @@
 import { useState } from "react";
 import "./Goals.css";
 
+import { invoke } from "@tauri-apps/api/tauri";
+
 function NewGoal({onSubmit, onEditing}) {
 
   const [text, setText] = useState("");
@@ -72,7 +74,11 @@ function Goal({id, done, text, onSubmit, onEditing}) {
   const [checked, setChecked] = useState(false);
 
   const onCheckBoxChanged = () => {
-    setChecked(!checked);
+    invoke("goal_checkbox_changed", { text: text, checked: checked }).then((result_goal) => {
+      console.log(result_goal);
+      // setChecked(!checked);
+      // setWeekState(result);
+    });
   }
 
   return (
