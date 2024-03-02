@@ -69,23 +69,23 @@ function NewGoal({onSubmit, onEditing}) {
 
 }
 
-function Goal({id, done, text, onSubmit, onEditing}) {
+function Goal({goal, onSubmit, onEditing}) {
   // const [text, setText] = useState(data.text);
-  const [checked, setChecked] = useState(false);
+  const [text, setText] = useState(goal.text);
+  const [done, setDone] = useState(goal.done);
 
   const onCheckBoxChanged = () => {
-    invoke("goal_checkbox_changed", { text: text, checked: checked }).then((result_goal) => {
-      console.log(result_goal);
-      // setChecked(!checked);
-      // setWeekState(result);
+    invoke("goal_checkbox_changed", { id: goal.id }).then((done_result) => {
+      console.log(done_result);
+      setDone(done_result);
     });
   }
 
   return (
-    <div className="goal">
+    <div className="goal" id={goal.id}>
       <input
         type="checkbox"
-        checked={checked}
+        checked={done}
         onChange={onCheckBoxChanged}
       />
       <input
@@ -106,9 +106,7 @@ export default function GoalList({goals, onSubmit, onEditing}) {
       {goals.map(goal =>
         <Goal
           key={goal.id}
-          id={goal.id}
-          done={goal.done}
-          text={goal.text}
+          goal={goal}
           onSubmit={onSubmit}
           onEditing={onEditing}
         />
