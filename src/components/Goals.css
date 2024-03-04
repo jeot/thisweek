@@ -33,6 +33,7 @@ button, input {
 input[type=checkbox] {
   width: 5%;
   box-sizing: border-box;
+  accent-color: #cb1956;
   -webkit-box-sizing:border-box;
   -moz-box-sizing: border-box;
 }
