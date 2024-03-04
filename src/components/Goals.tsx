@@ -49,7 +49,7 @@ function NewGoal({onSubmit, onEditing}) {
           dir="auto"
           type="text"
           id="new-goal-input"
-          className="text"
+          className="goal-text"
           onChange={(e) => setText(e.currentTarget.value)}
           onKeyDown={handleKeyDown}
           value={text}
@@ -81,6 +81,9 @@ function Goal({goal, onSubmit, onEditing}) {
     });
   }
 
+  const handleGoalEdit = () => {}
+  const handleGoalDelete = () => {}
+
   return (
     <div className="goal" id={goal.id}>
       <input
@@ -90,11 +93,21 @@ function Goal({goal, onSubmit, onEditing}) {
       />
       <input
         dir="auto"
-        className="text"
+        className="goal-text"
         onChange={(e) => { /* setText(e.currentTarget.value) */} }
         value={text}
         placeholder="Enter a goal..."
       />
+      <button
+        type="button"
+        className="btn-goal-function"
+        onClick={handleGoalEdit}
+      >📝</button>
+      <button
+        type="button"
+        className="btn-goal-function"
+        onClick={handleGoalDelete}
+      >❌</button>
     </div>
   );
 }
