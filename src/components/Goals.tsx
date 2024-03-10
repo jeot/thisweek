@@ -13,7 +13,7 @@ function NewGoal({onSubmit, onEditing}) {
       setText("");
       setEditing(false);
       onEditing(false);
-      onSubmit({ index: 0, text: text });
+      onSubmit({ id: 0, text: text });
     }
     if (editing && event.key === 'Escape') {
       setText("");
@@ -70,7 +70,7 @@ function NewGoal({onSubmit, onEditing}) {
 }
 
 function Goal({goal, onSubmit, onEditing}) {
-  // const [text, setText] = useState(data.text);
+
   const [text, setText] = useState(goal.text);
   const [done, setDone] = useState(goal.done);
 
@@ -81,8 +81,12 @@ function Goal({goal, onSubmit, onEditing}) {
     });
   }
 
-  const handleGoalEdit = () => {}
-  const handleGoalDelete = () => {}
+  const handleGoalEdit = () => {
+    console.log("handleGoalEdit");
+  }
+  const handleGoalDelete = () => {
+    console.log("handleGoalDelete");
+  }
 
   return (
     <div className="goal" id={goal.id}>

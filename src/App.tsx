@@ -70,11 +70,19 @@ function App() {
     setEditing(isEditing);
   }
 
-  const handleGoalSubmit = function (value) {
-    invoke("add_new_goal", { goalText: value.text }).then((result) => {
-      // console.log(result);
-      setWeekState(result);
-    });
+  const handleGoalSubmit = function (goal) {
+    if (goal.id == 0) {
+      invoke("add_new_goal", { goalText: goal.text }).then((result) => {
+        // console.log(result);
+        setWeekState(result);
+      });
+    }
+    // if (goal.id != 0) {
+    //   invoke("edit_goal", { goalId: goal.id, goalText: goal.text }).then((result) => {
+    //     // console.log(result);
+    //     setWeekState(result);
+    //   });
+    // }
   }
 
   const goals = weekState.goals.map((x) => x.Goal);
