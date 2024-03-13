@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./Goals.css";
 
 import { invoke } from "@tauri-apps/api/tauri";
@@ -8,61 +8,64 @@ function NewGoal({onSubmit, onEditing}) {
   const [text, setText] = useState("");
   const [editing, setEditing] = useState(false);
 
+  useEffect(() => {
+    onEditing(editing);
+  }, [editing]);
+
+  const onFocus = () => {
+    // console.log('in focused');
+  }
+  const onBlur = () => {
+    setEditing(false);
+    // console.log('out of focused');
+  }
+
   const handleKeyDown = (event) => {
     if (editing && event.key === 'Enter') {
-      setText("");
-      setEditing(false);
-      onEditing(false);
-      onSubmit({ id: 0, text: text });
+      if (text.length != 0) {
+        onSubmit({ id: 0, text: text });
+        setText("");
+        // onEditing(false);
+      } else {
+        setEditing(false);
+      }
     }
     if (editing && event.key === 'Escape') {
-      setText("");
+      // note: uncomment if you want to remove the text on Esc.
+      // setText("");
       setEditing(false);
-      onEditing(false);
+      // onEditing(false);
     }
   };
 
   const handleNewGoalClick = (event) => {
-    if (!editing) {
-      setEditing(true);
-      onEditing(true);
-      setTimeout(() => {
-          document.getElementById("new-goal-input").focus();
-        }, 100)
-    } else {
-      setEditing(false);
-      onEditing(false);
-    }
-    // console.log("button clicked: editing: ", editing);
+    setEditing(true);
+    // console.log("button clicked:");
   };
 
   return (
     <div className="goal">
       {editing &&
-        <>
-        <input
-          type="checkbox"
-          checked={false}
-          onChange={() => {}}
-        />
         <input
           dir="auto"
           type="text"
           id="new-goal-input"
+          autoFocus
+          onFocus={onFocus}
+          onBlur={onBlur}
           className="goal-text"
           onChange={(e) => setText(e.currentTarget.value)}
           onKeyDown={handleKeyDown}
           value={text}
           placeholder="Enter your new week goal..."
         />
-        </>
       }
       {!editing &&
         <button
           type="button"
           className="btn-primary"
           onClick={handleNewGoalClick}
-        >+</button>
+        >New Goal</button>
       }
     </div>
   );
