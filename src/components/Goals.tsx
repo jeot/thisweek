@@ -72,7 +72,7 @@ function NewGoal({onSubmit, onEditing}) {
 
 }
 
-function Goal({goal, onSubmit, onEditing}) {
+function Goal({goal, onSubmit, onEditing, onGoalDelete}) {
 
   const [text, setText] = useState(goal.text);
   const [done, setDone] = useState(goal.done);
@@ -86,9 +86,6 @@ function Goal({goal, onSubmit, onEditing}) {
 
   const handleGoalEdit = () => {
     console.log("handleGoalEdit");
-  }
-  const handleGoalDelete = () => {
-    console.log("handleGoalDelete");
   }
 
   return (
@@ -113,13 +110,13 @@ function Goal({goal, onSubmit, onEditing}) {
       <button
         type="button"
         className="btn-goal-function"
-        onClick={handleGoalDelete}
+        onClick={() => {onGoalDelete(goal.id)}}
       >❌</button>
     </div>
   );
 }
 
-export default function GoalList({goals, onSubmit, onEditing}) {
+export default function GoalList({goals, onSubmit, onEditing, onGoalDelete}) {
 
   return (
     <div className="goal-list-container">
@@ -129,6 +126,7 @@ export default function GoalList({goals, onSubmit, onEditing}) {
           goal={goal}
           onSubmit={onSubmit}
           onEditing={onEditing}
+          onGoalDelete={onGoalDelete}
         />
       )}
       <NewGoal onSubmit={onSubmit} onEditing={onEditing} />

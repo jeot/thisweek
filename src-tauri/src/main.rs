@@ -44,6 +44,13 @@ fn add_new_goal(goal_text: String, managed_state: State<ManagedState>) -> WeekSt
 }
 
 #[tauri::command]
+fn delete_goal(id: String, managed_state: State<ManagedState>) -> WeekStateJs {
+    let mut week = managed_state.week.lock().unwrap();
+    week.delete_goal(id);
+    week.week_state_js_object()
+}
+
+#[tauri::command]
 fn goal_checkbox_changed(id: String, managed_state: State<ManagedState>) -> bool {
     let mut week = managed_state.week.lock().unwrap();
     return week.toggle_goal_state(id);
@@ -60,6 +67,7 @@ fn main() {
             get_previous_week,
             get_current_week,
             add_new_goal,
+            delete_goal,
             goal_checkbox_changed,
         ])
         .run(tauri::generate_context!())

@@ -85,6 +85,13 @@ function App() {
     // }
   }
 
+  const handleOnGoalDelete = function (id) {
+    invoke("delete_goal", { id: id }).then((result) => {
+      // console.log(result);
+      setWeekState(result);
+    });
+  }
+
   const goals = weekState.goals.map((x) => x.Goal);
   const notes = weekState.notes.map((x) => x.Note);
 
@@ -96,6 +103,7 @@ function App() {
       goals={goals}
       onSubmit={handleGoalSubmit}
       onEditing={handleOnEditing}
+      onGoalDelete={handleOnGoalDelete}
     />
     </>
   );

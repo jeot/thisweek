@@ -2,7 +2,7 @@ import { useState } from "react";
 import GoalList from "./Goals.tsx"
 import "./Week.css";
 
-export default function Week({goals, title, onSubmit, onEditing}) {
+export default function Week({goals, title, onSubmit, onEditing, onGoalDelete}) {
 
   return (
     <div className="week-container">
@@ -15,6 +15,7 @@ export default function Week({goals, title, onSubmit, onEditing}) {
         goals={goals}
         onSubmit={onSubmit}
         onEditing={onEditing}
+        onGoalDelete={onGoalDelete}
       />
 
     </div>
