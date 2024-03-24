@@ -1,4 +1,11 @@
 import { useState, useEffect } from "react";
+
+import TextField from '@mui/material/TextField';
+import Input from '@mui/material/Input';
+import InputBase from '@mui/material/InputBase';
+import Stack from '@mui/material/Stack';
+import Checkbox from '@mui/material/Checkbox';
+
 import { Button, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -93,18 +100,25 @@ function Goal({goal, onSubmit, onEditing, onGoalDelete}) {
   }
 
   return (
-    <div className="goal" id={goal.id}>
-      <input
-        type="checkbox"
+    <div dir="rtl" id={goal.id}>
+    <Stack
+      direction="row"
+      justifyContent="center"
+      alignItems="center"
+      spacing={2}
+    >
+      <Checkbox
         checked={done}
         onChange={onCheckBoxChanged}
       />
-      <input
-        dir="auto"
-        className="goal-text"
-        onChange={(e) => { /* setText(e.currentTarget.value) */} }
+      <TextField
+        variant="outlined"
+        size="small"
+        margin="dense"
+        fullWidth
         value={text}
-        placeholder="Enter a goal..."
+        sx={{ ml: 1, flex: 1 }}
+        // onChange={(e) => { setText(e.currentTarget.value) } }
       />
       <IconButton
         aria-label="edit"
@@ -122,13 +136,14 @@ function Goal({goal, onSubmit, onEditing, onGoalDelete}) {
       >
         <DeleteIcon fontSize="small"/>
       </IconButton>
+      </Stack>
     </div>
   );
 }
 
 export default function GoalList({goals, onSubmit, onEditing, onGoalDelete}) {
   return (
-    <div className="goal-list-container">
+    <div>
       {goals.map(goal =>
         <Goal
           key={goal.id}
