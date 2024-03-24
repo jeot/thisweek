@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
-import "./Goals.css";
+import { Button, IconButton } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+
 
 import { invoke } from "@tauri-apps/api/tauri";
 
@@ -44,7 +47,7 @@ function NewGoal({onSubmit, onEditing}) {
   };
 
   return (
-    <div className="goal">
+    <div>
       {editing &&
         <input
           dir="auto"
@@ -61,11 +64,12 @@ function NewGoal({onSubmit, onEditing}) {
         />
       }
       {!editing &&
-        <button
-          type="button"
+        <Button
+          type="Button"
+          variant="contained"
           className="btn-primary"
           onClick={handleNewGoalClick}
-        >New Goal</button>
+        >New Goal</Button>
       }
     </div>
   );
@@ -102,22 +106,27 @@ function Goal({goal, onSubmit, onEditing, onGoalDelete}) {
         value={text}
         placeholder="Enter a goal..."
       />
-      <button
-        type="button"
-        className="btn-goal-function"
-        onClick={handleGoalEdit}
-      >📝</button>
-      <button
-        type="button"
-        className="btn-goal-function"
+      <IconButton
+        aria-label="edit"
+        size="small"
+        color="primary"
+        onClick={() => {handleGoalEdit}}
+      >
+        <EditIcon fontSize="small"/>
+      </IconButton>
+      <IconButton
+        aria-label="delete"
+        size="small"
+        color="error"
         onClick={() => {onGoalDelete(goal.id)}}
-      >❌</button>
+      >
+        <DeleteIcon fontSize="small"/>
+      </IconButton>
     </div>
   );
 }
 
 export default function GoalList({goals, onSubmit, onEditing, onGoalDelete}) {
-
   return (
     <div className="goal-list-container">
       {goals.map(goal =>
