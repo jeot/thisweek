@@ -3,7 +3,7 @@
 use std::sync::Mutex;
 use tauri::State;
 
-use weeks_core::week::{WeekState, WeekStateJs};
+use weeks_core::week::{WeekState, WeekStateJs, Element};
 
 struct ManagedState {
     week: Mutex<WeekState>,
@@ -37,6 +37,12 @@ fn get_current_week(managed_state: State<ManagedState>) -> WeekStateJs {
 }
 
 #[tauri::command]
+fn get_goal(id: String, managed_state: State<ManagedState>) -> Option<Element> {
+    let mut week = managed_state.week.lock().unwrap();
+    week.get_goal(id)
+}
+
+#[tauri::command]
 fn add_new_goal(goal_text: String, managed_state: State<ManagedState>) -> WeekStateJs {
     let mut week = managed_state.week.lock().unwrap();
     week.add_new_goal(goal_text);
@@ -51,9 +57,16 @@ fn delete_goal(id: String, managed_state: State<ManagedState>) -> WeekStateJs {
 }
 
 #[tauri::command]
+fn edit_goal(id: String, text: String, managed_state: State<ManagedState>) -> WeekStateJs {
+    let mut week = managed_state.week.lock().unwrap();
+    week.edit_goal(id, text);
+    week.week_state_js_object()
+}
+
+#[tauri::command]
 fn goal_checkbox_changed(id: String, managed_state: State<ManagedState>) -> bool {
     let mut week = managed_state.week.lock().unwrap();
-    return week.toggle_goal_state(id);
+    week.toggle_goal_state(id)
 }
 
 fn main() {
@@ -66,8 +79,10 @@ fn main() {
             get_next_week,
             get_previous_week,
             get_current_week,
+            get_goal,
             add_new_goal,
             delete_goal,
+            edit_goal,
             goal_checkbox_changed,
         ])
         .run(tauri::generate_context!())

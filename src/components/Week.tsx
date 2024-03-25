@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import GoalList from "./Goals.tsx"
 
 export default function Week({goals, title, onSubmit, onEditing, onGoalDelete}) {
