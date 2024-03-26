@@ -6,7 +6,18 @@ import Header from "./components/Header.tsx"
 import Week from "./components/Week.tsx"
 
 import CssBaseline from '@mui/material/CssBaseline';
-import ScopedCssBaseline from '@mui/material/ScopedCssBaseline';
+// import ScopedCssBaseline from '@mui/material/ScopedCssBaseline';
+
+import Koodak from './assets/fonts/BKoodkBd.ttf';
+// import Nazanin from './assets/fonts/B-NAZANIN.ttf';
+// import Rubik from './assets/fonts/Rubik-Regular.ttf';
+
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+
+import { createTheme, ThemeProvider } from '@mui/material';
 
 function App() {
 
@@ -97,22 +108,52 @@ function App() {
         });
   }
 
+  const theme = createTheme({
+    typography: {
+      fontFamily: [
+        'Koodak',
+        'B Nazanin',
+        // 'Rubik',
+        // 'B Koodak',
+        'Roboto',
+        'Times',
+      ].join(','),
+    },
+    components: {
+      MuiCssBaseline: {
+        styleOverrides: `
+          @font-face {
+            font-family: 'Koodak';
+            font-style: normal;
+            font-display: swap;
+            font-weight: 400;
+            src: local('B Koodak Bold'),
+                 url(${Koodak}) format('ttf');
+          }
+        `,
+      },
+    },
+  });
+
   const goals = weekState.goals.map((x) => x.Goal);
   const notes = weekState.notes.map((x) => x.Note);
 
   return (
     <React.Fragment>
-    <ScopedCssBaseline>
-    <Header today={weekState.today_title} />
-    <Week
-      title={weekState.week_title}
-      goals={goals}
-      onSubmit={handleGoalSubmit}
-      onEditing={handleOnEditing}
-      onGoalDelete={handleOnGoalDelete}
-    />
-    </ScopedCssBaseline>
+    <ThemeProvider theme={theme}>
+      <CssBaseline>
+      <Header today={weekState.today_title} />
+      <Week
+        title={weekState.week_title}
+        goals={goals}
+        onSubmit={handleGoalSubmit}
+        onEditing={handleOnEditing}
+        onGoalDelete={handleOnGoalDelete}
+      />
+      </CssBaseline>
+    </ThemeProvider>
     </React.Fragment>
+
   );
 }
 
