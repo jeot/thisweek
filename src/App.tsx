@@ -110,6 +110,7 @@ function App() {
 
   const theme = createTheme({
     typography: {
+      fontSize: 14,
       fontFamily: [
         'Koodak',
         'B Nazanin',

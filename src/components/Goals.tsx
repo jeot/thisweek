@@ -16,14 +16,29 @@ import Stack from '@mui/material/Stack';
 
 import { invoke } from "@tauri-apps/api/tauri";
 
+function getDirection(text) {
+  let direction = 'auto';
+  // var x = new RegExp("[\x00-\x80]+"); // is ascii
+  // var isAscii = x.test(text);
+  var c = text.charCodeAt();
+  var isAscii = (c < 0x7F);
+  if (isAscii) {
+    direction = 'ltr';
+  } else {
+    direction = 'rtl';
+  }
+  return direction;
+}
+
 function NewGoal({modifiable, onSubmit, onEditing}) {
 
   const [text, setText] = useState("");
   const [editing, setEditing] = useState(false);
+  const [dir, setDir] = useState('rtl');
 
   useEffect(() => {
-    onEditing(editing);
-  }, [editing]);
+      setDir(getDirection(text));
+    }, [text]);
 
   const submit = () => {
       if (text.length == 0)
@@ -33,6 +48,7 @@ function NewGoal({modifiable, onSubmit, onEditing}) {
         onSubmit({ id: 0, text: text });
         setText("");
         setEditing(true);
+        onEditing(true);
         // by not resetting editing, we can input new goals immediately
         // setEditing(false);
       }
@@ -42,10 +58,12 @@ function NewGoal({modifiable, onSubmit, onEditing}) {
     // note: comment this line if you want to preserve the text on Esc.
     setText("");
     setEditing(false);
+    onEditing(false);
   }
 
   const onFocus = () => {
     // setEditing(true);
+    // onEditing(true);
     // console.log('in focused');
   }
   const onBlur = () => {
@@ -64,12 +82,14 @@ function NewGoal({modifiable, onSubmit, onEditing}) {
 
   const handleNewGoalClick = (event) => {
     setEditing(true);
+    onEditing(true);
   };
 
   return (
-    <div dir="rtl">
+    <div dir="rtl"> {/*this dir must be set by the global direction*/}
       { editing ?
         <TextField
+          dir={dir}
           variant="outlined"
           size="small"
           fullWidth
@@ -100,10 +120,11 @@ function Goal({goal, modifiable, onSubmit, onEditing, onGoalDelete}) {
   const [text, setText] = useState(goal.text);
   const [done, setDone] = useState(goal.done);
   const [editing, setEditing] = useState(false);
+  const [dir, setDir] = useState('rtl');
 
-  // useEffect(() => {
-  //   onEditing(editing);
-  // }, [editing]);
+  useEffect(() => {
+      setDir(getDirection(text));
+    }, [text]);
 
   const onFocus = () => {
     // console.log('in focused');
@@ -171,6 +192,7 @@ function Goal({goal, modifiable, onSubmit, onEditing, onGoalDelete}) {
       {editing &&
         <>
         <TextField
+          dir={dir}
           variant="outlined"
           size="small"
           fullWidth
@@ -211,6 +233,7 @@ function Goal({goal, modifiable, onSubmit, onEditing, onGoalDelete}) {
       {!editing && modifiable &&
         <>
         <InputBase
+          dir={dir}
           size="small"
           fullWidth
           value={text}
@@ -236,6 +259,7 @@ function Goal({goal, modifiable, onSubmit, onEditing, onGoalDelete}) {
       {!editing && !modifiable &&
         <>
         <InputBase
+          dir={dir}
           size="small"
           fullWidth
           value={text}
