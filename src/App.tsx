@@ -22,6 +22,8 @@ import { createTheme, ThemeProvider } from '@mui/material';
 function App() {
 
   const [editing, setEditing] = useState(false);
+  const [newKeyFlag, setNewKeyFlag] = useState(false);
+  const [newGoalEditing, setNewGoalEditing] = useState(false);
 
   const [weekState, setWeekState] = useState({
     week_title: "",
@@ -62,28 +64,49 @@ function App() {
             setWeekState(result);
             });
       }
+
+      if (!newKeyFlag && event.code === 'KeyN') {
+        event.preventDefault();
+        setNewKeyFlag(true);
+      } else if (newKeyFlag && event.code === 'KeyG') {
+        event.preventDefault();
+        // new goal
+        setNewKeyFlag(false);
+        // console.log("start new goal editing...");
+        setNewGoalEditing(true);
+      } else if (newKeyFlag && event.code === 'KeyN') {
+        event.preventDefault();
+        // new note
+        // console.log("start new note editing...");
+        setNewKeyFlag(false);
+      } else if (newKeyFlag) {
+        event.preventDefault();
+        setNewKeyFlag(false);
+      } else {}
+
     }
   };
 
   useEffect(() => {
     invoke("get_week_state").then((result) => {
-      console.log("get_week_state result: ", result);
+      // console.log("get_week_state result: ", result);
       setWeekState(result);
       });
     }, []);
 
   useEffect(() => {
-    console.log(`adding new keydown event listener with editing: ${editing}.`);
+    // console.log(`adding new keydown event listener with editing: ${editing}.`);
     window.addEventListener("keydown", handleUserKeyPress);
     return () => {
-      console.log("removing keydown event listener.");
+      // console.log("removing keydown event listener.");
       window.removeEventListener("keydown", handleUserKeyPress);
     };
-  }, [editing]);
+  }, [editing, newKeyFlag, newGoalEditing]);
 
   const handleOnEditing = function (isEditing) {
     console.log(`setting the editing: ${isEditing}`);
     setEditing(isEditing);
+    if (!isEditing) setNewGoalEditing(false);
   }
 
   const handleGoalSubmit = function (goal) {
@@ -150,6 +173,7 @@ function App() {
         onSubmit={handleGoalSubmit}
         onEditing={handleOnEditing}
         onGoalDelete={handleOnGoalDelete}
+        newGoalEditing={newGoalEditing}
       />
       </CssBaseline>
     </ThemeProvider>

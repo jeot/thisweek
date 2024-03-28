@@ -30,7 +30,7 @@ function getDirection(text) {
   return direction;
 }
 
-function NewGoal({modifiable, onSubmit, onEditing}) {
+function NewGoal({modifiable, onSubmit, onEditing, newGoalEditing}) {
 
   const [text, setText] = useState("");
   const [editing, setEditing] = useState(false);
@@ -39,6 +39,14 @@ function NewGoal({modifiable, onSubmit, onEditing}) {
   useEffect(() => {
       setDir(getDirection(text));
     }, [text]);
+
+  useEffect(() => {
+      console.log("newGoalEditing changed: ", newGoalEditing);
+      if (newGoalEditing) {
+        setEditing(true);
+        onEditing(true);
+      }
+    }, [newGoalEditing]);
 
   const submit = () => {
       if (text.length == 0)
@@ -271,7 +279,7 @@ function Goal({goal, modifiable, onSubmit, onEditing, onGoalDelete}) {
   );
 }
 
-export default function GoalList({goals, onSubmit, onEditing, onGoalDelete}) {
+export default function GoalList({goals, onSubmit, onEditing, onGoalDelete, newGoalEditing}) {
 
   const [modifiable, setModifiable] = useState(true);
 
@@ -301,6 +309,7 @@ export default function GoalList({goals, onSubmit, onEditing, onGoalDelete}) {
         modifiable={modifiable}
         onSubmit={onSubmit}
         onEditing={onLocalEditing}
+        newGoalEditing={newGoalEditing}
       />
     </>
     );

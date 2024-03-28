@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import GoalList from "./Goals.tsx"
 
-export default function Week({goals, title, onSubmit, onEditing, onGoalDelete}) {
+export default function Week({goals, title, onSubmit, onEditing, onGoalDelete, newGoalEditing}) {
 
   return (
     <div className="week-container">
@@ -14,6 +14,7 @@ export default function Week({goals, title, onSubmit, onEditing, onGoalDelete}) 
         onSubmit={onSubmit}
         onEditing={onEditing}
         onGoalDelete={onGoalDelete}
+        newGoalEditing={newGoalEditing}
       />
     </div>
     )
