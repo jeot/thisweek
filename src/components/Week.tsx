@@ -1,21 +1,75 @@
 import { useState, useEffect } from "react";
-import GoalList from "./Goals.tsx"
+import GoalNoteItem from "./GoalNoteItem.tsx";
 
-export default function Week({goals, title, onSubmit, onEditing, onGoalDelete, newGoalEditing}) {
+function WeekItemsList(props) {
+
+  let item;
+  let type;
+  const item_elements = props.weekState.items.map((item) => {
+    if ('Goal' in item) {
+      item = item.Goal;
+      type = "Goal";
+    } else if ('Note' in item) {
+      item = item.Note;
+      type = "Note";
+    } else
+      return (<></>);
+
+    return (
+      <GoalNoteItem
+        key={item.id}
+        type={type}
+        item={item}
+        {...props} // it's passed by refference, so no big deal!
+      />);
+  });
+
+  // console.log(item_elements);
+
+  const new_goal_item = {id: 0, text: "", done: false};
 
   return (
-    <div className="week-container">
+    <>
+    {item_elements}
+    {props.startNewGoalEditing &&
+      <GoalNoteItem
+        key="0"
+        type="NewGoal"
+        item={{id: 0, text: "", done: true}}
+        {...props} // it's passed by refference, so no big deal!
+        />
+    }
+    </>
+    );
+
+}
+
+export default function Week(props) {
+
+  const [modifiable, setModifiable] = useState(true);
+
+  const onLocalEdit = (e) => {
+    console.log("onLocalEdit");
+    if (e) {
+      setModifiable(false);
+    } else {
+      setModifiable(true);
+    }
+    props.onEdit(e);
+  }
+
+  return (
+    <div>
       <div className="week-title" dir="auto">
-        {title}
+        {props.weekState.week_title}
       </div>
 
-      <GoalList
-        goals={goals}
-        onSubmit={onSubmit}
-        onEditing={onEditing}
-        onGoalDelete={onGoalDelete}
-        newGoalEditing={newGoalEditing}
+      <WeekItemsList
+        modifiable={modifiable}
+        onEdit={onLocalEdit}
+        {...props}
       />
+
     </div>
     )
 }

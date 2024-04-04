@@ -43,6 +43,12 @@ fn get_goal(id: String, managed_state: State<ManagedState>) -> Option<Element> {
 }
 
 #[tauri::command]
+fn get_item(id: String, managed_state: State<ManagedState>) -> Option<Element> {
+    let mut week = managed_state.week.lock().unwrap();
+    week.get_item(id)
+}
+
+#[tauri::command]
 fn add_new_goal(goal_text: String, managed_state: State<ManagedState>) -> WeekStateJs {
     let mut week = managed_state.week.lock().unwrap();
     week.add_new_goal(goal_text);
@@ -80,6 +86,7 @@ fn main() {
             get_previous_week,
             get_current_week,
             get_goal,
+            get_item,
             add_new_goal,
             delete_goal,
             edit_goal,

@@ -4,6 +4,7 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { appWindow } from '@tauri-apps/api/window'
 import Header from "./components/Header.tsx"
 import Week from "./components/Week.tsx"
+import BasicSpeedDial from "./components/BasicSpeedDial.tsx"
 
 import CssBaseline from '@mui/material/CssBaseline';
 // import ScopedCssBaseline from '@mui/material/ScopedCssBaseline';
@@ -23,13 +24,13 @@ function App() {
 
   const [editing, setEditing] = useState(false);
   const [newKeyFlag, setNewKeyFlag] = useState(false);
-  const [newGoalEditing, setNewGoalEditing] = useState(false);
+  const [startNewGoalEditing, setStartNewGoalEditing] = useState(false);
+  const [startNewNoteEditing, setStartNewNoteEditing] = useState(false);
 
   const [weekState, setWeekState] = useState({
     week_title: "",
     today_title: "",
-    goals: [],
-    notes: [],
+    items: [],
   });
 
   const handleUserKeyPress = event => {
@@ -71,14 +72,15 @@ function App() {
       } else if (newKeyFlag && event.code === 'KeyG') {
         event.preventDefault();
         // new goal
-        setNewKeyFlag(false);
         // console.log("start new goal editing...");
-        setNewGoalEditing(true);
+        setNewKeyFlag(false);
+        setStartNewGoalEditing(true);
       } else if (newKeyFlag && event.code === 'KeyN') {
         event.preventDefault();
         // new note
         // console.log("start new note editing...");
         setNewKeyFlag(false);
+        setStartNewNoteEditing(true);
       } else if (newKeyFlag) {
         event.preventDefault();
         setNewKeyFlag(false);
@@ -101,12 +103,13 @@ function App() {
       // console.log("removing keydown event listener.");
       window.removeEventListener("keydown", handleUserKeyPress);
     };
-  }, [editing, newKeyFlag, newGoalEditing]);
+  }, [editing, newKeyFlag, startNewGoalEditing, startNewNoteEditing]);
 
   const handleOnEditing = function (isEditing) {
     console.log(`setting the editing: ${isEditing}`);
     setEditing(isEditing);
-    if (!isEditing) setNewGoalEditing(false);
+    if (!isEditing) setStartNewGoalEditing(false);
+    if (!isEditing) setStartNewNoteEditing(false);
   }
 
   const handleGoalSubmit = function (goal) {
@@ -129,6 +132,11 @@ function App() {
         // console.log(result);
         setWeekState(result);
         });
+  }
+
+  const onSpeedDialClick = function (action_name) {
+    console.log(action_name);
+    setStartNewGoalEditing(true);
   }
 
   const theme = createTheme({
@@ -159,22 +167,20 @@ function App() {
     },
   });
 
-  const goals = weekState.goals.map((x) => x.Goal);
-  const notes = weekState.notes.map((x) => x.Note);
-
   return (
     <React.Fragment>
     <ThemeProvider theme={theme}>
       <CssBaseline>
       <Header today={weekState.today_title} />
       <Week
-        title={weekState.week_title}
-        goals={goals}
+        weekState={weekState}
         onSubmit={handleGoalSubmit}
-        onEditing={handleOnEditing}
-        onGoalDelete={handleOnGoalDelete}
-        newGoalEditing={newGoalEditing}
+        onEdit={handleOnEditing}
+        onDelete={handleOnGoalDelete}
+        startNewGoalEditing={startNewGoalEditing}
+        startNewNoteEditing={startNewNoteEditing}
       />
+      <BasicSpeedDial onClick={onSpeedDialClick} />
       </CssBaseline>
     </ThemeProvider>
     </React.Fragment>

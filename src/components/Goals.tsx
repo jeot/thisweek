@@ -13,24 +13,11 @@ import TextField from '@mui/material/TextField';
 import Checkbox from '@mui/material/Checkbox';
 import Stack from '@mui/material/Stack';
 
-
 import { invoke } from "@tauri-apps/api/tauri";
+import { getDirection } from "./../utilities.tsx"
 
-function getDirection(text) {
-  let direction = 'auto';
-  // var x = new RegExp("[\x00-\x80]+"); // is ascii
-  // var isAscii = x.test(text);
-  var c = text.charCodeAt();
-  var isAscii = (c < 0x7F);
-  if (isAscii) {
-    direction = 'ltr';
-  } else {
-    direction = 'rtl';
-  }
-  return direction;
-}
 
-function NewGoal({modifiable, onSubmit, onEditing, newGoalEditing}) {
+export function NewGoal({modifiable, onSubmit, onEditing, startNewGoalEditing}) {
 
   const [text, setText] = useState("");
   const [editing, setEditing] = useState(false);
@@ -41,12 +28,12 @@ function NewGoal({modifiable, onSubmit, onEditing, newGoalEditing}) {
     }, [text]);
 
   useEffect(() => {
-      console.log("newGoalEditing changed: ", newGoalEditing);
-      if (newGoalEditing) {
+      console.log("startNewGoalEditing changed: ", startNewGoalEditing);
+      if (startNewGoalEditing) {
         setEditing(true);
         onEditing(true);
       }
-    }, [newGoalEditing]);
+    }, [startNewGoalEditing]);
 
   const submit = () => {
       if (text.length == 0)
@@ -123,7 +110,7 @@ function NewGoal({modifiable, onSubmit, onEditing, newGoalEditing}) {
 
 }
 
-function Goal({goal, modifiable, onSubmit, onEditing, onGoalDelete}) {
+export function Goal({goal, modifiable, onSubmit, onEditing, onGoalDelete}) {
 
   const [text, setText] = useState(goal.text);
   const [done, setDone] = useState(goal.done);
@@ -279,7 +266,7 @@ function Goal({goal, modifiable, onSubmit, onEditing, onGoalDelete}) {
   );
 }
 
-export default function GoalList({goals, onSubmit, onEditing, onGoalDelete, newGoalEditing}) {
+export default function GoalList({goals, onSubmit, onEditing, onGoalDelete, startNewGoalEditing}) {
 
   const [modifiable, setModifiable] = useState(true);
 
@@ -309,7 +296,7 @@ export default function GoalList({goals, onSubmit, onEditing, onGoalDelete, newG
         modifiable={modifiable}
         onSubmit={onSubmit}
         onEditing={onLocalEditing}
-        newGoalEditing={newGoalEditing}
+        startNewGoalEditing={startNewGoalEditing}
       />
     </>
     );
