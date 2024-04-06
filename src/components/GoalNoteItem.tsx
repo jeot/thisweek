@@ -43,10 +43,13 @@ export default function GoalNoteItem({type, id, text, done, modifiable, editing,
 
   const handleKeyDown = (event) => {
     if (editing && event.key === 'Enter') {
-      onSubmit({ id:id, text: editingText });
+      if (editingText == "") onCancel(id);
+      else onSubmit({ id:id, text: editingText });
+      setEditingText("");
     }
     if (editing && event.key === 'Escape') {
       onCancel(id);
+      setEditingText("");
     }
   };
 
