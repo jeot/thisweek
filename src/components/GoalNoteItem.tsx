@@ -61,8 +61,8 @@ export default function GoalNoteItem({type, id, text, done, modifiable, editing,
     <div dir="rtl" id={id}>
     <Stack
       direction="row"
-      justifyContent="center"
       alignItems="center"
+      justifyContent="center"
       spacing={1}
     >
       {(type == 'Goal') &&
@@ -72,12 +72,20 @@ export default function GoalNoteItem({type, id, text, done, modifiable, editing,
           size="small"
         />
       }
+      {(type == 'Note') &&
+        <IconButton aria-label="note" size="small" disabled color="secondary" >
+          <TextSnippetIcon color="secondary" />
+        </IconButton>
+      }
       {editing &&
         <>
         <TextField
           dir={dir}
           variant="outlined"
           size="small"
+          inputProps={{style: {fontSize: (type == 'Note')?"0.85em":"1em"}}}
+          multiline={(type == 'Note')}
+          maxRows={(type == 'Note')?40:1}
           fullWidth
           autoFocus
           onFocus={onFocus}
@@ -113,6 +121,9 @@ export default function GoalNoteItem({type, id, text, done, modifiable, editing,
         <InputBase
           dir={dir}
           size="small"
+          inputProps={{style: {fontSize: (type == 'Note')?"0.85em":"1em"}}}
+          multiline={(type == 'Note')}
+          maxRows={(type == 'Note')?40:1}
           fullWidth
           value={text}
         />

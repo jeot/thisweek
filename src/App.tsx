@@ -148,9 +148,9 @@ function App() {
         setWeekState(result);
       });
     } else if (id == "new_note_id") {
-      // uncomment if you want to clear the new goal section
-      // setEditingId("");
-      // setDisableKeyboardNavigation(false);
+      // uncomment if you want to clear the new note section
+      setEditingId("");
+      setDisableKeyboardNavigation(false);
       invoke("add_new_note", { text: text }).then((result) => {
         setWeekState(result);
       });
