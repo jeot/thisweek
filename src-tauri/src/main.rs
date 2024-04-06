@@ -36,43 +36,51 @@ fn get_current_week(managed_state: State<ManagedState>) -> WeekStateJs {
     week.week_state_js_object()
 }
 
-#[tauri::command]
-fn get_goal(id: String, managed_state: State<ManagedState>) -> Option<Element> {
-    let mut week = managed_state.week.lock().unwrap();
-    week.get_goal(id)
-}
+// #[tauri::command]
+// fn get_goal(id: String, managed_state: State<ManagedState>) -> Option<Element> {
+//     let week = managed_state.week.lock().unwrap();
+//     week.get_goal(id)
+// }
 
 #[tauri::command]
 fn get_item(id: String, managed_state: State<ManagedState>) -> Option<Element> {
-    let mut week = managed_state.week.lock().unwrap();
+    let week = managed_state.week.lock().unwrap();
     week.get_item(id)
 }
 
 #[tauri::command]
-fn add_new_goal(goal_text: String, managed_state: State<ManagedState>) -> WeekStateJs {
+fn add_new_goal(text: String, managed_state: State<ManagedState>) -> WeekStateJs {
     let mut week = managed_state.week.lock().unwrap();
-    week.add_new_goal(goal_text);
+    week.add_new_goal(text);
     week.week_state_js_object()
 }
 
 #[tauri::command]
-fn delete_goal(id: String, managed_state: State<ManagedState>) -> WeekStateJs {
+fn add_new_note(text: String, managed_state: State<ManagedState>) -> WeekStateJs {
     let mut week = managed_state.week.lock().unwrap();
-    week.delete_goal(id);
+    week.add_new_note(text);
     week.week_state_js_object()
 }
 
 #[tauri::command]
-fn edit_goal(id: String, text: String, managed_state: State<ManagedState>) -> WeekStateJs {
+fn delete_item(id: String, managed_state: State<ManagedState>) -> WeekStateJs {
     let mut week = managed_state.week.lock().unwrap();
-    week.edit_goal(id, text);
+    week.delete_item(id);
     week.week_state_js_object()
 }
 
 #[tauri::command]
-fn goal_checkbox_changed(id: String, managed_state: State<ManagedState>) -> bool {
+fn edit_item(id: String, text: String, managed_state: State<ManagedState>) -> WeekStateJs {
     let mut week = managed_state.week.lock().unwrap();
-    week.toggle_goal_state(id)
+    week.edit_item(id, text);
+    week.week_state_js_object()
+}
+
+#[tauri::command]
+fn goal_checkbox_changed(id: String, managed_state: State<ManagedState>) -> WeekStateJs {
+    let mut week = managed_state.week.lock().unwrap();
+    week.toggle_goal_state(id);
+    week.week_state_js_object()
 }
 
 fn main() {
@@ -85,11 +93,12 @@ fn main() {
             get_next_week,
             get_previous_week,
             get_current_week,
-            get_goal,
+            // get_goal,
             get_item,
             add_new_goal,
-            delete_goal,
-            edit_goal,
+            add_new_note,
+            delete_item,
+            edit_item,
             goal_checkbox_changed,
         ])
         .run(tauri::generate_context!())

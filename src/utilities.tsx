@@ -1,5 +1,6 @@
 export function getDirection(text) {
   let direction = 'auto';
+  if (text === undefined) return direction;
   // var x = new RegExp("[\x00-\x80]+"); // is ascii
   // var isAscii = x.test(text);
   var c = text.charCodeAt();

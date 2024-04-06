@@ -13,74 +13,56 @@ import TextField from '@mui/material/TextField';
 import Checkbox from '@mui/material/Checkbox';
 import Stack from '@mui/material/Stack';
 
-import { invoke } from "@tauri-apps/api/tauri";
+// import { invoke } from "@tauri-apps/api/tauri";
 import { getDirection } from "./../utilities.tsx"
 
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 
-export default function GoalNoteItem({type, item, modifiable, onSubmit, onEdit, onDelete}) {
+export default function GoalNoteItem({type, id, text, done, modifiable, editing, onSubmit, onEdit, onDelete, onCancel, onToggle}) {
 
-  const [text, setText] = useState(item.text);
-  const [done, setDone] = useState((type == "Goal") ? item.done : false);
-  const [editing, setEditing] = useState((type == "NewGoal") ? true : false);
+  const [editingText, setEditingText] = useState(text);
   const [dir, setDir] = useState('rtl');
 
   useEffect(() => {
-      setDir(getDirection(text));
-    }, [text]);
+      if (editing) {
+        setEditingText(text);
+      }
+    }, [editing]);
+
+  useEffect(() => {
+      if (editing) {
+        setDir(getDirection(editingText));
+      } else {
+        setDir(getDirection(text));
+      }
+    }, [text, editingText, editing]);
 
   const onFocus = () => { }
 
   const onBlur = () => { }
 
-  const getItem = () => {
-    invoke("get_item", { id: item.id }).then((response) => {
-      console.log("get_item...");
-      console.log(response);
-      if (response?.Goal) {
-        let g = response.Goal;
-        console.log(g);
-        setText(g.text);
-        setDone(g.done);
-      } else if (response?.Note) {
-        let n = response.Note;
-        console.log(n);
-        setText(n.text);
-      }
-      else { }
-    });
-  }
-
   const handleKeyDown = (event) => {
     if (editing && event.key === 'Enter') {
-      setEditing(false);
-      onEdit(false);
-      onSubmit({ id: item.id, text: text });
+      onSubmit({ id:id, text: editingText });
     }
     if (editing && event.key === 'Escape') {
-      setEditing(false);
-      onEdit(false);
-      getItem();
+      onCancel(id);
     }
   };
 
   const onCheckBoxChanged = () => {
-    invoke("goal_checkbox_changed", { id: item.id }).then((done_result) => {
-      console.log(done_result);
-      // setDone(done_result);
-      getItem();
-    });
+      onToggle(id);
   }
 
   return (
-    <div dir="rtl" id={item.id}>
+    <div dir="rtl" id={id}>
     <Stack
       direction="row"
       justifyContent="center"
       alignItems="center"
       spacing={1}
     >
-      {(type == "Goal" || type == "NewGoal") &&
+      {(type == 'Goal') &&
         <Checkbox
           checked={done}
           onChange={onCheckBoxChanged}
@@ -97,18 +79,16 @@ export default function GoalNoteItem({type, item, modifiable, onSubmit, onEdit, 
           autoFocus
           onFocus={onFocus}
           onBlur={onBlur}
-          value={text}
+          value={editingText}
           onKeyDown={handleKeyDown}
-          onChange={(e) => setText(e.currentTarget.value)}
+          onChange={(e) => setEditingText(e.currentTarget.value)}
         />
         <IconButton
           aria-label="ok"
           size="small"
           color="success"
           onClick={() => {
-            onSubmit({ id: item.id, text: text });
-            setEditing(false);
-            onEdit(false);
+            onSubmit({ id: id, text: editingText });
           }}
         >
           <CheckCircleIcon fontSize="small"/>
@@ -118,16 +98,14 @@ export default function GoalNoteItem({type, item, modifiable, onSubmit, onEdit, 
           size="small"
           color="default"
           onClick={() => {
-            setEditing(false);
-            onEdit(false);
-            getItem();
+            onCancel(id);
           }}
         >
           <CancelIcon fontSize="small"/>
         </IconButton>
         </>
       }
-      {!editing && modifiable &&
+      {!editing &&
         <>
         <InputBase
           dir={dir}
@@ -140,8 +118,7 @@ export default function GoalNoteItem({type, item, modifiable, onSubmit, onEdit, 
           size="small"
           color="primary"
           onClick={() => {
-            setEditing(true);
-            onEdit(true);
+            onEdit(id);
             }}
         >
           <EditIcon fontSize="small"/>
@@ -150,20 +127,10 @@ export default function GoalNoteItem({type, item, modifiable, onSubmit, onEdit, 
           aria-label="delete"
           size="small"
           color="error"
-          onClick={() => {onDelete(item.id)}}
+          onClick={() => {onDelete(id)}}
         >
           <DeleteIcon fontSize="small"/>
         </IconButton>
-        </>
-      }
-      {!editing && !modifiable &&
-        <>
-        <InputBase
-          dir={dir}
-          size="small"
-          fullWidth
-          value={text}
-        />
         </>
       }
       </Stack>

@@ -8,18 +8,22 @@ function WeekItemsList(props) {
   const item_elements = props.weekState.items.map((item) => {
     if ('Goal' in item) {
       item = item.Goal;
-      type = "Goal";
+      type = 'Goal';
     } else if ('Note' in item) {
       item = item.Note;
-      type = "Note";
+      type = 'Note';
     } else
       return (<></>);
 
+    let editing = (item.id == 'new_goal_id' || item.id == 'new_note_id' || item.id == props.editingId);
     return (
       <GoalNoteItem
         key={item.id}
         type={type}
-        item={item}
+        id={item.id}
+        text={item.text}
+        done={item.done}
+        editing={editing}
         {...props} // it's passed by refference, so no big deal!
       />);
   });
@@ -31,13 +35,27 @@ function WeekItemsList(props) {
   return (
     <>
     {item_elements}
-    {props.startNewGoalEditing &&
+    {(props.editingId == 'new_goal_id') &&
       <GoalNoteItem
-        key="0"
-        type="NewGoal"
-        item={{id: 0, text: "", done: true}}
-        {...props} // it's passed by refference, so no big deal!
-        />
+        key={'new_goal_id'}
+        type={'Goal'}
+        id={'new_goal_id'}
+        text={""}
+        done={false}
+        editing={true}
+        {...props}
+      />
+    }
+    {(props.editingId == 'new_note_id') &&
+      <GoalNoteItem
+        key={'new_note_id'}
+        type={'Note'}
+        id={'new_note_id'}
+        text={""}
+        done={false}
+        editing={true}
+        {...props}
+      />
     }
     </>
     );
@@ -46,18 +64,6 @@ function WeekItemsList(props) {
 
 export default function Week(props) {
 
-  const [modifiable, setModifiable] = useState(true);
-
-  const onLocalEdit = (e) => {
-    console.log("onLocalEdit");
-    if (e) {
-      setModifiable(false);
-    } else {
-      setModifiable(true);
-    }
-    props.onEdit(e);
-  }
-
   return (
     <div>
       <div className="week-title" dir="auto">
@@ -65,11 +71,10 @@ export default function Week(props) {
       </div>
 
       <WeekItemsList
-        modifiable={modifiable}
-        onEdit={onLocalEdit}
         {...props}
       />
 
     </div>
-    )
+    );
+
 }

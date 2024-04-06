@@ -22,10 +22,9 @@ import { createTheme, ThemeProvider } from '@mui/material';
 
 function App() {
 
-  const [editing, setEditing] = useState(false);
+  const [disableKeyboardNavigation, setDisableKeyboardNavigation] = useState(false);
   const [newKeyFlag, setNewKeyFlag] = useState(false);
-  const [startNewGoalEditing, setStartNewGoalEditing] = useState(false);
-  const [startNewNoteEditing, setStartNewNoteEditing] = useState(false);
+  const [editingId, setEditingId] = useState("");
 
   const [weekState, setWeekState] = useState({
     week_title: "",
@@ -44,26 +43,31 @@ function App() {
       appWindow.close();
     }
 
-    if (!editing) {
+    if (event.key === 'Escape' && editingId != "") {
+      event.preventDefault();
+      handleOnCancel(0);
+    }
+
+    if (!disableKeyboardNavigation) {
       if (event.key === 'w') {
         event.preventDefault();
         invoke("get_next_week").then((result) => {
           setWeekState(result);
-          });
+        });
       }
 
       if (event.key === 'W') {
         event.preventDefault();
         invoke("get_previous_week").then((result) => {
-            setWeekState(result);
-            });
+          setWeekState(result);
+        });
       }
 
       if (event.key === 't') {
         event.preventDefault();
         invoke("get_current_week").then((result) => {
-            setWeekState(result);
-            });
+          setWeekState(result);
+        });
       }
 
       if (!newKeyFlag && event.code === 'KeyN') {
@@ -74,13 +78,15 @@ function App() {
         // new goal
         // console.log("start new goal editing...");
         setNewKeyFlag(false);
-        setStartNewGoalEditing(true);
+        setEditingId('new_goal_id');
+        setDisableKeyboardNavigation(true);
       } else if (newKeyFlag && event.code === 'KeyN') {
         event.preventDefault();
         // new note
         // console.log("start new note editing...");
         setNewKeyFlag(false);
-        setStartNewNoteEditing(true);
+        setEditingId('new_note_id');
+        setDisableKeyboardNavigation(true);
       } else if (newKeyFlag) {
         event.preventDefault();
         setNewKeyFlag(false);
@@ -94,49 +100,83 @@ function App() {
       // console.log("get_week_state result: ", result);
       setWeekState(result);
       });
-    }, []);
+    }, []
+  );
 
   useEffect(() => {
-    // console.log(`adding new keydown event listener with editing: ${editing}.`);
+    // console.log(`adding new keydown event listener with disableKeyboardNavigation: ${disableKeyboardNavigation}.`);
     window.addEventListener("keydown", handleUserKeyPress);
     return () => {
       // console.log("removing keydown event listener.");
       window.removeEventListener("keydown", handleUserKeyPress);
     };
-  }, [editing, newKeyFlag, startNewGoalEditing, startNewNoteEditing]);
+  }, [disableKeyboardNavigation, newKeyFlag, editingId]);
 
-  const handleOnEditing = function (isEditing) {
-    console.log(`setting the editing: ${isEditing}`);
-    setEditing(isEditing);
-    if (!isEditing) setStartNewGoalEditing(false);
-    if (!isEditing) setStartNewNoteEditing(false);
+  const handleOnCancel = function (id) {
+    console.log("handleOnCancel id:", id);
+    setEditingId("");
+    setDisableKeyboardNavigation(false);
+    invoke("get_week_state").then((result) => {
+      console.log("result:", result);
+      setWeekState(result);
+    });
   }
 
-  const handleGoalSubmit = function (goal) {
-    if (goal.id == 0) { // it's a new goal
-      invoke("add_new_goal", { goalText: goal.text }).then((result) => {
-        // console.log(result);
-        setWeekState(result);
-      });
+  const handleOnEdit = function (id) {
+    console.log(`new onEdit(${id})`);
+    if (editingId != "") {
+      console.log("error: editingId is already set.");
     }
-    if (goal.id != 0) { // it's previous goal edit
-      invoke("edit_goal", { id: goal.id, text: goal.text }).then((result) => {
-        // console.log(result);
-        setWeekState(result);
-      });
-    }
+    setEditingId(id);
+    setDisableKeyboardNavigation(true);
   }
 
-  const handleOnGoalDelete = function (id) {
-    invoke("delete_goal", { id: id }).then((result) => {
-        // console.log(result);
+  const handleOnToggle = function (id) {
+    invoke("goal_checkbox_changed", { id: id }).then((result) => {
         setWeekState(result);
-        });
+    });
+  }
+
+  const handleOnSubmit = function ({id, text}) {
+    if (id === undefined || text === undefined) return;
+    if (id == "new_goal_id") {
+      setEditingId("");
+      setDisableKeyboardNavigation(false);
+      invoke("add_new_goal", { text: text }).then((result) => {
+        setWeekState(result);
+      });
+    } else if (id == "new_note_id") {
+      setEditingId("");
+      setDisableKeyboardNavigation(false);
+      invoke("add_new_note", { text: text }).then((result) => {
+        setWeekState(result);
+      });
+    } else if (editingId == id) {
+      setEditingId("");
+      setDisableKeyboardNavigation(false);
+      invoke("edit_item", { id: id, text: text }).then((result) => {
+        setWeekState(result);
+      });
+    } else {}
+  }
+
+  const handleOnDelete = function (id) {
+    invoke("delete_item", { id: id }).then((result) => {
+      setWeekState(result);
+    });
   }
 
   const onSpeedDialClick = function (action_name) {
+    if (editingId != "") return;
     console.log(action_name);
-    setStartNewGoalEditing(true);
+    if (action_name == 'Goal' && editingId == "") {
+      setEditingId('new_goal_id');
+      setDisableKeyboardNavigation(true);
+    }
+    if (action_name == 'Note') {
+      setEditingId('new_note_id');
+      setDisableKeyboardNavigation(true);
+    }
   }
 
   const theme = createTheme({
@@ -174,13 +214,14 @@ function App() {
       <Header today={weekState.today_title} />
       <Week
         weekState={weekState}
-        onSubmit={handleGoalSubmit}
-        onEdit={handleOnEditing}
-        onDelete={handleOnGoalDelete}
-        startNewGoalEditing={startNewGoalEditing}
-        startNewNoteEditing={startNewNoteEditing}
+        editingId={editingId}
+        onSubmit={handleOnSubmit}
+        onEdit={handleOnEdit}
+        onDelete={handleOnDelete}
+        onCancel={handleOnCancel}
+        onToggle={handleOnToggle}
       />
-      <BasicSpeedDial onClick={onSpeedDialClick} />
+      {editingId == "" && <BasicSpeedDial onClick={onSpeedDialClick} />}
       </CssBaseline>
     </ThemeProvider>
     </React.Fragment>
