@@ -49,21 +49,22 @@ function App() {
     }
 
     if (!disableKeyboardNavigation) {
-      if (event.key === 'w') {
+      // console.log('event', event);
+      if (event.code === 'KeyW' && !event.shiftKey) {
         event.preventDefault();
         invoke("get_next_week").then((result) => {
           setWeekState(result);
         });
       }
 
-      if (event.key === 'W') {
+      if (event.code === 'KeyW' && event.shiftKey) {
         event.preventDefault();
         invoke("get_previous_week").then((result) => {
           setWeekState(result);
         });
       }
 
-      if (event.key === 't') {
+      if (event.code === 'KeyT' && !event.shiftKey) {
         event.preventDefault();
         invoke("get_current_week").then((result) => {
           setWeekState(result);
