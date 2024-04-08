@@ -13,7 +13,6 @@ import TextField from '@mui/material/TextField';
 import Checkbox from '@mui/material/Checkbox';
 import Stack from '@mui/material/Stack';
 
-// import { invoke } from "@tauri-apps/api/tauri";
 import { getDirection } from "./../utilities.tsx"
 
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
@@ -42,15 +41,19 @@ export default function GoalNoteItem({type, id, text, done, modifiable, editing,
   const onBlur = () => { }
 
   const handleKeyDown = (event) => {
-    if (editing && event.key === 'Enter') {
+    if (editing && event.key === 'Enter' && event.shiftKey && type == 'Note') {
+      if (editingText == "") onCancel(id);
+      else {
+        editingText = editingText + "\n";
+      }
+    } else if (editing && event.key === 'Enter') {
       if (editingText == "") onCancel(id);
       else onSubmit({ id:id, text: editingText });
       setEditingText("");
-    }
-    if (editing && event.key === 'Escape') {
+    } else if (editing && event.key === 'Escape') {
       onCancel(id);
       setEditingText("");
-    }
+    } else {}
   };
 
   const onCheckBoxChanged = () => {
