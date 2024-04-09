@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 
+import "./styles.css";
+
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -61,7 +63,7 @@ export default function GoalNoteItem({type, id, text, done, modifiable, editing,
   }
 
   return (
-    <div dir="rtl" id={id}>
+  <div dir="rtl" id={id} className="goal_note_item_class" >
     <Stack
       direction="row"
       alignItems="center"
@@ -150,8 +152,8 @@ export default function GoalNoteItem({type, id, text, done, modifiable, editing,
         </IconButton>
         </>
       }
-      </Stack>
-    </div>
+    </Stack>
+  </div>
   );
 }
 
