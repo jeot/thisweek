@@ -16,6 +16,8 @@ function WeekItemsList(props) {
       return (<></>);
 
     let editing = (item.id == 'new_goal_id' || item.id == 'new_note_id' || item.id == props.editingId);
+    let selected = (item.id == props.selectedId);
+
     return (
       <GoalNoteItem
         key={item.id}
@@ -24,6 +26,7 @@ function WeekItemsList(props) {
         text={item.text}
         done={item.done}
         editing={editing}
+        selected={selected}
         {...props} // it's passed by refference, so no big deal!
       />);
   });
@@ -43,6 +46,7 @@ function WeekItemsList(props) {
         text={""}
         done={false}
         editing={true}
+        selected={false}
         {...props}
       />
     }
@@ -54,6 +58,7 @@ function WeekItemsList(props) {
         text={""}
         done={false}
         editing={true}
+        selected={false}
         {...props}
       />
     }
@@ -66,7 +71,13 @@ export default function Week(props) {
 
   return (
     <div>
-      <div className="week-title" dir="auto">
+      <div
+        className="week-title" dir="auto"
+        style={{
+          fontSize: "1em",
+          fontWeight: 700,
+        }}
+      >
         {props.weekState.week_title}
       </div>
 

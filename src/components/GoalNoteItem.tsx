@@ -1,28 +1,31 @@
 import { useState, useEffect } from "react";
 
-import "./styles.css";
+// import "./styles.css";
 
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CancelIcon from '@mui/icons-material/Cancel';
-
 import InputBase from '@mui/material/InputBase';
 import Input from '@mui/material/Input';
 import TextField from '@mui/material/TextField';
 import Checkbox from '@mui/material/Checkbox';
 import Stack from '@mui/material/Stack';
+import Box from '@mui/material/Box';
+
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
+import ChatIcon from '@mui/icons-material/Chat';
+import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 
 import { getDirection } from "./../utilities.tsx"
 
-import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 
-export default function GoalNoteItem({type, id, text, done, modifiable, editing, onSubmit, onEdit, onDelete, onCancel, onToggle}) {
+export default function GoalNoteItem({type, id, text, done, modifiable, editing, selected, onSubmit, onEdit, onSelect, onDelete, onCancel, onToggle}) {
 
   const [editingText, setEditingText] = useState(text);
   const [dir, setDir] = useState('rtl');
+  const [hovered, setHovered] = useState(false);
 
   useEffect(() => {
       if (editing) {
@@ -46,7 +49,7 @@ export default function GoalNoteItem({type, id, text, done, modifiable, editing,
     if (editing && event.key === 'Enter' && event.shiftKey && type == 'Note') {
       if (editingText == "") onCancel(id);
       else {
-        editingText = editingText + "\n";
+        setEditingText(editingText + "\n");
       }
     } else if (editing && event.key === 'Enter') {
       if (editingText == "") onCancel(id);
@@ -63,7 +66,17 @@ export default function GoalNoteItem({type, id, text, done, modifiable, editing,
   }
 
   return (
-  <div dir="rtl" id={id} className="goal_note_item_class" >
+  <Box
+    dir="rtl"
+    id={id}
+    className="goal_note_item"
+    onMouseEnter={() => {setHovered(true);}}
+    onMouseLeave={() => {setHovered(false);}}
+    sx={{
+      borderRight: selected ? '4px solid darkorchid' : hovered ? '4px solid aliceblue' : '4px solid white',
+      backgroundColor: selected ? 'lavender': hovered ? 'aliceblue' : 'white',
+    }}
+  >
     <Stack
       direction="row"
       alignItems="center"
@@ -79,7 +92,7 @@ export default function GoalNoteItem({type, id, text, done, modifiable, editing,
       }
       {(type == 'Note') &&
         <IconButton aria-label="note" size="small" disabled color="secondary" >
-          <TextSnippetIcon color="secondary" />
+          <ChatIcon color="text.default" />
         </IconButton>
       }
       {editing &&
@@ -126,11 +139,15 @@ export default function GoalNoteItem({type, id, text, done, modifiable, editing,
         <InputBase
           dir={dir}
           size="small"
-          inputProps={{style: {fontSize: (type == 'Note')?"0.85em":"1em"}}}
+          inputProps={{style: {
+            fontSize: (type == 'Note')?"0.9em":"1em",
+            fontWeight:  (type == 'Note')?300:400,
+          }}}
           multiline={(type == 'Note')}
           maxRows={(type == 'Note')?40:1}
           fullWidth
           value={text}
+          onMouseDown={() => {onSelect(id);}}
         />
         <IconButton
           aria-label="edit"
@@ -138,7 +155,7 @@ export default function GoalNoteItem({type, id, text, done, modifiable, editing,
           color="primary"
           onClick={() => {
             onEdit(id);
-            }}
+          }}
         >
           <EditIcon fontSize="small"/>
         </IconButton>
@@ -153,7 +170,7 @@ export default function GoalNoteItem({type, id, text, done, modifiable, editing,
         </>
       }
     </Stack>
-  </div>
+  </Box>
   );
 }
 

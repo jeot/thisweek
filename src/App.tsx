@@ -9,7 +9,13 @@ import BasicSpeedDial from "./components/BasicSpeedDial.tsx"
 import CssBaseline from '@mui/material/CssBaseline';
 // import ScopedCssBaseline from '@mui/material/ScopedCssBaseline';
 
-import Koodak from './assets/fonts/BKoodkBd.ttf';
+import ShabnamThin from './assets/fonts/Shabnam-Thin.woff';
+import ShabnamLight from './assets/fonts/Shabnam-Light.woff';
+import ShabnamNormal from './assets/fonts/Shabnam.woff';
+import ShabnamMedium from './assets/fonts/Shabnam-Medium.woff';
+import ShabnamBold from './assets/fonts/Shabnam-Bold.woff';
+
+// import ShabnamFD from './assets/fonts/Shabnam-FD.woff'
 // import Nazanin from './assets/fonts/B-NAZANIN.ttf';
 // import Rubik from './assets/fonts/Rubik-Regular.ttf';
 
@@ -25,6 +31,7 @@ function App() {
   const [disableKeyboardNavigation, setDisableKeyboardNavigation] = useState(false);
   const [newKeyFlag, setNewKeyFlag] = useState(false);
   const [editingId, setEditingId] = useState("");
+  const [selectedId, setSelectedId] = useState("");
 
   const [weekState, setWeekState] = useState({
     week_title: "",
@@ -124,12 +131,17 @@ function App() {
   }
 
   const handleOnEdit = function (id) {
-    console.log(`new onEdit(${id})`);
+    // console.log(`new onEdit(${id})`);
     if (editingId != "") {
       console.log("error: editingId is already set.");
     }
     setEditingId(id);
     setDisableKeyboardNavigation(true);
+  }
+
+  const handleOnSelect = function (id) {
+    console.log(`new onSelect(${id})`);
+    setSelectedId(id);
   }
 
   const handleOnToggle = function (id) {
@@ -186,8 +198,8 @@ function App() {
     typography: {
       fontSize: 14,
       fontFamily: [
-        'Koodak',
-        'B Nazanin',
+        'Shabnam',
+        // 'B Nazanin',
         // 'Rubik',
         // 'B Koodak',
         'Roboto',
@@ -197,14 +209,47 @@ function App() {
     components: {
       MuiCssBaseline: {
         styleOverrides: `
+
           @font-face {
-            font-family: 'Koodak';
-            font-style: normal;
+            font-family: 'Shabnam';
+            src: url(${ShabnamThin}) format('woff');
             font-display: swap;
-            font-weight: 400;
-            src: local('B Koodak Bold'),
-                 url(${Koodak}) format('ttf');
+            font-weight: 100; /*thin;*/
+            font-style: normal;
           }
+
+          @font-face {
+            font-family: 'Shabnam';
+            src: url(${ShabnamLight}) format('woff');
+            font-display: swap;
+            font-weight: 300; /*light;*/
+            font-style: normal;
+          }
+
+          @font-face {
+            font-family: 'Shabnam';
+            src: url(${ShabnamNormal}) format('woff');
+            font-display: swap;
+            font-weight: 400; /*normal;*/
+            font-style: normal;
+          }
+
+          @font-face {
+            font-family: 'Shabnam';
+            src: url(${ShabnamMedium}) format('woff');
+            font-display: swap;
+            font-weight: 500; /*medium;*/
+            font-style: normal;
+          }
+
+          @font-face {
+            font-family: 'Shabnam';
+            src: url(${ShabnamBold}) format('woff');
+            font-display: swap;
+            font-weight: 700; /*bold;*/
+            font-style: normal;
+          }
+
         `,
       },
     },
@@ -218,8 +263,10 @@ function App() {
       <Week
         weekState={weekState}
         editingId={editingId}
+        selectedId={selectedId}
         onSubmit={handleOnSubmit}
         onEdit={handleOnEdit}
+        onSelect={handleOnSelect}
         onDelete={handleOnDelete}
         onCancel={handleOnCancel}
         onToggle={handleOnToggle}
