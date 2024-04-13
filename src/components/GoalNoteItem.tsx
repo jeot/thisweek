@@ -17,6 +17,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import ChatIcon from '@mui/icons-material/Chat';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 import { getDirection } from "./../utilities.tsx"
 
@@ -149,6 +150,14 @@ export default function GoalNoteItem({type, id, text, done, modifiable, editing,
           value={text}
           onMouseDown={() => {onSelect(id);}}
         />
+        <IconButton
+          aria-label="copy"
+          size="small"
+          color="secondary"
+          onClick={() => {navigator.clipboard.writeText(text)}}
+        >
+          <ContentCopyIcon fontSize="small"/>
+        </IconButton>
         <IconButton
           aria-label="edit"
           size="small"

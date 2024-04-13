@@ -30,6 +30,7 @@ function App() {
 
   const [disableKeyboardNavigation, setDisableKeyboardNavigation] = useState(false);
   const [newKeyFlag, setNewKeyFlag] = useState(false);
+  const [copyKeyFlag, setCopyKeyFlag] = useState(false);
   const [editingId, setEditingId] = useState("");
   const [selectedId, setSelectedId] = useState("");
 
@@ -78,6 +79,7 @@ function App() {
         });
       }
 
+      // new key with N
       if (!newKeyFlag && event.code === 'KeyN') {
         event.preventDefault();
         setNewKeyFlag(true);
@@ -100,6 +102,31 @@ function App() {
         setNewKeyFlag(false);
       } else {}
 
+      // copy key with C
+      if (!copyKeyFlag && event.code === 'KeyC') {
+        event.preventDefault();
+        setCopyKeyFlag(true);
+      } else if (copyKeyFlag && event.code === 'KeyA') {
+        // copy all item's text
+        event.preventDefault();
+        let text = "";
+        text = weekState.week_title;
+        text = text + "\n";
+        weekState.items.forEach((item) => {
+          if ('Goal' in item)
+            text = text + item.Goal.text + "\n";
+          if ('Note' in item)
+            text = text + item.Note.text + "\n";
+        });
+        console.log("copy all items in the week into clipboard:");
+        console.log(text);
+        navigator.clipboard.writeText(text);
+        setCopyKeyFlag(false);
+      } else if (copyKeyFlag) {
+        event.preventDefault();
+        setCopyKeyFlag(false);
+      } else {}
+
     }
   };
 
@@ -118,7 +145,7 @@ function App() {
       // console.log("removing keydown event listener.");
       window.removeEventListener("keydown", handleUserKeyPress);
     };
-  }, [disableKeyboardNavigation, newKeyFlag, editingId]);
+  }, [disableKeyboardNavigation, newKeyFlag, copyKeyFlag, editingId]);
 
   const handleOnCancel = function (id) {
     console.log("handleOnCancel id:", id);
