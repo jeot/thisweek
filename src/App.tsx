@@ -177,17 +177,19 @@ function App() {
     });
   }
 
-  const handleOnSubmit = function ({id, text}) {
+  const handleOnSubmit = function ({id, text, keyboard_submit}) {
     if (id === undefined || text === undefined) return;
     if (id == "new_goal_id") {
-      // uncomment if you want to clear the new goal section
-      // setEditingId("");
-      // setDisableKeyboardNavigation(false);
       invoke("add_new_goal", { text: text }).then((result) => {
         setWeekState(result);
       });
+      // to continue adding new goals or not?
+      if (keyboard_submit === undefined)
+        setEditingId("");
+      else
+        setEditingId("new_goal_id");
     } else if (id == "new_note_id") {
-      // uncomment if you want to clear the new note section
+      // comment if you want to continue new note section
       setEditingId("");
       setDisableKeyboardNavigation(false);
       invoke("add_new_note", { text: text }).then((result) => {

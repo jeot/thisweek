@@ -54,7 +54,7 @@ export default function GoalNoteItem({type, id, text, done, modifiable, editing,
       }
     } else if (editing && event.key === 'Enter') {
       if (editingText == "") onCancel(id);
-      else onSubmit({ id:id, text: editingText });
+      else onSubmit({ id:id, text: editingText, keyboard_submit: true});
       setEditingText("");
     } else if (editing && event.key === 'Escape') {
       onCancel(id);
@@ -119,6 +119,7 @@ export default function GoalNoteItem({type, id, text, done, modifiable, editing,
           color="success"
           onClick={() => {
             onSubmit({ id: id, text: editingText });
+            setEditingText("");
           }}
         >
           <CheckCircleIcon fontSize="small"/>
@@ -129,6 +130,7 @@ export default function GoalNoteItem({type, id, text, done, modifiable, editing,
           color="default"
           onClick={() => {
             onCancel(id);
+            setEditingText("");
           }}
         >
           <CancelIcon fontSize="small"/>
