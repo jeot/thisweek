@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import GoalNoteItem from "./GoalNoteItem.tsx";
+import Box from '@mui/material/Box';
 
 function WeekItemsList(props) {
 
@@ -70,8 +71,8 @@ function WeekItemsList(props) {
 export default function Week(props) {
 
   return (
-    <div>
-      <div
+    <Box sx={{ p:1, pb:10 }}>
+      <Box
         className="week-title" dir="auto"
         style={{
           fontSize: "1em",
@@ -79,13 +80,13 @@ export default function Week(props) {
         }}
       >
         {props.weekState.week_title.toPersianDigits()}
-      </div>
+      </Box>
 
       <WeekItemsList
         {...props}
       />
 
-    </div>
+    </Box>
     );
 
 }
