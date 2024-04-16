@@ -25,7 +25,7 @@ export default function Header({today_persian_date, today_english_date}) {
       Today, {today_english_date}
     </Box>
     <Box dir="auto">
-      امروز، {today_persian_date}
+      امروز، {today_persian_date.toPersianDigits()}
     </Box>
   </Stack>
   );
