@@ -184,9 +184,10 @@ function App() {
         setWeekState(result);
       });
       // to continue adding new goals or not?
-      if (keyboard_submit === undefined)
+      if (keyboard_submit === undefined) {
         setEditingId("");
-      else
+        setDisableKeyboardNavigation(false);
+      } else
         setEditingId("new_goal_id");
     } else if (id == "new_note_id") {
       // comment if you want to continue new note section
