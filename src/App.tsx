@@ -2,9 +2,9 @@ import * as React from 'react';
 import { useState, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import { appWindow } from '@tauri-apps/api/window'
-import Header from "./components/Header.tsx"
 import Week from "./components/Week.tsx"
 import BasicSpeedDial from "./components/BasicSpeedDial.tsx"
+import Header from "./components/Header.tsx"
 
 import CssBaseline from '@mui/material/CssBaseline';
 // import ScopedCssBaseline from '@mui/material/ScopedCssBaseline';
@@ -36,7 +36,8 @@ function App() {
 
   const [weekState, setWeekState] = useState({
     week_title: "",
-    today_title: "",
+    today_persian_date: "",
+    today_english_date: "",
     items: [],
   });
 
@@ -289,7 +290,10 @@ function App() {
     <React.Fragment>
     <ThemeProvider theme={theme}>
       <CssBaseline>
-      <Header today={weekState.today_title.toPersianDigits()} />
+      <Header
+        today_persian_date={weekState.today_persian_date}
+        today_english_date={weekState.today_english_date}
+      />
       <Week
         weekState={weekState}
         editingId={editingId}
