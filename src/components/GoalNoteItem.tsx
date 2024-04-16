@@ -50,7 +50,7 @@ export default function GoalNoteItem({type, id, text, done, modifiable, editing,
     if (editing && event.key === 'Enter' && event.shiftKey && type == 'Note') {
       if (editingText == "") onCancel(id);
       else {
-        setEditingText(editingText + "\n");
+        /* here input field will automatically insert a new line! */
       }
     } else if (editing && event.key === 'Enter') {
       if (editingText == "") onCancel(id);
