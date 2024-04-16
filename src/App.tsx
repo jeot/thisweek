@@ -289,7 +289,7 @@ function App() {
     <React.Fragment>
     <ThemeProvider theme={theme}>
       <CssBaseline>
-      <Header today={weekState.today_title} />
+      <Header today={weekState.today_title.toPersianDigits()} />
       <Week
         weekState={weekState}
         editingId={editingId}

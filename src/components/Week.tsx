@@ -78,7 +78,7 @@ export default function Week(props) {
           fontWeight: 700,
         }}
       >
-        {props.weekState.week_title}
+        {props.weekState.week_title.toPersianDigits()}
       </div>
 
       <WeekItemsList
