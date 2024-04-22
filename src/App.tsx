@@ -54,7 +54,7 @@ function App() {
 
     if (event.key === 'Escape' && editingId != "") {
       event.preventDefault();
-      handleOnCancel(0);
+      handleOnCancel(editingId);
     }
 
     if (!disableKeyboardNavigation) {
@@ -176,6 +176,14 @@ function App() {
     invoke("goal_checkbox_changed", { id: id }).then((result) => {
         setWeekState(result);
     });
+  }
+
+  const handleOnFocusLeave = function ({id, text}) {
+    // disable text field if it's for new goal/note input and is empty
+    if (text != "") return;
+    if (id == "new_goal_id" || id == "new_note_id") {
+      handleOnCancel(id);
+    }
   }
 
   const handleOnSubmit = function ({id, text, keyboard_submit}) {
@@ -304,6 +312,7 @@ function App() {
         onDelete={handleOnDelete}
         onCancel={handleOnCancel}
         onToggle={handleOnToggle}
+        onFocusLeave={handleOnFocusLeave}
       />
       {editingId == "" && <BasicSpeedDial onClick={onSpeedDialClick} />}
       </CssBaseline>

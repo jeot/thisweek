@@ -22,7 +22,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { getDirection } from "./../utilities.tsx"
 
 
-export default function GoalNoteItem({type, id, text, done, modifiable, editing, selected, onSubmit, onEdit, onSelect, onDelete, onCancel, onToggle}) {
+export default function GoalNoteItem({type, id, text, done, modifiable, editing, selected, onSubmit, onEdit, onSelect, onDelete, onCancel, onToggle, onFocusLeave}) {
 
   const [editingText, setEditingText] = useState(text);
   const [dir, setDir] = useState('rtl');
@@ -44,7 +44,9 @@ export default function GoalNoteItem({type, id, text, done, modifiable, editing,
 
   const onFocus = () => { }
 
-  const onBlur = () => { }
+  const onBlur = () => {
+    onFocusLeave({ id:id, text: editingText});
+  }
 
   const handleKeyDown = (event) => {
     if (editing && event.key === 'Enter' && event.shiftKey && type == 'Note') {
