@@ -101,7 +101,7 @@ function App() {
       } else if (newKeyFlag) {
         event.preventDefault();
         setNewKeyFlag(false);
-      } else {}
+      } else { }
 
       // copy key with C
       if (!copyKeyFlag && event.code === 'KeyC') {
@@ -126,7 +126,7 @@ function App() {
       } else if (copyKeyFlag) {
         event.preventDefault();
         setCopyKeyFlag(false);
-      } else {}
+      } else { }
 
     }
   };
@@ -135,8 +135,8 @@ function App() {
     invoke("get_week_state").then((result) => {
       // console.log("get_week_state result: ", result);
       setWeekState(result);
-      });
-    }, []
+    });
+  }, []
   );
 
   useEffect(() => {
@@ -148,7 +148,7 @@ function App() {
     };
   }, [disableKeyboardNavigation, newKeyFlag, copyKeyFlag, editingId]);
 
-  const handleOnCancel = function (id) {
+  const handleOnCancel = function(id: string) {
     console.log("handleOnCancel id:", id);
     setEditingId("");
     setDisableKeyboardNavigation(false);
@@ -158,7 +158,7 @@ function App() {
     });
   }
 
-  const handleOnEdit = function (id) {
+  const handleOnEdit = function(id: string) {
     // console.log(`new onEdit(${id})`);
     if (editingId != "") {
       console.log("error: editingId is already set.");
@@ -167,18 +167,18 @@ function App() {
     setDisableKeyboardNavigation(true);
   }
 
-  const handleOnSelect = function (id) {
+  const handleOnSelect = function(id: string) {
     console.log(`new onSelect(${id})`);
     setSelectedId(id);
   }
 
-  const handleOnToggle = function (id) {
+  const handleOnToggle = function(id: string) {
     invoke("goal_checkbox_changed", { id: id }).then((result) => {
-        setWeekState(result);
+      setWeekState(result);
     });
   }
 
-  const handleOnFocusLeave = function ({id, text}) {
+  const handleOnFocusLeave = function({ id, text }) {
     // disable text field if it's for new goal/note input and is empty
     if (text != "") return;
     if (id == "new_goal_id" || id == "new_note_id") {
@@ -186,7 +186,7 @@ function App() {
     }
   }
 
-  const handleOnSubmit = function ({id, text, keyboard_submit}) {
+  const handleOnSubmit = function({ id, text, keyboard_submit }) {
     if (id === undefined || text === undefined) return;
     if (id == "new_goal_id") {
       invoke("add_new_goal", { text: text }).then((result) => {
@@ -211,16 +211,16 @@ function App() {
       invoke("edit_item", { id: id, text: text }).then((result) => {
         setWeekState(result);
       });
-    } else {}
+    } else { }
   }
 
-  const handleOnDelete = function (id) {
+  const handleOnDelete = function(id: string) {
     invoke("delete_item", { id: id }).then((result) => {
       setWeekState(result);
     });
   }
 
-  const onSpeedDialClick = function (action_name) {
+  const onSpeedDialClick = function(action_name: string) {
     if (editingId != "") return;
     console.log(action_name);
     if (action_name == 'Goal' && editingId == "") {
@@ -296,27 +296,27 @@ function App() {
 
   return (
     <React.Fragment>
-    <ThemeProvider theme={theme}>
-      <CssBaseline>
-      <Header
-        today_persian_date={weekState.today_persian_date}
-        today_english_date={weekState.today_english_date}
-      />
-      <Week
-        weekState={weekState}
-        editingId={editingId}
-        selectedId={selectedId}
-        onSubmit={handleOnSubmit}
-        onEdit={handleOnEdit}
-        onSelect={handleOnSelect}
-        onDelete={handleOnDelete}
-        onCancel={handleOnCancel}
-        onToggle={handleOnToggle}
-        onFocusLeave={handleOnFocusLeave}
-      />
-      {editingId == "" && <BasicSpeedDial onClick={onSpeedDialClick} />}
-      </CssBaseline>
-    </ThemeProvider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline>
+          <Header
+            today_persian_date={weekState.today_persian_date}
+            today_english_date={weekState.today_english_date}
+          />
+          <Week
+            weekState={weekState}
+            editingId={editingId}
+            selectedId={selectedId}
+            onSubmit={handleOnSubmit}
+            onEdit={handleOnEdit}
+            onSelect={handleOnSelect}
+            onDelete={handleOnDelete}
+            onCancel={handleOnCancel}
+            onToggle={handleOnToggle}
+            onFocusLeave={handleOnFocusLeave}
+          />
+          {editingId == "" && <BasicSpeedDial onClick={onSpeedDialClick} />}
+        </CssBaseline>
+      </ThemeProvider>
     </React.Fragment>
 
   );
