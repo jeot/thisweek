@@ -61,23 +61,17 @@ function App() {
       // console.log('event', event);
       if (event.code === 'KeyW' && !event.shiftKey) {
         event.preventDefault();
-        invoke("get_next_week").then((result) => {
-          setWeekState(result);
-        });
+        showNextWeek();
       }
 
       if (event.code === 'KeyW' && event.shiftKey) {
         event.preventDefault();
-        invoke("get_previous_week").then((result) => {
-          setWeekState(result);
-        });
+        showPreviousWeek();
       }
 
       if (event.code === 'KeyT' && !event.shiftKey) {
         event.preventDefault();
-        invoke("get_current_week").then((result) => {
-          setWeekState(result);
-        });
+        showCurrentWeek();
       }
 
       // new key with N
@@ -184,6 +178,24 @@ function App() {
     if (id == "new_goal_id" || id == "new_note_id") {
       handleOnCancel(id);
     }
+  }
+
+  const showNextWeek = function() {
+    invoke("get_next_week").then((result) => {
+      setWeekState(result);
+    });
+  }
+
+  const showPreviousWeek = function() {
+    invoke("get_previous_week").then((result) => {
+      setWeekState(result);
+    });
+  }
+
+  const showCurrentWeek = function() {
+    invoke("get_current_week").then((result) => {
+      setWeekState(result);
+    });
   }
 
   const handleOnSubmit = function({ id, text, keyboard_submit }) {
@@ -313,6 +325,8 @@ function App() {
             onCancel={handleOnCancel}
             onToggle={handleOnToggle}
             onFocusLeave={handleOnFocusLeave}
+            onNextWeek={showNextWeek}
+            onPreviousWeek={showPreviousWeek}
           />
           {editingId == "" && <BasicSpeedDial onClick={onSpeedDialClick} />}
         </CssBaseline>
