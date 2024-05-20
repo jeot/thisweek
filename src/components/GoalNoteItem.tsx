@@ -146,7 +146,7 @@ export default function GoalNoteItem({ type, id, text, done, modifiable, editing
               size="small"
               inputProps={{
                 style: {
-                  fontSize: (type == 'Note') ? "0.9em" : "1em",
+                  fontSize: (type == 'Note') ? "0.85em" : "1em",
                   fontWeight: (type == 'Note') ? 300 : 400,
                   caretColor: 'transparent',
                 }
