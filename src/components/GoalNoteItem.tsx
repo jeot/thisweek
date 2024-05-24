@@ -104,7 +104,12 @@ export default function GoalNoteItem({ type, id, text, done, modifiable, editing
               dir={dir}
               variant="outlined"
               size="small"
-              inputProps={{ style: { fontSize: (type == 'Note') ? "0.85em" : "1em" } }}
+              inputProps={{
+                style: {
+                  fontSize: (type == 'Note') ? "0.85em" : "1em",
+                  fontWeight: (type == 'Note') ? 300 : 400,
+                }
+              }}
               multiline={(type == 'Note')}
               maxRows={(type == 'Note') ? 40 : 1}
               fullWidth
