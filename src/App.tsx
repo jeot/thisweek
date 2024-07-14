@@ -25,14 +25,15 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
 import { createTheme, ThemeProvider } from '@mui/material';
+import { ids, itemKind, itemStatus } from './constants.ts';
 
 function App() {
 
   const [disableKeyboardNavigation, setDisableKeyboardNavigation] = useState(false);
   const [newKeyFlag, setNewKeyFlag] = useState(false);
   const [copyKeyFlag, setCopyKeyFlag] = useState(false);
-  const [editingId, setEditingId] = useState("");
-  const [selectedId, setSelectedId] = useState("");
+  const [editingId, setEditingId] = useState(ids.none)
+  const [selectedId, setSelectedId] = useState(ids.none)
 
   const [weekState, setWeekState] = useState({
     week_title: "",
@@ -41,7 +42,7 @@ function App() {
     items: [],
   });
 
-  const handleUserKeyPress = event => {
+  const handleUserKeyPress = (event: KeyboardEvent) => {
     if (event.key === 'Enter' && event.altKey) {
       event.preventDefault();
       appWindow.toggleMaximize();
@@ -52,7 +53,7 @@ function App() {
       appWindow.close();
     }
 
-    if (event.key === 'Escape' && editingId != "") {
+    if (event.key === 'Escape' && editingId != ids.none) {
       event.preventDefault();
       handleOnCancel(editingId);
     }
@@ -83,14 +84,14 @@ function App() {
         // new goal
         // console.log("start new goal editing...");
         setNewKeyFlag(false);
-        setEditingId('new_goal_id');
+        setEditingId(ids.new_goal);
         setDisableKeyboardNavigation(true);
       } else if (newKeyFlag && event.code === 'KeyN') {
         event.preventDefault();
         // new note
         // console.log("start new note editing...");
         setNewKeyFlag(false);
-        setEditingId('new_note_id');
+        setEditingId(ids.new_note);
         setDisableKeyboardNavigation(true);
       } else if (newKeyFlag) {
         event.preventDefault();
@@ -108,12 +109,12 @@ function App() {
         text = weekState.week_title;
         text = text + "\n";
         weekState.items.forEach((item) => {
-          if ('Goal' in item)
-            text = text + item.Goal.text + "\n";
-          if ('Note' in item)
-            text = text + item.Note.text + "\n";
+          if (item.kind === itemKind.goal)
+            text = text + item.title + "\n";
+          if (item.kind === itemKind.note)
+            text = text + item.note + "\n";
         });
-        console.log("copy all items in the week into clipboard:");
+        console.log("Copied all items in the week into clipboard:");
         console.log(text);
         navigator.clipboard.writeText(text);
         setCopyKeyFlag(false);
@@ -142,32 +143,33 @@ function App() {
     };
   }, [disableKeyboardNavigation, newKeyFlag, copyKeyFlag, editingId]);
 
-  const handleOnCancel = function(id: string) {
-    console.log("handleOnCancel id:", id);
-    setEditingId("");
+  const handleOnCancel = function(id: number) {
+    // console.log("handleOnCancel id:", id);
+    setEditingId(ids.none);
     setDisableKeyboardNavigation(false);
     invoke("get_week_state").then((result) => {
-      console.log("result:", result);
+      // console.log("result:", result);
       setWeekState(result);
     });
   }
 
-  const handleOnEdit = function(id: string) {
+  const handleOnEdit = function(id: number) {
     // console.log(`new onEdit(${id})`);
-    if (editingId != "") {
+    if (editingId != ids.none) {
       console.log("error: editingId is already set.");
     }
     setEditingId(id);
     setDisableKeyboardNavigation(true);
   }
 
-  const handleOnSelect = function(id: string) {
-    console.log(`new onSelect(${id})`);
+  const handleOnSelect = function(id: number) {
+    // console.log(`new onSelect(${id})`);
     setSelectedId(id);
   }
 
-  const handleOnToggle = function(id: string) {
-    invoke("goal_checkbox_changed", { id: id }).then((result) => {
+  const handleOnToggle = function(id: number) {
+    // console.log(`new handleOnToggle(${id})`);
+    invoke("toggle_item_state", { id: id }).then((result) => {
       setWeekState(result);
     });
   }
@@ -175,7 +177,7 @@ function App() {
   const handleOnFocusLeave = function({ id, text }) {
     // disable text field if it's for new goal/note input and is empty
     if (text != "") return;
-    if (id == "new_goal_id" || id == "new_note_id") {
+    if (id == ids.new_goal || id == ids.new_note) {
       handleOnCancel(id);
     }
   }
@@ -200,27 +202,27 @@ function App() {
 
   const handleOnSubmit = function({ id, text, keyboard_submit }) {
     if (id === undefined || text === undefined) return;
-    if (id == "new_goal_id") {
+    if (id == ids.new_goal) {
       invoke("add_new_goal", { text: text }).then((result) => {
         setWeekState(result);
       });
       // to continue adding new goals or not?
       if (keyboard_submit === undefined) {
-        setEditingId("");
+        setEditingId(ids.none);
         setDisableKeyboardNavigation(false);
       } else
-        setEditingId("new_goal_id");
-    } else if (id == "new_note_id") {
+        setEditingId(ids.new_goal);
+    } else if (id == ids.new_note) {
       // comment if you want to continue new note section
-      setEditingId("");
+      setEditingId(ids.none);
       setDisableKeyboardNavigation(false);
       invoke("add_new_note", { text: text }).then((result) => {
         setWeekState(result);
       });
-    } else if (editingId == id) {
-      setEditingId("");
+    } else if (editingId == id) { // submiting an edit on previous item
+      setEditingId(ids.none);
       setDisableKeyboardNavigation(false);
-      invoke("edit_item", { id: id, text: text }).then((result) => {
+      invoke("update_item", { id: id, text: text }).then((result) => {
         setWeekState(result);
       });
     } else { }
@@ -233,14 +235,14 @@ function App() {
   }
 
   const onSpeedDialClick = function(action_name: string) {
-    if (editingId != "") return;
-    console.log(action_name);
-    if (action_name == 'Goal' && editingId == "") {
-      setEditingId('new_goal_id');
+    if (editingId != ids.none) return;
+    // console.log(action_name);
+    if (action_name == 'Goal' && editingId == ids.none) {
+      setEditingId(ids.new_goal);
       setDisableKeyboardNavigation(true);
     }
-    if (action_name == 'Note') {
-      setEditingId('new_note_id');
+    if (action_name == 'Note' && editingId == ids.none) {
+      setEditingId(ids.new_note);
       setDisableKeyboardNavigation(true);
     }
   }
@@ -328,7 +330,7 @@ function App() {
             onNextWeek={showNextWeek}
             onPreviousWeek={showPreviousWeek}
           />
-          {editingId == "" && <BasicSpeedDial onClick={onSpeedDialClick} />}
+          {editingId == ids.none && <BasicSpeedDial onClick={onSpeedDialClick} />}
         </CssBaseline>
       </ThemeProvider>
     </React.Fragment>

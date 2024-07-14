@@ -7,6 +7,8 @@ import IconButton from '@mui/material/IconButton';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 
+import { ids, itemKind, itemStatus } from "../constants.ts";
+
 function WeekHeader(props) {
   return (
     <Stack
@@ -41,61 +43,37 @@ function WeekHeader(props) {
 }
 
 function WeekItemsList(props) {
-
-  let item;
-  let type;
   const item_elements = props.weekState.items.map((item) => {
-    if ('Goal' in item) {
-      item = item.Goal;
-      type = 'Goal';
-    } else if ('Note' in item) {
-      item = item.Note;
-      type = 'Note';
-    } else
-      return (<></>);
-
-    let editing = (item.id == 'new_goal_id' || item.id == 'new_note_id' || item.id == props.editingId);
+    let editing = (item.id == props.editingId);
     let selected = (item.id == props.selectedId);
 
     return (
       <GoalNoteItem
         key={item.id}
-        type={type}
-        id={item.id}
-        text={item.text}
-        done={item.done}
+        item={item}
         editing={editing}
         selected={selected}
         {...props} // it's passed by refference, so no big deal!
       />);
   });
-
   // console.log(item_elements);
-
-  const new_goal_item = { id: 0, text: "", done: false };
 
   return (
     <>
       {item_elements}
-      {(props.editingId == 'new_goal_id') &&
+      {(props.editingId == ids.new_goal) &&
         <GoalNoteItem
-          key={'new_goal_id'}
-          type={'Goal'}
-          id={'new_goal_id'}
-          text={""}
-          done={false}
+          key={'new_goal_key'}
+          item={{ id: ids.new_goal, kind: itemKind.goal, title: "", note: "", status: itemStatus.undone }}
           editing={true}
           selected={false}
           {...props}
         />
       }
-      {(props.editingId == 'new_note_id') &&
+      {(props.editingId == ids.new_note) &&
         <GoalNoteItem
-          key={'new_note_id'}
-          type={'Note'}
-          id={'new_note_id'}
-          text={""}
-          done={false}
+          key={'new_note_key'}
+          item={{ id: ids.new_note, kind: itemKind.note, title: "", note: "", status: itemStatus.undone }}
           editing={true}
           selected={false}
           {...props}

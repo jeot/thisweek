@@ -3,7 +3,8 @@
 use std::sync::Mutex;
 use tauri::State;
 
-use weeks_core::week::{WeekState, WeekStateJs, Element};
+use weeks_core::week::{WeekState, WeekStateJs};
+use weeks_core::models::Item;
 
 struct ManagedState {
     week: Mutex<WeekState>,
@@ -37,16 +38,10 @@ fn get_current_week(managed_state: State<ManagedState>) -> WeekStateJs {
 }
 
 // #[tauri::command]
-// fn get_goal(id: String, managed_state: State<ManagedState>) -> Option<Element> {
+// fn get_item(id: i32, managed_state: State<ManagedState>) -> Option<Element> {
 //     let week = managed_state.week.lock().unwrap();
-//     week.get_goal(id)
+//     week.get_item(id)
 // }
-
-#[tauri::command]
-fn get_item(id: String, managed_state: State<ManagedState>) -> Option<Element> {
-    let week = managed_state.week.lock().unwrap();
-    week.get_item(id)
-}
 
 #[tauri::command]
 fn add_new_goal(text: String, managed_state: State<ManagedState>) -> WeekStateJs {
@@ -63,23 +58,24 @@ fn add_new_note(text: String, managed_state: State<ManagedState>) -> WeekStateJs
 }
 
 #[tauri::command]
-fn delete_item(id: String, managed_state: State<ManagedState>) -> WeekStateJs {
+fn delete_item(id: i32, managed_state: State<ManagedState>) -> WeekStateJs {
     let mut week = managed_state.week.lock().unwrap();
     week.delete_item(id);
     week.week_state_js_object()
 }
 
 #[tauri::command]
-fn edit_item(id: String, text: String, managed_state: State<ManagedState>) -> WeekStateJs {
+fn update_item(id: i32, text: String, managed_state: State<ManagedState>) -> WeekStateJs {
     let mut week = managed_state.week.lock().unwrap();
-    week.edit_item(id, text);
+    week.update_item(id, text);
     week.week_state_js_object()
 }
 
 #[tauri::command]
-fn goal_checkbox_changed(id: String, managed_state: State<ManagedState>) -> WeekStateJs {
+fn toggle_item_state(id: i32, managed_state: State<ManagedState>) -> WeekStateJs {
+    println!("toggle_item_state: id: {id}");
     let mut week = managed_state.week.lock().unwrap();
-    week.toggle_goal_state(id);
+    week.toggle_item_state(id);
     week.week_state_js_object()
 }
 
@@ -87,19 +83,20 @@ fn main() {
     println!("Hello, tauri.");
 
     tauri::Builder::default()
-        .manage(ManagedState { week: Mutex::new(WeekState::new()) })
+        .manage(ManagedState {
+            week: Mutex::new(WeekState::new()),
+        })
         .invoke_handler(tauri::generate_handler![
             get_week_state,
             get_next_week,
             get_previous_week,
             get_current_week,
-            // get_goal,
-            get_item,
+            // get_item,
             add_new_goal,
             add_new_note,
             delete_item,
-            edit_item,
-            goal_checkbox_changed,
+            update_item,
+            toggle_item_state,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

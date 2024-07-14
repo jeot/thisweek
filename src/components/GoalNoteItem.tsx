@@ -20,9 +20,18 @@ import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 import { getDirection } from "./../utilities.tsx"
+import { ids, itemKind, itemStatus } from "../constants.ts";
 
 
-export default function GoalNoteItem({ type, id, text, done, modifiable, editing, selected, onSubmit, onEdit, onSelect, onDelete, onCancel, onToggle, onFocusLeave }) {
+export default function GoalNoteItem({ item, editing, selected, onSubmit, onEdit, onSelect, onDelete, onCancel, onToggle, onFocusLeave }) {
+
+  let text = (item.kind === itemKind.goal) ? item.title
+    : (item.kind === itemKind.note) ? item.note : "ERROR! INVALID ITEM!!";
+  let status = item.status === itemStatus.undone ? false :
+    item.status === itemStatus.done ? true : false;
+  let id = item.id;
+  let kind = item.kind;
+
 
   const [editingText, setEditingText] = useState(text);
   const [dir, setDir] = useState('rtl');
@@ -48,8 +57,8 @@ export default function GoalNoteItem({ type, id, text, done, modifiable, editing
     onFocusLeave({ id: id, text: editingText });
   }
 
-  const handleKeyDown = (event) => {
-    if (editing && event.key === 'Enter' && event.shiftKey && type == 'Note') {
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (editing && event.key === 'Enter' && event.shiftKey && kind == itemKind.note) {
       if (editingText == "") onCancel(id);
       else {
         /* here input field will automatically insert a new line! */
@@ -86,14 +95,14 @@ export default function GoalNoteItem({ type, id, text, done, modifiable, editing
         justifyContent="center"
         spacing={1}
       >
-        {(type == 'Goal') &&
+        {(kind == itemKind.goal) &&
           <Checkbox
-            checked={done}
+            checked={status}
             onChange={onCheckBoxChanged}
             size="small"
           />
         }
-        {(type == 'Note') &&
+        {(kind == itemKind.note) &&
           <IconButton aria-label="note" size="small" disabled color="secondary" >
             <ChatIcon color="text.default" />
           </IconButton>
@@ -106,12 +115,12 @@ export default function GoalNoteItem({ type, id, text, done, modifiable, editing
               size="small"
               inputProps={{
                 style: {
-                  fontSize: (type == 'Note') ? "0.85em" : "1em",
-                  fontWeight: (type == 'Note') ? 300 : 400,
+                  fontSize: (kind == itemKind.note) ? "0.85em" : "1em",
+                  fontWeight: (kind == itemKind.note) ? 300 : 400,
                 }
               }}
-              multiline={(type == 'Note')}
-              maxRows={(type == 'Note') ? 40 : 1}
+              multiline={(kind == itemKind.note)}
+              maxRows={(kind == itemKind.note) ? 40 : 1}
               fullWidth
               autoFocus
               onFocus={onFocus}
@@ -151,13 +160,13 @@ export default function GoalNoteItem({ type, id, text, done, modifiable, editing
               size="small"
               inputProps={{
                 style: {
-                  fontSize: (type == 'Note') ? "0.85em" : "1em",
-                  fontWeight: (type == 'Note') ? 300 : 400,
+                  fontSize: (kind == itemKind.note) ? "0.85em" : "1em",
+                  fontWeight: (kind == itemKind.note) ? 300 : 400,
                   caretColor: 'transparent',
                 }
               }}
-              multiline={(type == 'Note')}
-              maxRows={(type == 'Note') ? 40 : 1}
+              multiline={(kind == itemKind.note)}
+              maxRows={(kind == itemKind.note) ? 40 : 1}
               fullWidth
               value={text}
               onMouseDown={() => { onSelect(id); }}
