@@ -1,10 +1,11 @@
 import * as React from 'react';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import { appWindow } from '@tauri-apps/api/window'
 import Week from "./components/Week.tsx"
 import BasicSpeedDial from "./components/BasicSpeedDial.tsx"
 import Header from "./components/Header.tsx"
+import * as Keyboard from "./Keyboard.ts"
 
 import CssBaseline from '@mui/material/CssBaseline';
 // import ScopedCssBaseline from '@mui/material/ScopedCssBaseline';
@@ -25,108 +26,34 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
 import { createTheme, ThemeProvider } from '@mui/material';
-import { ids, itemKind, itemStatus } from './constants.ts';
+import { Action, ids, itemKind, itemStatus } from './constants.ts';
+
 
 function App() {
 
-  const [disableKeyboardNavigation, setDisableKeyboardNavigation] = useState(false);
-  const [newKeyFlag, setNewKeyFlag] = useState(false);
-  const [copyKeyFlag, setCopyKeyFlag] = useState(false);
-  const [editingId, setEditingId] = useState(ids.none)
-  const [selectedId, setSelectedId] = useState(ids.none)
-
-  const [weekState, setWeekState] = useState({
+  // interface Item { };
+  interface WeekState {
+    week_title: string;
+    today_persian_date: string;
+    today_english_date: string;
+    items: [],
+  };
+  const week_init: WeekState = {
     week_title: "",
     today_persian_date: "",
     today_english_date: "",
     items: [],
-  });
-
-  const handleUserKeyPress = (event: KeyboardEvent) => {
-    if (event.key === 'Enter' && event.altKey) {
-      event.preventDefault();
-      appWindow.toggleMaximize();
-    }
-
-    if (event.key === 'q' && event.altKey) {
-      event.preventDefault();
-      appWindow.close();
-    }
-
-    if (event.key === 'Escape' && editingId != ids.none) {
-      event.preventDefault();
-      handleOnCancel(editingId);
-    }
-
-    if (!disableKeyboardNavigation) {
-      // console.log('event', event);
-      if (event.code === 'KeyW' && !event.shiftKey) {
-        event.preventDefault();
-        showNextWeek();
-      }
-
-      if (event.code === 'KeyW' && event.shiftKey) {
-        event.preventDefault();
-        showPreviousWeek();
-      }
-
-      if (event.code === 'KeyT' && !event.shiftKey) {
-        event.preventDefault();
-        showCurrentWeek();
-      }
-
-      // new key with N
-      if (!newKeyFlag && event.code === 'KeyN') {
-        event.preventDefault();
-        setNewKeyFlag(true);
-      } else if (newKeyFlag && event.code === 'KeyG') {
-        event.preventDefault();
-        // new goal
-        // console.log("start new goal editing...");
-        setNewKeyFlag(false);
-        setEditingId(ids.new_goal);
-        setDisableKeyboardNavigation(true);
-      } else if (newKeyFlag && event.code === 'KeyN') {
-        event.preventDefault();
-        // new note
-        // console.log("start new note editing...");
-        setNewKeyFlag(false);
-        setEditingId(ids.new_note);
-        setDisableKeyboardNavigation(true);
-      } else if (newKeyFlag) {
-        event.preventDefault();
-        setNewKeyFlag(false);
-      } else { }
-
-      // copy key with C
-      if (!copyKeyFlag && event.code === 'KeyC') {
-        event.preventDefault();
-        setCopyKeyFlag(true);
-      } else if (copyKeyFlag && event.code === 'KeyA') {
-        // copy all item's text
-        event.preventDefault();
-        let text = "";
-        text = weekState.week_title;
-        text = text + "\n";
-        weekState.items.forEach((item) => {
-          if (item.kind === itemKind.goal)
-            text = text + item.title + "\n";
-          if (item.kind === itemKind.note)
-            text = text + item.note + "\n";
-        });
-        console.log("Copied all items in the week into clipboard:");
-        console.log(text);
-        navigator.clipboard.writeText(text);
-        setCopyKeyFlag(false);
-      } else if (copyKeyFlag) {
-        event.preventDefault();
-        setCopyKeyFlag(false);
-      } else { }
-
-    }
   };
 
+  const [editingId, setEditingId] = useState(ids.none)
+  const [selectedId, setSelectedId] = useState(ids.none)
+  const [weekState, setWeekState] = useState(week_init);
+  const weekStateRef = useRef();
+  weekStateRef.current = weekState;
+
   useEffect(() => {
+    Keyboard.init();
+    Keyboard.listen(keyboard_action_callback);
     invoke("get_week_state").then((result) => {
       // console.log("get_week_state result: ", result);
       setWeekState(result);
@@ -134,21 +61,33 @@ function App() {
   }, []
   );
 
-  useEffect(() => {
-    // console.log(`adding new keydown event listener with disableKeyboardNavigation: ${disableKeyboardNavigation}.`);
-    window.addEventListener("keydown", handleUserKeyPress);
-    return () => {
-      // console.log("removing keydown event listener.");
-      window.removeEventListener("keydown", handleUserKeyPress);
-    };
-  }, [disableKeyboardNavigation, newKeyFlag, copyKeyFlag, editingId]);
+  const keyboard_action_callback = (action: number) => {
+    console.log("this is keyboard_callback in App! new action: ", action);
+    switch (action) {
+      case Action.toggleMaximizeWindow: appWindow.toggleMaximize(); break;
+      case Action.closeWindow: appWindow.close(); break;
+      case Action.showNextWeek: showNextWeek(); break;
+      case Action.showPreviousWeek: showPreviousWeek(); break;
+      case Action.showCurrentWeek: showCurrentWeek(); break;
+      case Action.escapePressed: handleOnCancel(); break;
+      case Action.newGoal:
+        setEditingId(ids.new_goal);
+        Keyboard.set_insert_mode(true);
+        break;
+      case Action.newNote:
+        setEditingId(ids.new_note);
+        Keyboard.set_insert_mode(true);
+        break;
+      case Action.copyAllItems: copyAllWeekItemsToClipboard(); break;
+      default:
+        console.log("Warning! @keyboard_action_callback() invalid action number callback: ", action);
+    }
+  }
 
-  const handleOnCancel = function(id: number) {
-    // console.log("handleOnCancel id:", id);
+  const handleOnCancel = function(id?: number) {
     setEditingId(ids.none);
-    setDisableKeyboardNavigation(false);
+    Keyboard.set_insert_mode(false);
     invoke("get_week_state").then((result) => {
-      // console.log("result:", result);
       setWeekState(result);
     });
   }
@@ -159,7 +98,7 @@ function App() {
       console.log("error: editingId is already set.");
     }
     setEditingId(id);
-    setDisableKeyboardNavigation(true);
+    Keyboard.set_insert_mode(true);
   }
 
   const handleOnSelect = function(id: number) {
@@ -178,7 +117,7 @@ function App() {
     // disable text field if it's for new goal/note input and is empty
     if (text != "") return;
     if (id == ids.new_goal || id == ids.new_note) {
-      handleOnCancel(id);
+      handleOnCancel();
     }
   }
 
@@ -200,6 +139,24 @@ function App() {
     });
   }
 
+  const copyAllWeekItemsToClipboard = () => {
+    const currentWeekState: WeekState = weekStateRef.current;
+    console.log("copying all items...");
+    let text: string = "";
+    text = currentWeekState.week_title;
+    text = text + "\n\n";
+    currentWeekState.items.forEach((item) => {
+      if (item.kind === itemKind.goal)
+        text = text + item.title + "\n";
+      if (item.kind === itemKind.note)
+        text = text + item.note + "\n";
+    });
+    console.log("Copied all items in the week into clipboard:");
+    console.log(text);
+    navigator.clipboard.writeText(text);
+    return text;
+  }
+
   const handleOnSubmit = function({ id, text, keyboard_submit }) {
     if (id === undefined || text === undefined) return;
     if (id == ids.new_goal) {
@@ -209,19 +166,19 @@ function App() {
       // to continue adding new goals or not?
       if (keyboard_submit === undefined) {
         setEditingId(ids.none);
-        setDisableKeyboardNavigation(false);
+        Keyboard.set_insert_mode(false);
       } else
         setEditingId(ids.new_goal);
     } else if (id == ids.new_note) {
       // comment if you want to continue new note section
       setEditingId(ids.none);
-      setDisableKeyboardNavigation(false);
+      Keyboard.set_insert_mode(false);
       invoke("add_new_note", { text: text }).then((result) => {
         setWeekState(result);
       });
     } else if (editingId == id) { // submiting an edit on previous item
       setEditingId(ids.none);
-      setDisableKeyboardNavigation(false);
+      Keyboard.set_insert_mode(false);
       invoke("update_item", { id: id, text: text }).then((result) => {
         setWeekState(result);
       });
@@ -239,11 +196,11 @@ function App() {
     // console.log(action_name);
     if (action_name == 'Goal' && editingId == ids.none) {
       setEditingId(ids.new_goal);
-      setDisableKeyboardNavigation(true);
+      Keyboard.set_insert_mode(true);
     }
     if (action_name == 'Note' && editingId == ids.none) {
       setEditingId(ids.new_note);
-      setDisableKeyboardNavigation(true);
+      Keyboard.set_insert_mode(true);
     }
   }
 
