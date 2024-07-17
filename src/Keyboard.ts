@@ -60,6 +60,18 @@ const handleUserKeyPress = (event: KeyboardEvent) => {
       broadcastAction(Action.showCurrentWeek);
     }
 
+    const selectNext: boolean = (event.code === 'ArrowDown' || event.code === 'KeyJ') && !event.shiftKey;
+    if (selectNext) {
+      event.preventDefault();
+      broadcastAction(Action.selectNextItem);
+    }
+
+    const selectPrevious: boolean = (event.code === 'ArrowUp' || event.code === 'KeyK') && !event.shiftKey;
+    if (selectPrevious) {
+      event.preventDefault();
+      broadcastAction(Action.selectPreviousItem);
+    }
+
     // new with N leader key
     if (!newKeyFlag && event.code === 'KeyN') {
       event.preventDefault();

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect, useRef } from "react";
+import useStateRef from 'react-usestateref'
 import { invoke } from "@tauri-apps/api/tauri";
 import { appWindow } from '@tauri-apps/api/window'
 import Week from "./components/Week.tsx"
@@ -46,7 +47,7 @@ function App() {
   };
 
   const [editingId, setEditingId] = useState(ids.none)
-  const [selectedId, setSelectedId] = useState(ids.none)
+  const [selectedId, setSelectedId, selectedIdRef] = useStateRef(ids.none)
   const [weekState, setWeekState] = useState(week_init);
   const weekStateRef = useRef();
   weekStateRef.current = weekState;
@@ -70,6 +71,8 @@ function App() {
       case Action.showPreviousWeek: showPreviousWeek(); break;
       case Action.showCurrentWeek: showCurrentWeek(); break;
       case Action.escapePressed: handleOnCancel(); break;
+      case Action.selectNextItem: selectNextItem(); break
+      case Action.selectPreviousItem: selectPreviousItem(); break
       case Action.newGoal:
         setEditingId(ids.new_goal);
         Keyboard.set_insert_mode(true);
@@ -86,6 +89,7 @@ function App() {
 
   const handleOnCancel = function(id?: number) {
     setEditingId(ids.none);
+    setSelectedId(ids.none);
     Keyboard.set_insert_mode(false);
     invoke("get_week_state").then((result) => {
       setWeekState(result);
@@ -104,6 +108,9 @@ function App() {
   const handleOnSelect = function(id: number) {
     // console.log(`new onSelect(${id})`);
     setSelectedId(id);
+    // invoke("get_near_items_id", { id: id }).then((result) => {
+    //   console.log(result);
+    // });
   }
 
   const handleOnToggle = function(id: number) {
@@ -122,20 +129,43 @@ function App() {
   }
 
   const showNextWeek = function() {
+    setSelectedId(ids.none);
     invoke("get_next_week").then((result) => {
       setWeekState(result);
     });
   }
 
   const showPreviousWeek = function() {
+    setSelectedId(ids.none);
     invoke("get_previous_week").then((result) => {
       setWeekState(result);
     });
   }
 
   const showCurrentWeek = function() {
+    setSelectedId(ids.none);
     invoke("get_current_week").then((result) => {
       setWeekState(result);
+    });
+  }
+
+  const selectNextItem = function() {
+    invoke("get_near_items_id", { id: selectedIdRef.current }).then((result) => {
+      // console.log(result);
+      const nextId = result[1];
+      if (nextId != null) {
+        setSelectedId(nextId);
+      }
+    });
+  }
+
+  const selectPreviousItem = function() {
+    invoke("get_near_items_id", { id: selectedIdRef.current }).then((result) => {
+      // console.log(result);
+      const prevId = result[0];
+      if (prevId != null) {
+        setSelectedId(prevId);
+      }
     });
   }
 

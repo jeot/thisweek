@@ -25,6 +25,8 @@ export enum Action {
   showPreviousWeek,
   showCurrentWeek,
   escapePressed,
+  selectNextItem,
+  selectPreviousItem,
   newGoal,
   newNote,
   copyAllItems,
