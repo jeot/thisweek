@@ -41,12 +41,16 @@ const handleUserKeyPress = (event: KeyboardEvent) => {
 
   if (!insert_mode) {
     // console.log('event', event);
-    if (event.code === 'KeyW' && !event.shiftKey) {
+    const nextWeek: boolean =
+      ((event.code === 'KeyW' || event.code === 'KeyL') && !event.shiftKey) || (event.code === 'ArrowRight');
+    if (nextWeek) {
       event.preventDefault();
       broadcastAction(Action.showNextWeek);
     }
 
-    if (event.code === 'KeyW' && event.shiftKey) {
+    const previousWeek: boolean =
+      (event.code === 'KeyW' && event.shiftKey) || (event.code === 'KeyH' && !event.shiftKey) || (event.code === 'ArrowLeft');
+    if (previousWeek) {
       event.preventDefault();
       broadcastAction(Action.showPreviousWeek);
     }
