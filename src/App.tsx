@@ -71,8 +71,8 @@ function App() {
       case Action.showPreviousWeek: showPreviousWeek(); break;
       case Action.showCurrentWeek: showCurrentWeek(); break;
       case Action.escapePressed: handleOnCancel(); break;
-      case Action.selectNextItem: selectNextItem(); break
-      case Action.selectPreviousItem: selectPreviousItem(); break
+      case Action.selectNextItem: selectNextItem(); break;
+      case Action.selectPreviousItem: selectPreviousItem(); break;
       case Action.newGoal:
         setEditingId(ids.new_goal);
         Keyboard.set_insert_mode(true);
@@ -81,6 +81,10 @@ function App() {
         setEditingId(ids.new_note);
         Keyboard.set_insert_mode(true);
         break;
+      case Action.editSelectedItem: handleOnEdit(selectedIdRef.current); break;
+      case Action.deleteSelectedItem: handleOnDelete(selectedIdRef.current); break;
+      case Action.copySelectedItemText: handleOnCopyText(selectedIdRef.current); break;
+      case Action.toggleSelectedItemState: handleOnToggle(selectedIdRef.current); break;
       case Action.copyAllItems: copyAllWeekItemsToClipboard(); break;
       default:
         console.log("Warning! @keyboard_action_callback() invalid action number callback: ", action);
@@ -151,7 +155,6 @@ function App() {
 
   const selectNextItem = function() {
     invoke("get_near_items_id", { id: selectedIdRef.current }).then((result) => {
-      // console.log(result);
       const nextId = result[1];
       if (nextId != null) {
         setSelectedId(nextId);
@@ -187,6 +190,14 @@ function App() {
     return text;
   }
 
+  const handleOnCopyText = function(id: number) {
+    const item = weekStateRef.current.items.find((item) => { return (item.id == id); });
+    if (item.kind === itemKind.goal)
+      navigator.clipboard.writeText(item.title);
+    if (item.kind === itemKind.note)
+      navigator.clipboard.writeText(item.note);
+  }
+
   const handleOnSubmit = function({ id, text, keyboard_submit }) {
     if (id === undefined || text === undefined) return;
     if (id == ids.new_goal) {
@@ -215,9 +226,18 @@ function App() {
     } else { }
   }
 
-  const handleOnDelete = function(id: string) {
-    invoke("delete_item", { id: id }).then((result) => {
-      setWeekState(result);
+  const handleOnDelete = function(id: number) {
+    let nextId: number;
+    invoke("get_near_items_id", { id: selectedIdRef.current }).then((result) => {
+      nextId = result[1];
+      invoke("delete_item", { id: id }).then((result) => {
+        setWeekState(result);
+        if (nextId != null) {
+          setSelectedId(nextId);
+        } else {
+          setSelectedId(ids.none);
+        }
+      });
     });
   }
 
@@ -313,6 +333,7 @@ function App() {
             onDelete={handleOnDelete}
             onCancel={handleOnCancel}
             onToggle={handleOnToggle}
+            onCopyText={handleOnCopyText}
             onFocusLeave={handleOnFocusLeave}
             onNextWeek={showNextWeek}
             onPreviousWeek={showPreviousWeek}

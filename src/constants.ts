@@ -21,15 +21,19 @@ export const itemStatus = {
 export enum Action {
   toggleMaximizeWindow = 1,
   closeWindow,
+  escapePressed,
   showNextWeek,
   showPreviousWeek,
   showCurrentWeek,
-  escapePressed,
   selectNextItem,
   selectPreviousItem,
+  copyAllItems,
   newGoal,
   newNote,
-  copyAllItems,
+  editSelectedItem,
+  deleteSelectedItem,
+  copySelectedItemText,
+  toggleSelectedItemState,
 };
 
 // export const ID_NONE = -1;

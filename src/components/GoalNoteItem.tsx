@@ -23,7 +23,7 @@ import { getDirection } from "./../utilities.tsx"
 import { ids, itemKind, itemStatus } from "../constants.ts";
 
 
-export default function GoalNoteItem({ item, editing, selected, onSubmit, onEdit, onSelect, onDelete, onCancel, onToggle, onFocusLeave }) {
+export default function GoalNoteItem({ item, editing, selected, onSubmit, onEdit, onSelect, onDelete, onCancel, onToggle, onCopyText, onFocusLeave }) {
 
   let text = (item.kind === itemKind.goal) ? item.title
     : (item.kind === itemKind.note) ? item.note : "ERROR! INVALID ITEM!!";
@@ -175,7 +175,7 @@ export default function GoalNoteItem({ item, editing, selected, onSubmit, onEdit
               aria-label="copy"
               size="small"
               color="secondary"
-              onClick={() => { navigator.clipboard.writeText(text) }}
+              onClick={() => { onCopyText(id) }}
             >
               <ContentCopyIcon fontSize="small" />
             </IconButton>

@@ -24,17 +24,17 @@ function broadcastAction(action: Action) {
 
 const handleUserKeyPress = (event: KeyboardEvent) => {
   // console.log("keyboard keydown event: ", event);
-  if (event.key === 'Enter' && event.altKey) {
+  if (event.code === 'Enter' && event.altKey) {
     event.preventDefault();
     broadcastAction(Action.toggleMaximizeWindow);
   }
 
-  if (event.key === 'q' && event.altKey) {
+  if (event.code === 'KeyQ' && event.altKey) {
     event.preventDefault();
     broadcastAction(Action.closeWindow);
   }
 
-  if (event.key === 'Escape') {
+  if (event.code === 'Escape') {
     event.preventDefault();
     broadcastAction(Action.escapePressed);
   }
@@ -72,6 +72,26 @@ const handleUserKeyPress = (event: KeyboardEvent) => {
       broadcastAction(Action.selectPreviousItem);
     }
 
+    if (event.code === 'KeyE') {
+      event.preventDefault();
+      broadcastAction(Action.editSelectedItem);
+    }
+
+    if (event.code === 'KeyD' || event.code === 'Delete') {
+      event.preventDefault();
+      broadcastAction(Action.deleteSelectedItem);
+    }
+
+    if (event.code === 'KeyC' && event.ctrlKey) { // Ctrl-C
+      event.preventDefault();
+      broadcastAction(Action.copySelectedItemText);
+    }
+
+    if (event.code === 'Space' && !event.ctrlKey && !event.altKey && !event.shiftKey) { // Ctrl-C
+      event.preventDefault();
+      broadcastAction(Action.toggleSelectedItemState);
+    }
+
     // new with N leader key
     if (!newKeyFlag && event.code === 'KeyN') {
       event.preventDefault();
@@ -95,8 +115,12 @@ const handleUserKeyPress = (event: KeyboardEvent) => {
       copyKeyFlag = true;
     } else if (copyKeyFlag && event.code === 'KeyA') { // copy all items
       event.preventDefault();
-      broadcastAction(Action.copyAllItems);
       copyKeyFlag = false;
+      broadcastAction(Action.copyAllItems);
+    } else if (event.code === 'KeyC') {
+      event.preventDefault();
+      copyKeyFlag = false;
+      broadcastAction(Action.copySelectedItemText);
     } else if (copyKeyFlag) {
       event.preventDefault();
       copyKeyFlag = false;
