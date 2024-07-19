@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, scrollIntoView } from "react";
 
 // import "./styles.css";
 
@@ -22,9 +22,33 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { getDirection } from "./../utilities.tsx"
 import { ids, itemKind, itemStatus } from "../constants.ts";
 
+import { forwardRef } from 'react';
 
-export default function GoalNoteItem({ item, editing, selected, onSubmit, onEdit, onSelect, onDelete, onCancel, onToggle, onCopyText, onFocusLeave }) {
+/**
+ * Method to scroll into view port, if it's outside the viewport
+ *
+ * @param {Object} target - DOM Element
+ * @returns {undefined}
+ */
+const scrollIntoViewIfNeeded = target => {
+  // Target is outside the viewport from the bottom
+  if (target.getBoundingClientRect().bottom > window.innerHeight) {
+    //  The bottom of the target will be aligned to the bottom of the visible area of the scrollable ancestor.
+    // target.scrollIntoView(false);
+    target.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
+  }
 
+  // Target is outside the view from the top
+  if (target.getBoundingClientRect().top < 0) {
+    // The top of the target will be aligned to the top of the visible area of the scrollable ancestor
+    // target.scrollIntoView();
+    target.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
+  }
+};
+
+// export default function GoalNoteItem({ item, editing, selected, onSubmit, onEdit, onSelect, onDelete, onCancel, onToggle, onCopyText, onFocusLeave }) {
+const GoalNoteItem = forwardRef(function GoalNoteItem(props, ref) {
+  const { item, editing, selected, onSubmit, onEdit, onSelect, onDelete, onCancel, onToggle, onCopyText, onFocusLeave } = props;
   let text = (item.kind === itemKind.goal) ? item.title
     : (item.kind === itemKind.note) ? item.note : "ERROR! INVALID ITEM!!";
   let status = item.status === itemStatus.undone ? false :
@@ -32,6 +56,13 @@ export default function GoalNoteItem({ item, editing, selected, onSubmit, onEdit
   let id = item.id;
   let kind = item.kind;
 
+  useEffect(() => {
+    if (selected) {
+      console.log(ref);
+      scrollIntoViewIfNeeded(ref.current);
+      // ref.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
+    }
+  }, [selected]);
 
   const [editingText, setEditingText] = useState(text);
   const [dir, setDir] = useState('rtl');
@@ -79,6 +110,7 @@ export default function GoalNoteItem({ item, editing, selected, onSubmit, onEdit
 
   return (
     <Box
+      ref={ref}
       dir="rtl"
       id={id}
       className="goal_note_item"
@@ -202,5 +234,6 @@ export default function GoalNoteItem({ item, editing, selected, onSubmit, onEdit
       </Stack>
     </Box>
   );
-}
+});
 
+export default GoalNoteItem;

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, createRef } from "react";
 import useStateRef from 'react-usestateref'
 import { invoke } from "@tauri-apps/api/tauri";
 import { appWindow } from '@tauri-apps/api/window'
@@ -52,6 +52,16 @@ function App() {
   const weekStateRef = useRef();
   weekStateRef.current = weekState;
 
+  const itemsCount = weekState.items.length;
+  const itemsRefs = useRef([]);
+
+  if (itemsRefs.current.length !== itemsCount) {
+    // add or remove refs
+    itemsRefs.current = Array(itemsCount) // make an empty slot array with defined length
+      .fill() // fill them all with undefined
+      .map((_, i) => itemsRefs.current[i] || createRef());
+  }
+
   useEffect(() => {
     Keyboard.init();
     Keyboard.listen(keyboard_action_callback);
@@ -89,6 +99,19 @@ function App() {
       default:
         console.log("Warning! @keyboard_action_callback() invalid action number callback: ", action);
     }
+  }
+
+  const getItemIdFromItemIndex = function(index: number) {
+    if (index == null) return null;
+    const length = weekStateRef.current.items[index].length;
+    if (index < 0 || index >= length) return null
+    const id = weekStateRef.current.items[index].id;
+    return id;
+  }
+
+  const getItemIndexFromItemId = function(id: number) {
+    const index = weekStateRef.current.items.findIndex(item => item.id == id);
+    return index;
   }
 
   const handleOnCancel = function(id?: number) {
@@ -154,22 +177,23 @@ function App() {
   }
 
   const selectNextItem = function() {
-    invoke("get_near_items_id", { id: selectedIdRef.current }).then((result) => {
-      const nextId = result[1];
-      if (nextId != null) {
-        setSelectedId(nextId);
-      }
-    });
+    const arrLen = weekStateRef.current.items.length;
+    if (arrLen == 0) setSelectedId(ids.none);
+    else if (selectedIdRef.current == ids.none) setSelectedId(getItemIdFromItemIndex(0));
+    else {
+      const index = getItemIndexFromItemId(selectedIdRef.current);
+      if ((index + 1) < arrLen) setSelectedId(getItemIdFromItemIndex(index + 1));
+    }
   }
 
   const selectPreviousItem = function() {
-    invoke("get_near_items_id", { id: selectedIdRef.current }).then((result) => {
-      // console.log(result);
-      const prevId = result[0];
-      if (prevId != null) {
-        setSelectedId(prevId);
-      }
-    });
+    const arrLen = weekStateRef.current.items.length;
+    if (arrLen == 0) setSelectedId(ids.none);
+    else if (selectedIdRef.current == ids.none) setSelectedId(getItemIdFromItemIndex(arrLen - 1));
+    else {
+      const index = getItemIndexFromItemId(selectedIdRef.current);
+      if (index > 0) setSelectedId(getItemIdFromItemIndex(index - 1));
+    }
   }
 
   const copyAllWeekItemsToClipboard = () => {
@@ -324,6 +348,7 @@ function App() {
             today_english_date={weekState.today_english_date}
           />
           <Week
+            itemsRefs={itemsRefs}
             weekState={weekState}
             editingId={editingId}
             selectedId={selectedId}

@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import GoalNoteItem from "./GoalNoteItem.tsx";
 import Tooltip from '@mui/material/Tooltip';
 import Stack from '@mui/material/Stack';
@@ -43,12 +42,13 @@ function WeekHeader(props) {
 }
 
 function WeekItemsList(props) {
-  const item_elements = props.weekState.items.map((item) => {
+  const item_elements = props.weekState.items.map((item, i) => {
     let editing = (item.id == props.editingId);
     let selected = (item.id == props.selectedId);
 
     return (
       <GoalNoteItem
+        ref={props.itemsRefs.current[i]}
         key={item.id}
         item={item}
         editing={editing}
@@ -85,7 +85,6 @@ function WeekItemsList(props) {
 }
 
 export default function Week(props) {
-
   return (
     <Box sx={{ p: 0, pb: 10 }}>
       <WeekHeader {...props} />
