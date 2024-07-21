@@ -5,22 +5,24 @@ import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
-
 import { ids, itemKind, itemStatus } from "../constants.ts";
 
 function WeekHeader(props) {
+
+  const style = {
+    p: 1,
+    fontSize: "1em",
+    fontWeight: 700,
+    backgroundColor: '#EBEDEF',
+  };
+
   return (
     <Stack
       className="week-title" dir="auto"
       direction="row"
       alignItems="center"
       justifyContent="space-between"
-      sx={{
-        p: 1,
-        fontSize: "1em",
-        fontWeight: 700,
-        backgroundColor: '#EBEDEF',
-      }}
+      sx={style}
     >
       <Tooltip title="Next Week">
         <IconButton aria-label="next" size="small" color="text.default"
@@ -59,9 +61,10 @@ function WeekItemsList(props) {
   // console.log(item_elements);
 
   return (
-    <>
+    <div dir="rtl" >
       {item_elements}
-      {(props.editingId == ids.new_goal) &&
+      {
+        (props.editingId == ids.new_goal) &&
         <GoalNoteItem
           key={'new_goal_key'}
           item={{ id: ids.new_goal, kind: itemKind.goal, title: "", note: "", status: itemStatus.undone }}
@@ -70,7 +73,8 @@ function WeekItemsList(props) {
           {...props}
         />
       }
-      {(props.editingId == ids.new_note) &&
+      {
+        (props.editingId == ids.new_note) &&
         <GoalNoteItem
           key={'new_note_key'}
           item={{ id: ids.new_note, kind: itemKind.note, title: "", note: "", status: itemStatus.undone }}
@@ -79,21 +83,27 @@ function WeekItemsList(props) {
           {...props}
         />
       }
-    </>
+    </div>
   );
 
 }
 
 export default function Week(props) {
+  const style = {
+    p: 0,
+    pb: 10,
+  };
   return (
-    <Box sx={{ p: 0, pb: 10 }}>
-      <WeekHeader {...props} />
+    <Box sx={style} >
+      <WeekHeader
+        {...props}
+      />
 
       <WeekItemsList
         {...props}
       />
 
-    </Box>
+    </Box >
   );
 
 }

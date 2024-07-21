@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, scrollIntoView } from "react";
+import { useState, useEffect, useRef } from "react";
 
 // import "./styles.css";
 

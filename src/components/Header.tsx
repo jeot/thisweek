@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 
-export default function Header({today_persian_date, today_english_date}) {
+export default function Header({ today_persian_date, today_english_date }) {
 
   const style = {
     fontSize: "0.9em",
@@ -15,19 +15,19 @@ export default function Header({today_persian_date, today_english_date}) {
   };
 
   return (
-  <Stack
-    direction="row"
-    alignItems="center"
-    justifyContent="space-between"
-    sx={style}
-  >
-    <Box dir="auto">
-      Today, {today_english_date}
-    </Box>
-    <Box dir="auto">
-      امروز، {today_persian_date.toPersianDigits()}
-    </Box>
-  </Stack>
+    <Stack
+      direction="row"
+      alignItems="center"
+      justifyContent="space-between"
+      sx={style}
+    >
+      <Box dir="auto">
+        Today, {today_english_date}
+      </Box>
+      <Box dir="auto">
+        امروز، {today_persian_date.toPersianDigits()}
+      </Box>
+    </Stack>
   );
 
 }
