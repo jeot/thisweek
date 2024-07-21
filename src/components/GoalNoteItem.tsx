@@ -58,7 +58,7 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props, ref) {
 
   useEffect(() => {
     if (selected) {
-      console.log(ref);
+      // console.log(ref);
       scrollIntoViewIfNeeded(ref.current);
       // ref.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
     }

@@ -73,7 +73,7 @@ function App() {
   );
 
   const keyboard_action_callback = (action: number) => {
-    console.log("this is keyboard_callback in App! new action: ", action);
+    // console.log("this is keyboard_callback in App! new action: ", action);
     switch (action) {
       case Action.toggleMaximizeWindow: appWindow.toggleMaximize(); break;
       case Action.closeWindow: appWindow.close(); break;
