@@ -34,6 +34,8 @@ export enum Action {
   deleteSelectedItem,
   copySelectedItemText,
   toggleSelectedItemState,
+  moveUpSelectedItem,
+  moveDownSelectedItem,
 };
 
 // export const ID_NONE = -1;

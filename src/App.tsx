@@ -95,6 +95,8 @@ function App() {
       case Action.deleteSelectedItem: handleOnDelete(selectedIdRef.current); break;
       case Action.copySelectedItemText: handleOnCopyText(selectedIdRef.current); break;
       case Action.toggleSelectedItemState: handleOnToggle(selectedIdRef.current); break;
+      case Action.moveUpSelectedItem: moveUpSelectedItem(); break;
+      case Action.moveDownSelectedItem: moveDownSelectedItem(); break;
       case Action.copyAllItems: copyAllWeekItemsToClipboard(); break;
       default:
         console.log("Warning! @keyboard_action_callback() invalid action number callback: ", action);
@@ -220,6 +222,19 @@ function App() {
       navigator.clipboard.writeText(item.title);
     if (item.kind === itemKind.note)
       navigator.clipboard.writeText(item.note);
+  }
+  const moveUpSelectedItem = function() {
+    if (selectedIdRef.current < 0) return;
+    invoke("move_up_selected_item", { id: selectedIdRef.current }).then((result) => {
+      setWeekState(result);
+    });
+  }
+
+  const moveDownSelectedItem = function() {
+    if (selectedIdRef.current < 0) return;
+    invoke("move_down_selected_item", { id: selectedIdRef.current }).then((result) => {
+      setWeekState(result);
+    });
   }
 
   const handleOnSubmit = function({ id, text, keyboard_submit }) {

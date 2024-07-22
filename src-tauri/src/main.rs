@@ -3,7 +3,6 @@
 use std::sync::Mutex;
 use tauri::State;
 
-use weeks_core::models::Item;
 use weeks_core::week::{WeekState, WeekStateJs};
 
 struct ManagedState {
@@ -85,6 +84,20 @@ fn get_near_items_id(id: i32, managed_state: State<ManagedState>) -> (Option<i32
     week.get_near_items_id(id)
 }
 
+#[tauri::command]
+fn move_up_selected_item(id: i32, managed_state: State<ManagedState>) -> WeekStateJs {
+    let mut week = managed_state.week.lock().unwrap();
+    week.move_up_selected_item(id);
+    week.week_state_js_object()
+}
+
+#[tauri::command]
+fn move_down_selected_item(id: i32, managed_state: State<ManagedState>) -> WeekStateJs {
+    let mut week = managed_state.week.lock().unwrap();
+    week.move_down_selected_item(id);
+    week.week_state_js_object()
+}
+
 fn main() {
     println!("Hello, tauri.");
 
@@ -104,6 +117,8 @@ fn main() {
             update_item,
             toggle_item_state,
             get_near_items_id,
+            move_up_selected_item,
+            move_down_selected_item,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

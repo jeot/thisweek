@@ -60,13 +60,13 @@ const handleUserKeyPress = (event: KeyboardEvent) => {
       broadcastAction(Action.showCurrentWeek);
     }
 
-    const selectNext: boolean = (event.code === 'ArrowDown' || event.code === 'KeyJ') && !event.shiftKey;
+    const selectNext: boolean = (event.code === 'ArrowDown' || event.code === 'KeyJ') && !event.shiftKey && !event.ctrlKey && !event.altKey;
     if (selectNext) {
       event.preventDefault();
       broadcastAction(Action.selectNextItem);
     }
 
-    const selectPrevious: boolean = (event.code === 'ArrowUp' || event.code === 'KeyK') && !event.shiftKey;
+    const selectPrevious: boolean = (event.code === 'ArrowUp' || event.code === 'KeyK') && !event.shiftKey && !event.ctrlKey && !event.altKey;
     if (selectPrevious) {
       event.preventDefault();
       broadcastAction(Action.selectPreviousItem);
@@ -90,6 +90,22 @@ const handleUserKeyPress = (event: KeyboardEvent) => {
     if (event.code === 'Space' && !event.ctrlKey && !event.altKey && !event.shiftKey) { // Ctrl-C
       event.preventDefault();
       broadcastAction(Action.toggleSelectedItemState);
+    }
+
+    // Ctrl-K or Ctrl-Up: move up
+    const moveUp = (event.code === 'KeyK' && event.ctrlKey && !event.altKey && !event.shiftKey) ||
+      (event.code === 'ArrowUp' && event.ctrlKey && !event.altKey && !event.shiftKey)
+    if (moveUp) {
+      event.preventDefault();
+      broadcastAction(Action.moveUpSelectedItem);
+    }
+
+    // Ctrl-J or Ctrl-Down: move down
+    const moveDown = (event.code === 'KeyJ' && event.ctrlKey && !event.altKey && !event.shiftKey) ||
+      (event.code === 'ArrowDown' && event.ctrlKey && !event.altKey && !event.shiftKey)
+    if (moveDown) {
+      event.preventDefault();
+      broadcastAction(Action.moveDownSelectedItem);
     }
 
     // new with N leader key

@@ -1702,6 +1702,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "midstring"
+version = "0.1.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8b1fe0564f0fe1de2058848937929f4ff1a27895dddafe272921b1f7bbf533cc"
+
+[[package]]
 name = "miniz_oxide"
 version = "0.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3664,6 +3670,7 @@ dependencies = [
  "diesel",
  "dotenvy",
  "homedir",
+ "midstring",
  "ptime",
  "redb",
  "rusqlite",
