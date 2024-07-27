@@ -38,6 +38,7 @@ export enum Action {
   moveDownSelectedItem,
   moveSelectedItemToNextWeek,
   moveSelectedItemToPreviousWeek,
+  backupDbFile,
 };
 
 // export const ID_NONE = -1;

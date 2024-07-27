@@ -112,6 +112,12 @@ fn move_selected_item_to_previous_week(id: i32, managed_state: State<ManagedStat
     week.week_state_js_object()
 }
 
+#[tauri::command]
+fn backup_database_file(managed_state: State<ManagedState>) -> bool {
+    let week = managed_state.week.lock().unwrap();
+    week.backup_database_file()
+}
+
 fn main() {
     println!("Hello, tauri.");
 
@@ -135,6 +141,7 @@ fn main() {
             move_down_selected_item,
             move_selected_item_to_next_week,
             move_selected_item_to_previous_week,
+            backup_database_file,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

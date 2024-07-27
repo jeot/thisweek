@@ -100,6 +100,7 @@ function App() {
       case Action.moveSelectedItemToNextWeek: moveSelectedItemToNextWeek(); break;
       case Action.moveSelectedItemToPreviousWeek: moveSelectedItemToPreviousWeek(); break;
       case Action.copyAllItems: copyAllWeekItemsToClipboard(); break;
+      case Action.backupDbFile: backupDbFile(); break;
       default:
         console.log("Warning! @keyboard_action_callback() invalid action number callback: ", action);
     }
@@ -216,6 +217,16 @@ function App() {
     console.log(text);
     navigator.clipboard.writeText(text);
     return text;
+  }
+
+  const backupDbFile = () => {
+    invoke("backup_database_file").then((result: boolean) => {
+      if (result) {
+        console.log("backup database file successful.");
+      } else {
+        console.log("Error backing up db file.");
+      }
+    });
   }
 
   const handleOnCopyText = function(id: number) {

@@ -24,12 +24,20 @@ function broadcastAction(action: Action) {
 
 const handleUserKeyPress = (event: KeyboardEvent) => {
   // console.log("keyboard keydown event: ", event);
-  if (event.code === 'Enter' && event.altKey) {
+
+  const noModifiers: boolean = (!event.shiftKey && !event.ctrlKey && !event.altKey && !event.metaKey);
+  const shiftOnly: boolean = (event.shiftKey && !event.ctrlKey && !event.altKey && !event.metaKey);
+  const ctrlOnly: boolean = (!event.shiftKey && event.ctrlKey && !event.altKey && !event.metaKey);
+  const altOnly: boolean = (!event.shiftKey && !event.ctrlKey && event.altKey && !event.metaKey);
+  const metaOnly: boolean = (!event.shiftKey && !event.ctrlKey && !event.altKey && event.metaKey);
+
+
+  if (event.code === 'Enter' && altOnly) {
     event.preventDefault();
     broadcastAction(Action.toggleMaximizeWindow);
   }
 
-  if (event.code === 'KeyQ' && event.altKey) {
+  if (event.code === 'KeyQ' && altOnly) {
     event.preventDefault();
     broadcastAction(Action.closeWindow);
   }
@@ -42,14 +50,14 @@ const handleUserKeyPress = (event: KeyboardEvent) => {
   if (!insert_mode) {
     // console.log('event', event);
     const nextWeek: boolean =
-      (event.code === 'KeyW' && !event.shiftKey && !event.ctrlKey && !event.altKey) || (event.code === 'KeyL' && !event.shiftKey && !event.ctrlKey && !event.altKey) || (event.code === 'ArrowRight' && !event.shiftKey && !event.ctrlKey && !event.altKey);
+      (event.code === 'KeyW' && noModifiers) || (event.code === 'KeyL' && noModifiers) || (event.code === 'ArrowRight' && noModifiers);
     if (nextWeek) {
       event.preventDefault();
       broadcastAction(Action.showNextWeek);
     }
 
     const previousWeek: boolean =
-      (event.code === 'KeyW' && event.shiftKey && !event.ctrlKey && !event.altKey) || (event.code === 'KeyH' && !event.shiftKey && !event.ctrlKey && !event.altKey) || (event.code === 'ArrowLeft' && !event.shiftKey && !event.ctrlKey && !event.altKey);
+      (event.code === 'KeyW' && shiftOnly) || (event.code === 'KeyH' && noModifiers) || (event.code === 'ArrowLeft' && noModifiers);
     if (previousWeek) {
       event.preventDefault();
       broadcastAction(Action.showPreviousWeek);
@@ -60,79 +68,77 @@ const handleUserKeyPress = (event: KeyboardEvent) => {
       broadcastAction(Action.showCurrentWeek);
     }
 
-    const selectNext: boolean = (event.code === 'ArrowDown' || event.code === 'KeyJ') && !event.shiftKey && !event.ctrlKey && !event.altKey;
+    const selectNext: boolean = (event.code === 'ArrowDown' || event.code === 'KeyJ') && noModifiers;
     if (selectNext) {
       event.preventDefault();
       broadcastAction(Action.selectNextItem);
     }
 
-    const selectPrevious: boolean = (event.code === 'ArrowUp' || event.code === 'KeyK') && !event.shiftKey && !event.ctrlKey && !event.altKey;
+    const selectPrevious: boolean = (event.code === 'ArrowUp' || event.code === 'KeyK') && noModifiers;
     if (selectPrevious) {
       event.preventDefault();
       broadcastAction(Action.selectPreviousItem);
     }
 
-    if (event.code === 'KeyE') {
+    if (event.code === 'KeyE' && noModifiers) {
       event.preventDefault();
       broadcastAction(Action.editSelectedItem);
     }
 
-    if (event.code === 'KeyD' || event.code === 'Delete') {
+    const deleteSelected: boolean = (event.code === 'KeyD' || event.code === 'Delete') && noModifiers;
+    if (deleteSelected) {
       event.preventDefault();
       broadcastAction(Action.deleteSelectedItem);
     }
 
-    if (event.code === 'KeyC' && event.ctrlKey) { // Ctrl-C
+    // Ctrl-C: copy item's text
+    if (event.code === 'KeyC' && ctrlOnly) {
       event.preventDefault();
       broadcastAction(Action.copySelectedItemText);
     }
 
-    if (event.code === 'Space' && !event.ctrlKey && !event.altKey && !event.shiftKey) { // Ctrl-C
+    if (event.code === 'Space' && noModifiers) {
       event.preventDefault();
       broadcastAction(Action.toggleSelectedItemState);
     }
 
     // Ctrl-K or Ctrl-Up: move up
-    const moveUp = (event.code === 'KeyK' && event.ctrlKey && !event.altKey && !event.shiftKey) ||
-      (event.code === 'ArrowUp' && event.ctrlKey && !event.altKey && !event.shiftKey)
+    const moveUp = (event.code === 'KeyK' || event.code === 'ArrowUp') && ctrlOnly;
     if (moveUp) {
       event.preventDefault();
       broadcastAction(Action.moveUpSelectedItem);
     }
 
     // Ctrl-J or Ctrl-Down: move down
-    const moveDown = (event.code === 'KeyJ' && event.ctrlKey && !event.altKey && !event.shiftKey) ||
-      (event.code === 'ArrowDown' && event.ctrlKey && !event.altKey && !event.shiftKey)
+    const moveDown = (event.code === 'KeyJ' || event.code === 'ArrowDown') && ctrlOnly;
     if (moveDown) {
       event.preventDefault();
       broadcastAction(Action.moveDownSelectedItem);
     }
 
     // Ctrl-L or Ctrl-Right: move item to next week
-    const moveNext = (event.code === 'KeyL' && event.ctrlKey && !event.altKey && !event.shiftKey) ||
-      (event.code === 'ArrowRight' && event.ctrlKey && !event.altKey && !event.shiftKey)
+    const moveNext = (event.code === 'KeyL' || event.code === 'ArrowRight') && ctrlOnly;
     if (moveNext) {
       event.preventDefault();
       broadcastAction(Action.moveSelectedItemToNextWeek);
     }
 
     // Ctrl-H or Ctrl-Left: move item to previous week
-    const movePrevious = (event.code === 'KeyH' && event.ctrlKey && !event.altKey && !event.shiftKey) ||
-      (event.code === 'ArrowLeft' && event.ctrlKey && !event.altKey && !event.shiftKey)
+    const movePrevious = (event.code === 'KeyH' || event.code === 'ArrowLeft') && ctrlOnly;
     if (movePrevious) {
       event.preventDefault();
       broadcastAction(Action.moveSelectedItemToPreviousWeek);
     }
 
     // new with N leader key
-    if (!newKeyFlag && event.code === 'KeyN') {
+    if (!newKeyFlag && event.code === 'KeyN' && noModifiers) {
       event.preventDefault();
       newKeyFlag = true;
-    } else if (newKeyFlag && event.code === 'KeyG') { // new goal
+    } else if (newKeyFlag && event.code === 'KeyG' && noModifiers) { // new goal
       event.preventDefault();
       newKeyFlag = false;
       broadcastAction(Action.newGoal);
-    } else if (newKeyFlag && event.code === 'KeyN') { // new note
+    } else if (newKeyFlag && event.code === 'KeyN' && noModifiers) { // new note
       event.preventDefault();
       newKeyFlag = false;
       broadcastAction(Action.newNote);
@@ -142,17 +148,21 @@ const handleUserKeyPress = (event: KeyboardEvent) => {
     } else { }
 
     // copy with C leader key
-    if (!copyKeyFlag && event.code === 'KeyC') {
+    if (!copyKeyFlag && event.code === 'KeyC' && noModifiers) {
       event.preventDefault();
       copyKeyFlag = true;
-    } else if (copyKeyFlag && event.code === 'KeyA') { // copy all items
+    } else if (copyKeyFlag && event.code === 'KeyA' && noModifiers) { // copy all items
       event.preventDefault();
       copyKeyFlag = false;
       broadcastAction(Action.copyAllItems);
-    } else if (event.code === 'KeyC') {
+    } else if (copyKeyFlag && event.code === 'KeyC' && noModifiers) { // copy one item
       event.preventDefault();
       copyKeyFlag = false;
       broadcastAction(Action.copySelectedItemText);
+    } else if (copyKeyFlag && event.code === 'KeyB' && noModifiers) { // create backup of db file
+      event.preventDefault();
+      copyKeyFlag = false;
+      broadcastAction(Action.backupDbFile);
     } else if (copyKeyFlag) {
       event.preventDefault();
       copyKeyFlag = false;
