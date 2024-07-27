@@ -98,6 +98,20 @@ fn move_down_selected_item(id: i32, managed_state: State<ManagedState>) -> WeekS
     week.week_state_js_object()
 }
 
+#[tauri::command]
+fn move_selected_item_to_next_week(id: i32, managed_state: State<ManagedState>) -> WeekStateJs {
+    let mut week = managed_state.week.lock().unwrap();
+    week.move_selected_item_to_next_week(id);
+    week.week_state_js_object()
+}
+
+#[tauri::command]
+fn move_selected_item_to_previous_week(id: i32, managed_state: State<ManagedState>) -> WeekStateJs {
+    let mut week = managed_state.week.lock().unwrap();
+    week.move_selected_item_to_previous_week(id);
+    week.week_state_js_object()
+}
+
 fn main() {
     println!("Hello, tauri.");
 
@@ -119,6 +133,8 @@ fn main() {
             get_near_items_id,
             move_up_selected_item,
             move_down_selected_item,
+            move_selected_item_to_next_week,
+            move_selected_item_to_previous_week,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

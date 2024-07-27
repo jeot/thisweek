@@ -36,6 +36,8 @@ export enum Action {
   toggleSelectedItemState,
   moveUpSelectedItem,
   moveDownSelectedItem,
+  moveSelectedItemToNextWeek,
+  moveSelectedItemToPreviousWeek,
 };
 
 // export const ID_NONE = -1;

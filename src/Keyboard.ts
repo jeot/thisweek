@@ -42,14 +42,14 @@ const handleUserKeyPress = (event: KeyboardEvent) => {
   if (!insert_mode) {
     // console.log('event', event);
     const nextWeek: boolean =
-      ((event.code === 'KeyW' || event.code === 'KeyL') && !event.shiftKey) || (event.code === 'ArrowRight');
+      (event.code === 'KeyW' && !event.shiftKey && !event.ctrlKey && !event.altKey) || (event.code === 'KeyL' && !event.shiftKey && !event.ctrlKey && !event.altKey) || (event.code === 'ArrowRight' && !event.shiftKey && !event.ctrlKey && !event.altKey);
     if (nextWeek) {
       event.preventDefault();
       broadcastAction(Action.showNextWeek);
     }
 
     const previousWeek: boolean =
-      (event.code === 'KeyW' && event.shiftKey) || (event.code === 'KeyH' && !event.shiftKey) || (event.code === 'ArrowLeft');
+      (event.code === 'KeyW' && event.shiftKey && !event.ctrlKey && !event.altKey) || (event.code === 'KeyH' && !event.shiftKey && !event.ctrlKey && !event.altKey) || (event.code === 'ArrowLeft' && !event.shiftKey && !event.ctrlKey && !event.altKey);
     if (previousWeek) {
       event.preventDefault();
       broadcastAction(Action.showPreviousWeek);
@@ -106,6 +106,22 @@ const handleUserKeyPress = (event: KeyboardEvent) => {
     if (moveDown) {
       event.preventDefault();
       broadcastAction(Action.moveDownSelectedItem);
+    }
+
+    // Ctrl-L or Ctrl-Right: move item to next week
+    const moveNext = (event.code === 'KeyL' && event.ctrlKey && !event.altKey && !event.shiftKey) ||
+      (event.code === 'ArrowRight' && event.ctrlKey && !event.altKey && !event.shiftKey)
+    if (moveNext) {
+      event.preventDefault();
+      broadcastAction(Action.moveSelectedItemToNextWeek);
+    }
+
+    // Ctrl-H or Ctrl-Left: move item to previous week
+    const movePrevious = (event.code === 'KeyH' && event.ctrlKey && !event.altKey && !event.shiftKey) ||
+      (event.code === 'ArrowLeft' && event.ctrlKey && !event.altKey && !event.shiftKey)
+    if (movePrevious) {
+      event.preventDefault();
+      broadcastAction(Action.moveSelectedItemToPreviousWeek);
     }
 
     // new with N leader key

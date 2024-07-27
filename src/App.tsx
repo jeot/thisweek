@@ -97,6 +97,8 @@ function App() {
       case Action.toggleSelectedItemState: handleOnToggle(selectedIdRef.current); break;
       case Action.moveUpSelectedItem: moveUpSelectedItem(); break;
       case Action.moveDownSelectedItem: moveDownSelectedItem(); break;
+      case Action.moveSelectedItemToNextWeek: moveSelectedItemToNextWeek(); break;
+      case Action.moveSelectedItemToPreviousWeek: moveSelectedItemToPreviousWeek(); break;
       case Action.copyAllItems: copyAllWeekItemsToClipboard(); break;
       default:
         console.log("Warning! @keyboard_action_callback() invalid action number callback: ", action);
@@ -233,6 +235,20 @@ function App() {
   const moveDownSelectedItem = function() {
     if (selectedIdRef.current < 0) return;
     invoke("move_down_selected_item", { id: selectedIdRef.current }).then((result) => {
+      setWeekState(result);
+    });
+  }
+
+  const moveSelectedItemToNextWeek = function() {
+    if (selectedIdRef.current < 0) return;
+    invoke("move_selected_item_to_next_week", { id: selectedIdRef.current }).then((result) => {
+      setWeekState(result);
+    });
+  }
+
+  const moveSelectedItemToPreviousWeek = function() {
+    if (selectedIdRef.current < 0) return;
+    invoke("move_selected_item_to_previous_week", { id: selectedIdRef.current }).then((result) => {
       setWeekState(result);
     });
   }
