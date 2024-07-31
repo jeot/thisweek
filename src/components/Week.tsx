@@ -7,23 +7,12 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import { ids, itemKind, itemStatus } from "../constants.ts";
 
+import './styles.css'
+
 function WeekHeader(props) {
 
-  const style = {
-    p: 1,
-    fontSize: "1em",
-    fontWeight: 700,
-    backgroundColor: '#EBEDEF',
-  };
-
   return (
-    <Stack
-      className="week-title" dir="auto"
-      direction="row"
-      alignItems="center"
-      justifyContent="space-between"
-      sx={style}
-    >
+    <div className="week-header">
       <Tooltip title="Next Week">
         <IconButton aria-label="next" size="small" color="text.default"
           onClick={() => { props.onNextWeek(); }}
@@ -39,7 +28,7 @@ function WeekHeader(props) {
           <NavigateBeforeIcon fontSize="small" />
         </IconButton>
       </Tooltip>
-    </Stack>
+    </div>
   );
 }
 
@@ -61,7 +50,7 @@ function WeekItemsList(props) {
   // console.log(item_elements);
 
   return (
-    <div dir="rtl" >
+    <div className="week-main">
       {item_elements}
       {
         (props.editingId == ids.new_goal) &&
@@ -89,12 +78,8 @@ function WeekItemsList(props) {
 }
 
 export default function Week(props) {
-  const style = {
-    p: 0,
-    pb: 10,
-  };
   return (
-    <Box sx={style} >
+    <div className="week-section">
       <WeekHeader
         {...props}
       />
@@ -103,7 +88,7 @@ export default function Week(props) {
         {...props}
       />
 
-    </Box >
+    </div>
   );
 
 }

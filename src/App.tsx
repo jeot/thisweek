@@ -3,9 +3,12 @@ import { useState, useEffect, useRef, createRef } from "react";
 import useStateRef from 'react-usestateref'
 import { invoke } from "@tauri-apps/api/tauri";
 import { appWindow } from '@tauri-apps/api/window'
+import Stack from '@mui/material/Stack';
 import Week from "./components/Week.tsx"
 import BasicSpeedDial from "./components/BasicSpeedDial.tsx"
 import Header from "./components/Header.tsx"
+import SidebarNav from './components/SidebarNav.tsx';
+import Box from '@mui/material/Box';
 import * as Keyboard from "./Keyboard.ts"
 
 import CssBaseline from '@mui/material/CssBaseline';
@@ -29,6 +32,7 @@ import '@fontsource/roboto/700.css';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { Action, ids, itemKind, itemStatus } from './constants.ts';
 
+import './components/styles.css';
 
 function App() {
 
@@ -385,30 +389,35 @@ function App() {
     <React.Fragment>
       <ThemeProvider theme={theme}>
         <CssBaseline>
-          <Header
-            today_persian_date={weekState.today_persian_date}
-            today_english_date={weekState.today_english_date}
-          />
-          <Week
-            itemsRefs={itemsRefs}
-            weekState={weekState}
-            editingId={editingId}
-            selectedId={selectedId}
-            onSubmit={handleOnSubmit}
-            onEdit={handleOnEdit}
-            onSelect={handleOnSelect}
-            onDelete={handleOnDelete}
-            onCancel={handleOnCancel}
-            onToggle={handleOnToggle}
-            onCopyText={handleOnCopyText}
-            onFocusLeave={handleOnFocusLeave}
-            onNextWeek={showNextWeek}
-            onPreviousWeek={showPreviousWeek}
-          />
-          {editingId == ids.none && <BasicSpeedDial onClick={onSpeedDialClick} />}
+          <div className="application" >
+            <Header
+              today_persian_date={weekState.today_persian_date}
+              today_english_date={weekState.today_english_date}
+            />
+            <div className="main" >
+              <SidebarNav />
+              <Week
+                itemsRefs={itemsRefs}
+                weekState={weekState}
+                editingId={editingId}
+                selectedId={selectedId}
+                onSubmit={handleOnSubmit}
+                onEdit={handleOnEdit}
+                onSelect={handleOnSelect}
+                onDelete={handleOnDelete}
+                onCancel={handleOnCancel}
+                onToggle={handleOnToggle}
+                onCopyText={handleOnCopyText}
+                onFocusLeave={handleOnFocusLeave}
+                onNextWeek={showNextWeek}
+                onPreviousWeek={showPreviousWeek}
+              />
+              {editingId == ids.none && <BasicSpeedDial onClick={onSpeedDialClick} />}
+            </div>
+          </div>
         </CssBaseline>
       </ThemeProvider>
-    </React.Fragment>
+    </React.Fragment >
 
   );
 }

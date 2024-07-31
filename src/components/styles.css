@@ -1,3 +1,131 @@
-/* .goal_note_item:hover { */
-/*    background-color: aliceblue; */
-/* } */
+div {
+	box-sizing: border-box;
+	margin: 0px;
+	padding: 0px;
+}
+
+p,
+img {
+	margin: 0px;
+	padding: 0px;
+}
+
+.dummybackgroundpink {
+	background-color: lightpink;
+}
+
+.application {
+	display: flex;
+	flex-flow: column;
+	height: 100%;
+	align-items: stretch;
+}
+
+.header {
+	flex: 0 1 auto;
+	/* shorthand for following syntax */
+	/* flex-grow: 0; */
+	/* flex-shrink: 1; */
+	/* flex-basis: auto; */
+
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+
+	font-size: 14px;
+	font-weight: 300;
+	color: white;
+	background-color: darkslateblue;
+	padding: 2px 8px 2px 8px;
+}
+
+.main {
+	flex: 1 1 auto;
+	overflow-y: auto;
+
+	display: flex;
+	flex-direction: row;
+	/* display: grid; */
+	/* grid-template-columns: 100px 1fr; */
+
+}
+
+.sidebar {
+	flex: 0 1 auto;
+	background-color: #cec5d9;
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+}
+
+.sidebar-btn:hover {
+	background-color: darkgray;
+	opacity: 0.9;
+}
+
+.sidebar-btn:active {
+	background-color: gray;
+	opacity: 0.8;
+}
+
+.sidebar-btn.active {
+	opacity: 1;
+	box-shadow: inset 2px 0px 4px 0px gray;
+}
+
+.sidebar-btn {
+	width: 64px;
+	border: none;
+	border-radius: 0px;
+	margin: 4px 0px 4px 0px;
+	padding: 4px;
+	background-color: inherit;
+	opacity: 0.5;
+	outline: none;
+}
+
+.sidebar-btn-icon {
+	width: 48px;
+	height: 48px;
+	object-fit: cover;
+}
+
+.sidebar-btn-text {
+	font-size: 0.8em;
+	font-weight: 700;
+	color: black;
+}
+
+.week-section {
+	flex: 1 1 auto;
+	overflow-y: auto;
+
+	display: flex;
+	flex-direction: column;
+}
+
+.week-header {
+	flex: 0 1 auto;
+	padding: 0px;
+
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	direction: rtl;
+	padding: 1em;
+	font-size: 1em;
+	font-weight: 700;
+	background-color: #EBEDEF;
+}
+
+.week-main {
+	direction: rtl;
+	flex: 1 1 auto;
+	overflow-y: auto;
+	padding: 0px;
+	padding-bottom: 64px;
+}
