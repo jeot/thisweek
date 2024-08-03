@@ -62,47 +62,78 @@ img {
 }
 
 .sidebar-btn:hover {
-	background-color: darkgray;
-	opacity: 0.9;
+	/* background-color: darkgray; */
+	opacity: 0.7;
 }
 
 .sidebar-btn:active {
-	background-color: gray;
+	/* background-color: lightgray; */
 	opacity: 0.8;
-}
-
-.sidebar-btn.active {
-	opacity: 1;
-	box-shadow: inset 2px 0px 4px 0px gray;
 }
 
 .sidebar-btn {
 	width: 64px;
 	border: none;
 	border-radius: 0px;
-	margin: 4px 0px 4px 0px;
-	padding: 4px;
+	margin: 4px;
+	margin-top: 16px;
+	margin-bottom: 16px;
+	padding: 0px;
 	background-color: inherit;
 	opacity: 0.5;
 	outline: none;
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.sidebar-btn.active {
+	opacity: 1;
+	/* box-shadow: inset 2px 0px 4px 0px gray; */
 }
 
 .sidebar-btn-icon {
-	width: 48px;
-	height: 48px;
+	display: block;
+	width: 32px;
+	height: 32px;
 	object-fit: cover;
+	margin-bottom: 4px;
+}
+
+.week-icon {
+	width: 24px;
+	height: 24px;
+	margin-bottom: 8px;
 }
 
 .sidebar-btn-text {
 	font-size: 0.8em;
 	font-weight: 700;
 	color: black;
+	display: block;
+	margin-top: 1px;
+}
+
+.target-section {
+	flex: 1 1 auto;
+	overflow-y: auto;
+	/* inside items arrangement */
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.pink {
+	background-color: lightpink;
+	font-size: 2em;
 }
 
 .week-section {
 	flex: 1 1 auto;
 	overflow-y: auto;
-
+	/* inside items arrangement */
 	display: flex;
 	flex-direction: column;
 }

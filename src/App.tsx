@@ -5,6 +5,7 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { appWindow } from '@tauri-apps/api/window'
 import Stack from '@mui/material/Stack';
 import Week from "./components/Week.tsx"
+import Target from "./components/Target.tsx"
 import BasicSpeedDial from "./components/BasicSpeedDial.tsx"
 import Header from "./components/Header.tsx"
 import SidebarNav from './components/SidebarNav.tsx';
@@ -30,7 +31,7 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
 import { createTheme, ThemeProvider } from '@mui/material';
-import { Action, ids, itemKind, itemStatus } from './constants.ts';
+import { Action, ids, itemKind, itemStatus, Page, SideButton } from './constants.ts';
 
 import './components/styles.css';
 
@@ -50,8 +51,10 @@ function App() {
     items: [],
   };
 
-  const [editingId, setEditingId] = useState(ids.none)
-  const [selectedId, setSelectedId, selectedIdRef] = useStateRef(ids.none)
+  const [activePage, setActivePage] = useState(Page.weeks);
+  const [activeSideButton, setActiveSideButton] = useState(SideButton.week);
+  const [editingId, setEditingId] = useState(ids.none);
+  const [selectedId, setSelectedId, selectedIdRef] = useStateRef(ids.none);
   const [weekState, setWeekState] = useState(week_init);
   const weekStateRef = useRef();
   weekStateRef.current = weekState;
@@ -324,6 +327,22 @@ function App() {
     }
   }
 
+  const handleSideBarNavButtonOnClick = function(buttonId: number) {
+    setActiveSideButton(buttonId);
+    if (buttonId == SideButton.week) {
+      console.log("displaying weeks page...");
+      setActivePage(Page.weeks);
+    } else if (buttonId == SideButton.target) {
+      setActivePage(Page.targets);
+      console.log("displaying targes page...");
+    } else if (buttonId == SideButton.setting) {
+      // setActivePage(Page.settings);
+      console.log("displaying settings page...");
+    } else {
+      console.log("other click. ignored.");
+    }
+  }
+
   const theme = createTheme({
     typography: {
       fontSize: 14,
@@ -395,8 +414,8 @@ function App() {
               today_english_date={weekState.today_english_date}
             />
             <div className="main" >
-              <SidebarNav />
-              <Week
+              <SidebarNav onClick={handleSideBarNavButtonOnClick} activeSideButton={activeSideButton} />
+              {activePage == Page.weeks ? <Week
                 itemsRefs={itemsRefs}
                 weekState={weekState}
                 editingId={editingId}
@@ -411,7 +430,7 @@ function App() {
                 onFocusLeave={handleOnFocusLeave}
                 onNextWeek={showNextWeek}
                 onPreviousWeek={showPreviousWeek}
-              />
+              /> : activePage == Page.targets ? <Target /> : <></>}
               {editingId == ids.none && <BasicSpeedDial onClick={onSpeedDialClick} />}
             </div>
           </div>

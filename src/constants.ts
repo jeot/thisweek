@@ -17,6 +17,16 @@ export const itemStatus = {
   done: 1,
 };
 
+export enum Page {
+  weeks = 1,
+  targets,
+};
+
+export enum SideButton {
+  week = 1,
+  target,
+  setting,
+};
 
 export enum Action {
   toggleMaximizeWindow = 1,
