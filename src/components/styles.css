@@ -115,22 +115,13 @@ img {
 	margin-top: 1px;
 }
 
-.target-section {
-	flex: 1 1 auto;
-	overflow-y: auto;
-	/* inside items arrangement */
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-}
-
 .pink {
 	background-color: lightpink;
 	font-size: 2em;
 }
 
-.week-section {
+.week-section,
+.objectives-section {
 	flex: 1 1 auto;
 	overflow-y: auto;
 	/* inside items arrangement */
@@ -138,7 +129,8 @@ img {
 	flex-direction: column;
 }
 
-.week-header {
+.week-header,
+.objectives-header {
 	flex: 0 1 auto;
 	padding: 0px;
 

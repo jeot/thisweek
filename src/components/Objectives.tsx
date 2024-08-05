@@ -4,17 +4,17 @@ import "../utilities.tsx";
 
 import './styles.css'
 
-export default function Week(props) {
+export default function Objectives(props) {
   return (
-    <div className="week-section">
+    <div className="objectives-section">
       <ItemsListNavBar
-        title={props.weekState.week_title.toPersianDigits()}
-        textNext="Next Week"
-        textPrevious="Previous Week"
+        title={props.objectivesState.title.toPersianDigits()}
+        textNext="Next Year"
+        textPrevious="Previous Year"
         {...props}
       />
       <ItemsList
-        items={props.weekState.items}
+        items={props.objectivesState.items}
         {...props}
       />
     </div>

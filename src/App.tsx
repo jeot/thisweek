@@ -5,7 +5,7 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { appWindow } from '@tauri-apps/api/window'
 import Stack from '@mui/material/Stack';
 import Week from "./components/Week.tsx"
-import Target from "./components/Target.tsx"
+import Objectives from "./components/Objectives.tsx"
 import BasicSpeedDial from "./components/BasicSpeedDial.tsx"
 import Header from "./components/Header.tsx"
 import SidebarNav from './components/SidebarNav.tsx';
@@ -42,12 +42,23 @@ function App() {
     week_title: string;
     today_persian_date: string;
     today_english_date: string;
-    items: [],
+    items: [];
   };
   const week_init: WeekState = {
     week_title: "",
     today_persian_date: "",
     today_english_date: "",
+    items: [],
+  };
+
+  interface ObjectivesState {
+    title: string;
+    info: string;
+    items: [];
+  };
+  const objectives_init: ObjectivesState = {
+    title: "",
+    info: "",
     items: [],
   };
 
@@ -58,15 +69,16 @@ function App() {
   const [weekState, setWeekState] = useState(week_init);
   const weekStateRef = useRef();
   weekStateRef.current = weekState;
+  const [objectivesState, setObjectivesState] = useState(objectives_init);
 
-  const itemsCount = weekState.items.length;
-  const itemsRefs = useRef([]);
+  const weeksItemsCount = weekState.items.length;
+  const weeksItemsRefs = useRef([]);
 
-  if (itemsRefs.current.length !== itemsCount) {
+  if (weeksItemsRefs.current.length !== weeksItemsCount) {
     // add or remove refs
-    itemsRefs.current = Array(itemsCount) // make an empty slot array with defined length
+    weeksItemsRefs.current = Array(weeksItemsCount) // make an empty slot array with defined length
       .fill() // fill them all with undefined
-      .map((_, i) => itemsRefs.current[i] || createRef());
+      .map((_, i) => weeksItemsRefs.current[i] || createRef());
   }
 
   useEffect(() => {
@@ -415,22 +427,43 @@ function App() {
             />
             <div className="main" >
               <SidebarNav onClick={handleSideBarNavButtonOnClick} activeSideButton={activeSideButton} />
-              {activePage == Page.weeks ? <Week
-                itemsRefs={itemsRefs}
-                weekState={weekState}
-                editingId={editingId}
-                selectedId={selectedId}
-                onSubmit={handleOnSubmit}
-                onEdit={handleOnEdit}
-                onSelect={handleOnSelect}
-                onDelete={handleOnDelete}
-                onCancel={handleOnCancel}
-                onToggle={handleOnToggle}
-                onCopyText={handleOnCopyText}
-                onFocusLeave={handleOnFocusLeave}
-                onNextWeek={showNextWeek}
-                onPreviousWeek={showPreviousWeek}
-              /> : activePage == Page.targets ? <Target /> : <></>}
+              {activePage == Page.weeks ?
+                <Week
+                  itemsRefs={weeksItemsRefs}
+                  weekState={weekState}
+                  editingId={editingId}
+                  selectedId={selectedId}
+                  onNext={showNextWeek}
+                  onPrevious={showPreviousWeek}
+                  onSubmit={handleOnSubmit}
+                  onEdit={handleOnEdit}
+                  onSelect={handleOnSelect}
+                  onDelete={handleOnDelete}
+                  onCancel={handleOnCancel}
+                  onToggle={handleOnToggle}
+                  onCopyText={handleOnCopyText}
+                  onFocusLeave={handleOnFocusLeave}
+                />
+                : activePage == Page.targets ?
+                  <Objectives
+                    itemsRefs={objectivesItemsRefs}
+                    objectivesState={objectivesState}
+                    editingId={editingId}
+                    selectedId={selectedId}
+                    onNext={showNextYear}
+                    onPrevious={showPreviousYear}
+                    onNext={showNextWeek}
+                    onPrevious={showPreviousWeek}
+                    onSubmit={handleOnSubmit}
+                    onEdit={handleOnEdit}
+                    onSelect={handleOnSelect}
+                    onDelete={handleOnDelete}
+                    onCancel={handleOnCancel}
+                    onToggle={handleOnToggle}
+                    onCopyText={handleOnCopyText}
+                    onFocusLeave={handleOnFocusLeave}
+                  />
+                  : <></>}
               {editingId == ids.none && <BasicSpeedDial onClick={onSpeedDialClick} />}
             </div>
           </div>
