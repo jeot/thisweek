@@ -1,9 +1,8 @@
-import { useState, useEffect } from "react";
-import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import './styles.css';
+import '../utilities.tsx';
 
-export default function Header({ today_persian_date, today_english_date }) {
+export default function Header({ today_persian_date, today_english_date }: { today_persian_date: string, today_english_date: string }) {
 
   return (
     <div className="header">

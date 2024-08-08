@@ -1,6 +1,3 @@
-import { useState, useEffect } from "react";
-
-
 import styled from 'styled-components'
 import { Calendar2Week as WeekIcon } from '@styled-icons/bootstrap/Calendar2Week'
 import { Target as TargetsIcon } from '@styled-icons/fluentui-system-regular/Target'
@@ -8,7 +5,10 @@ import { Target as TargetsIcon } from '@styled-icons/fluentui-system-regular/Tar
 import './styles.css'
 import { SideButton } from '../constants.ts';
 
-function SidebarButton(props) {
+type CallbackFunction = (buttonId: number) => void;
+interface FullProps { text: string, activeSideButton: number, buttonId: number, onClick: CallbackFunction, children: any }
+
+function SidebarButton(props: FullProps) {
   const { text, activeSideButton, buttonId, onClick } = props;
   const isActive = (buttonId == activeSideButton);
   const classes = isActive ? "sidebar-btn active" : "sidebar-btn";
@@ -22,8 +22,9 @@ function SidebarButton(props) {
 
 const WeekIconStyled = styled(WeekIcon)`color: black;`;
 const TargetsIconStyled = styled(TargetsIcon)`color: black;`;
+interface HalfProps { activeSideButton: number, onClick: CallbackFunction, children: any }
 
-export default function SidebarNav(props) {
+export default function SidebarNav(props: HalfProps) {
 
   return (
     <div className="sidebar">

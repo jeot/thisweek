@@ -1,7 +1,5 @@
 import GoalNoteItem from "./GoalNoteItem.tsx";
 import Tooltip from '@mui/material/Tooltip';
-import Stack from '@mui/material/Stack';
-import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
@@ -77,7 +75,7 @@ function WeekItemsList(props) {
 
 }
 
-export default function Week(props) {
+export default function Week(props: {}) {
   return (
     <div className="week-section">
       <WeekHeader
