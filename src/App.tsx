@@ -54,10 +54,11 @@ function App() {
   const [editingId, setEditingId] = useState(ids.none);
   const [selectedId, setSelectedId, selectedIdRef] = useStateRef(ids.none);
   const [weekState, setWeekState] = useState<WeekState>(week_init);
-  const weekStateRef = useRef<WeekState>(weekState);
+  const weekStateRef = useRef<WeekState>(week_init);
+  weekStateRef.current = weekState as WeekState;
 
   const itemsCount = weekState.items.length;
-  const itemsRefs = useRef([]);
+  const itemsRefs = useRef<Array<undefined | React.RefObject<unknown>>>(Array(0));
 
   if (itemsRefs.current.length !== itemsCount) {
     // add or remove refs

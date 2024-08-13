@@ -29,7 +29,7 @@ const handleUserKeyPress = (event: KeyboardEvent) => {
   const shiftOnly: boolean = (event.shiftKey && !event.ctrlKey && !event.altKey && !event.metaKey);
   const ctrlOnly: boolean = (!event.shiftKey && event.ctrlKey && !event.altKey && !event.metaKey);
   const altOnly: boolean = (!event.shiftKey && !event.ctrlKey && event.altKey && !event.metaKey);
-  const metaOnly: boolean = (!event.shiftKey && !event.ctrlKey && !event.altKey && event.metaKey);
+  //const metaOnly: boolean = (!event.shiftKey && !event.ctrlKey && !event.altKey && event.metaKey);
 
 
   if (event.code === 'Enter' && altOnly) {

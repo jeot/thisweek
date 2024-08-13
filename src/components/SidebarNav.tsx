@@ -22,7 +22,7 @@ function SidebarButton(props: FullProps) {
 
 const WeekIconStyled = styled(WeekIcon)`color: black;`;
 const TargetsIconStyled = styled(TargetsIcon)`color: black;`;
-interface HalfProps { activeSideButton: number, onClick: CallbackFunction, children: any }
+interface HalfProps { activeSideButton: number, onClick: CallbackFunction, children?: any }
 
 export default function SidebarNav(props: HalfProps) {
 

@@ -1,9 +1,9 @@
-export function getDirection(text) {
+export function getDirection(text: string) {
   let direction = 'auto';
   if (text === undefined) return direction;
   // var x = new RegExp("[\x00-\x80]+"); // is ascii
   // var isAscii = x.test(text);
-  var c = text.charCodeAt();
+  var c = text.charCodeAt(0);
   var isAscii = (c < 0x7F);
   if (isAscii) {
     direction = 'ltr';

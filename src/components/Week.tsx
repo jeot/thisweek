@@ -7,12 +7,12 @@ import { ids, itemKind, itemStatus } from "../constants.ts";
 
 import './styles.css'
 
-function WeekHeader(props) {
+function WeekHeader(props: any) {
 
   return (
     <div className="week-header">
       <Tooltip title="Next Week">
-        <IconButton aria-label="next" size="small" color="text.default"
+        <IconButton aria-label="next" size="small" color="info"
           onClick={() => { props.onNextWeek(); }}
         >
           <NavigateNextIcon fontSize="small" />
@@ -20,7 +20,7 @@ function WeekHeader(props) {
       </Tooltip>
       {props.weekState.week_title.toPersianDigits()}
       <Tooltip title="Previous Week">
-        <IconButton aria-label="previous" size="small" color="text.default"
+        <IconButton aria-label="previous" size="small" color="info"
           onClick={() => { props.onPreviousWeek(); }}
         >
           <NavigateBeforeIcon fontSize="small" />
@@ -30,8 +30,8 @@ function WeekHeader(props) {
   );
 }
 
-function WeekItemsList(props) {
-  const item_elements = props.weekState.items.map((item, i) => {
+function WeekItemsList(props: any) {
+  const item_elements = props.weekState.items.map((item: any, i: any) => {
     let editing = (item.id == props.editingId);
     let selected = (item.id == props.selectedId);
 
@@ -75,7 +75,7 @@ function WeekItemsList(props) {
 
 }
 
-export default function Week(props: {}) {
+export default function Week(props: any) {
   return (
     <div className="week-section">
       <WeekHeader
