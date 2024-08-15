@@ -3,13 +3,11 @@ import { useState, useEffect, useRef, createRef } from "react";
 import useStateRef from 'react-usestateref'
 import { invoke } from "@tauri-apps/api/tauri";
 import { appWindow } from '@tauri-apps/api/window'
-import Stack from '@mui/material/Stack';
 import Week from "./components/Week.tsx"
 import Objectives from "./components/Objectives.tsx"
 import BasicSpeedDial from "./components/BasicSpeedDial.tsx"
 import Header from "./components/Header.tsx"
 import SidebarNav from './components/SidebarNav.tsx';
-import Box from '@mui/material/Box';
 import * as Keyboard from "./Keyboard.ts"
 
 import CssBaseline from '@mui/material/CssBaseline';
@@ -31,7 +29,7 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
 import { createTheme, ThemeProvider } from '@mui/material';
-import { Action, ids, itemKind, itemStatus, Page, SideButton } from './constants.ts';
+import { Action, ids, itemKind, Page, SideButton } from './constants.ts';
 
 import './components/styles.css';
 
@@ -42,7 +40,7 @@ function App() {
     week_title: string;
     today_persian_date: string;
     today_english_date: string;
-    items: [];
+    items: Array<any>;
   };
   const week_init: WeekState = {
     week_title: "",
@@ -66,18 +64,18 @@ function App() {
   const [activeSideButton, setActiveSideButton] = useState(SideButton.week);
   const [editingId, setEditingId] = useState(ids.none);
   const [selectedId, setSelectedId, selectedIdRef] = useStateRef(ids.none);
-  const [weekState, setWeekState] = useState(week_init);
-  const weekStateRef = useRef();
-  weekStateRef.current = weekState;
+  const [weekState, setWeekState] = useState<WeekState>(week_init);
+  const weekStateRef = useRef<WeekState>(week_init);
+  weekStateRef.current = weekState as WeekState;
   const [objectivesState, setObjectivesState] = useState(objectives_init);
 
   const weeksItemsCount = weekState.items.length;
-  const weeksItemsRefs = useRef([]);
+  const weeksItemsRefs = useRef<Array<undefined | React.RefObject<unknown>>>(Array(0));
 
   if (weeksItemsRefs.current.length !== weeksItemsCount) {
     // add or remove refs
     weeksItemsRefs.current = Array(weeksItemsCount) // make an empty slot array with defined length
-      .fill() // fill them all with undefined
+      .fill(undefined) // fill them all with undefined
       .map((_, i) => weeksItemsRefs.current[i] || createRef());
   }
 
@@ -86,7 +84,7 @@ function App() {
     Keyboard.listen(keyboard_action_callback);
     invoke("get_week_state").then((result) => {
       // console.log("get_week_state result: ", result);
-      setWeekState(result);
+      setWeekState(result as WeekState);
     });
   }, []
   );
@@ -138,12 +136,12 @@ function App() {
     return index;
   }
 
-  const handleOnCancel = function(id?: number) {
+  const handleOnCancel = function() {
     setEditingId(ids.none);
     setSelectedId(ids.none);
     Keyboard.set_insert_mode(false);
     invoke("get_week_state").then((result) => {
-      setWeekState(result);
+      setWeekState(result as WeekState);
     });
   }
 
@@ -167,11 +165,11 @@ function App() {
   const handleOnToggle = function(id: number) {
     // console.log(`new handleOnToggle(${id})`);
     invoke("toggle_item_state", { id: id }).then((result) => {
-      setWeekState(result);
+      setWeekState(result as WeekState);
     });
   }
 
-  const handleOnFocusLeave = function({ id, text }) {
+  const handleOnFocusLeave = function({ id, text }: { id: number, text: string }) {
     // disable text field if it's for new goal/note input and is empty
     if (text != "") return;
     if (id == ids.new_goal || id == ids.new_note) {
@@ -182,21 +180,21 @@ function App() {
   const showNextWeek = function() {
     setSelectedId(ids.none);
     invoke("get_next_week").then((result) => {
-      setWeekState(result);
+      setWeekState(result as WeekState);
     });
   }
 
   const showPreviousWeek = function() {
     setSelectedId(ids.none);
     invoke("get_previous_week").then((result) => {
-      setWeekState(result);
+      setWeekState(result as WeekState);
     });
   }
 
   const showCurrentWeek = function() {
     setSelectedId(ids.none);
     invoke("get_current_week").then((result) => {
-      setWeekState(result);
+      setWeekState(result as WeekState);
     });
   }
 
@@ -239,7 +237,7 @@ function App() {
   }
 
   const backupDbFile = () => {
-    invoke("backup_database_file").then((result: boolean) => {
+    invoke("backup_database_file").then((result /* boolean */) => {
       if (result) {
         console.log("backup database file successful.");
       } else {
@@ -258,36 +256,36 @@ function App() {
   const moveUpSelectedItem = function() {
     if (selectedIdRef.current < 0) return;
     invoke("move_up_selected_item", { id: selectedIdRef.current }).then((result) => {
-      setWeekState(result);
+      setWeekState(result as WeekState);
     });
   }
 
   const moveDownSelectedItem = function() {
     if (selectedIdRef.current < 0) return;
     invoke("move_down_selected_item", { id: selectedIdRef.current }).then((result) => {
-      setWeekState(result);
+      setWeekState(result as WeekState);
     });
   }
 
   const moveSelectedItemToNextWeek = function() {
     if (selectedIdRef.current < 0) return;
     invoke("move_selected_item_to_next_week", { id: selectedIdRef.current }).then((result) => {
-      setWeekState(result);
+      setWeekState(result as WeekState);
     });
   }
 
   const moveSelectedItemToPreviousWeek = function() {
     if (selectedIdRef.current < 0) return;
     invoke("move_selected_item_to_previous_week", { id: selectedIdRef.current }).then((result) => {
-      setWeekState(result);
+      setWeekState(result as WeekState);
     });
   }
 
-  const handleOnSubmit = function({ id, text, keyboard_submit }) {
+  const handleOnSubmit = function({ id, text, keyboard_submit }: { id: number, text: string, keyboard_submit: boolean }) {
     if (id === undefined || text === undefined) return;
     if (id == ids.new_goal) {
       invoke("add_new_goal", { text: text }).then((result) => {
-        setWeekState(result);
+        setWeekState(result as WeekState);
       });
       // to continue adding new goals or not?
       if (keyboard_submit === undefined) {
@@ -300,13 +298,13 @@ function App() {
       setEditingId(ids.none);
       Keyboard.set_insert_mode(false);
       invoke("add_new_note", { text: text }).then((result) => {
-        setWeekState(result);
+        setWeekState(result as WeekState);
       });
     } else if (editingId == id) { // submiting an edit on previous item
       setEditingId(ids.none);
       Keyboard.set_insert_mode(false);
       invoke("update_item", { id: id, text: text }).then((result) => {
-        setWeekState(result);
+        setWeekState(result as WeekState);
       });
     } else { }
   }
@@ -314,9 +312,10 @@ function App() {
   const handleOnDelete = function(id: number) {
     let nextId: number;
     invoke("get_near_items_id", { id: selectedIdRef.current }).then((result) => {
-      nextId = result[1];
+      const two_ids = result as Array<any>;
+      nextId = two_ids[1];
       invoke("delete_item", { id: id }).then((result) => {
-        setWeekState(result);
+        setWeekState(result as WeekState);
         if (nextId != null) {
           setSelectedId(nextId);
         } else {

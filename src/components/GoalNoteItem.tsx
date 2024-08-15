@@ -1,11 +1,7 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
-// import "./styles.css";
-
-import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import InputBase from '@mui/material/InputBase';
-import Input from '@mui/material/Input';
 import TextField from '@mui/material/TextField';
 import Checkbox from '@mui/material/Checkbox';
 import Stack from '@mui/material/Stack';
@@ -16,11 +12,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import ChatIcon from '@mui/icons-material/Chat';
-import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 import { getDirection } from "./../utilities.tsx"
-import { ids, itemKind, itemStatus } from "../constants.ts";
+import { itemKind, itemStatus } from "../constants.ts";
 
 import { forwardRef } from 'react';
 
@@ -30,7 +25,7 @@ import { forwardRef } from 'react';
  * @param {Object} target - DOM Element
  * @returns {undefined}
  */
-const scrollIntoViewIfNeeded = target => {
+const scrollIntoViewIfNeeded = (target: HTMLElement) => {
   // Target is outside the viewport from the bottom
   if (target.getBoundingClientRect().bottom > window.innerHeight) {
     //  The bottom of the target will be aligned to the bottom of the visible area of the scrollable ancestor.
@@ -47,7 +42,7 @@ const scrollIntoViewIfNeeded = target => {
 };
 
 // export default function GoalNoteItem({ item, editing, selected, onSubmit, onEdit, onSelect, onDelete, onCancel, onToggle, onCopyText, onFocusLeave }) {
-const GoalNoteItem = forwardRef(function GoalNoteItem(props, ref) {
+const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
   const { item, editing, selected, onSubmit, onEdit, onSelect, onDelete, onCancel, onToggle, onCopyText, onFocusLeave } = props;
   let text = (item.kind === itemKind.goal) ? item.title
     : (item.kind === itemKind.note) ? item.note : "ERROR! INVALID ITEM!!";
@@ -88,7 +83,7 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props, ref) {
     onFocusLeave({ id: id, text: editingText });
   }
 
-  const handleKeyDown = (event: KeyboardEvent) => {
+  const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (event: any) => {
     if (editing && event.key === 'Enter' && event.shiftKey && kind == itemKind.note) {
       if (editingText == "") onCancel(id);
       else {
@@ -136,7 +131,8 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props, ref) {
         }
         {(kind == itemKind.note) &&
           <IconButton aria-label="note" size="small" disabled color="secondary" >
-            <ChatIcon color="text.default" />
+            <ChatIcon color="warning" />
+            {/*<ChatIcon color="inherit" />*/}
           </IconButton>
         }
         {editing &&
