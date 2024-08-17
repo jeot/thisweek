@@ -1,5 +1,5 @@
 import GoalNoteItem from "./GoalNoteItem";
-import { ids, itemKind } from "./../constants.ts";
+import { ids, itemKind, itemStatus } from "./../constants.ts";
 
 export default function ItemsList(props) {
   const item_elements = props.items.map((item, i) => {

@@ -4,17 +4,17 @@ import "../utilities.tsx";
 
 import './styles.css'
 
-export default function Objectives(props) {
+export default function Objectives(props: any) {
   return (
     <div className="objectives-section">
       <ItemsListNavBar
-        title={props.objectivesState.title.toPersianDigits()}
+        title={props.data.title.toPersianDigits()}
         textNext="Next Year"
         textPrevious="Previous Year"
         {...props}
       />
       <ItemsList
-        items={props.objectivesState.items}
+        items={props.data.items}
         {...props}
       />
     </div>

@@ -19,12 +19,12 @@ export const itemStatus = {
 
 export enum Page {
   weeks = 1,
-  targets,
+  objectives,
 };
 
 export enum SideButton {
   week = 1,
-  target,
+  objective,
   setting,
 };
 
@@ -32,9 +32,9 @@ export enum Action {
   toggleMaximizeWindow = 1,
   closeWindow,
   escapePressed,
-  showNextWeek,
-  showPreviousWeek,
-  showCurrentWeek,
+  gotoNextTimePeriod,
+  gotoPreviousTimePeriod,
+  gotoCurrentTimePeriod,
   selectNextItem,
   selectPreviousItem,
   copyAllItems,

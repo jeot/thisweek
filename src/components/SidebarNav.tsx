@@ -29,7 +29,7 @@ export default function SidebarNav(props: HalfProps) {
   return (
     <div className="sidebar">
       <SidebarButton text="This Week" buttonId={SideButton.week} {...props} ><WeekIconStyled className="sidebar-btn-icon week-icon" /></SidebarButton>
-      <SidebarButton text="My Targets" buttonId={SideButton.target} {...props} ><TargetsIconStyled className="sidebar-btn-icon" /></SidebarButton>
+      <SidebarButton text="Objectives" buttonId={SideButton.objective} {...props} ><TargetsIconStyled className="sidebar-btn-icon" /></SidebarButton>
     </div >
   );
 

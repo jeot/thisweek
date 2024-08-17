@@ -36,67 +36,84 @@ import './components/styles.css';
 function App() {
 
   // interface Item { };
-  interface WeekState {
-    week_title: string;
+  interface Today {
     today_persian_date: string;
     today_english_date: string;
-    items: Array<any>;
-  };
-  const week_init: WeekState = {
-    week_title: "",
-    today_persian_date: "",
-    today_english_date: "",
-    items: [],
-  };
-
-  interface ObjectivesState {
+  }
+  interface ItemsData {
     title: string;
     info: string;
-    items: [];
+    items: Array<any>;
   };
-  const objectives_init: ObjectivesState = {
+
+  const today_init: Today = {
+    today_persian_date: "",
+    today_english_date: "",
+  };
+  const items_data_init: ItemsData = {
     title: "",
     info: "",
     items: [],
   };
 
-  const [activePage, setActivePage] = useState(Page.weeks);
+  const [activePage, setActivePage, activePageRef] = useStateRef(Page.weeks);
   const [activeSideButton, setActiveSideButton] = useState(SideButton.week);
   const [editingId, setEditingId] = useState(ids.none);
   const [selectedId, setSelectedId, selectedIdRef] = useStateRef(ids.none);
-  const [weekState, setWeekState] = useState<WeekState>(week_init);
-  const weekStateRef = useRef<WeekState>(week_init);
-  weekStateRef.current = weekState as WeekState;
-  const [objectivesState, setObjectivesState] = useState(objectives_init);
+  const [today, setToday, dataToday] = useStateRef<Today>(today_init);
+  const [data, setData, dataRef] = useStateRef<ItemsData>(items_data_init);
+  // const [refreshData, setRefreshData] = useState<boolean>(true);
+  // const [refreshData, setRefreshData, refreshDataRef] = useStateRef<boolean>(true);
 
-  const weeksItemsCount = weekState.items.length;
-  const weeksItemsRefs = useRef<Array<undefined | React.RefObject<unknown>>>(Array(0));
+  const itemsCount = (data?.items.length) ?? 0;
+  const itemsRefs = useRef<Array<undefined | React.RefObject<unknown>>>(Array(0));
 
-  if (weeksItemsRefs.current.length !== weeksItemsCount) {
+  if (itemsRefs.current.length !== itemsCount) {
     // add or remove refs
-    weeksItemsRefs.current = Array(weeksItemsCount) // make an empty slot array with defined length
+    itemsRefs.current = Array(itemsCount) // make an empty slot array with defined length
       .fill(undefined) // fill them all with undefined
-      .map((_, i) => weeksItemsRefs.current[i] || createRef());
+      .map((_, i) => itemsRefs.current[i] || createRef());
   }
+
+  useEffect(() => {
+    refreshData();
+  }, [activePage]);
 
   useEffect(() => {
     Keyboard.init();
     Keyboard.listen(keyboard_action_callback);
-    invoke("get_week_state").then((result) => {
-      // console.log("get_week_state result: ", result);
-      setWeekState(result as WeekState);
+
+
+    invoke("get_today").then((result) => {
+      // console.log("today result: ", result);
+      setToday(result as Today);
     });
+
+    refreshData();
   }, []
   );
+
+  const refreshData = function() {
+    if (activePageRef.current == Page.weeks) {
+      invoke("get_week").then((result) => {
+        setData(result as ItemsData);
+      });
+    }
+    if (activePageRef.current == Page.objectives) {
+      invoke("get_year").then((result) => {
+        setData(result as ItemsData);
+      });
+    }
+  }
 
   const keyboard_action_callback = (action: number) => {
     // console.log("this is keyboard_callback in App! new action: ", action);
     switch (action) {
       case Action.toggleMaximizeWindow: appWindow.toggleMaximize(); break;
       case Action.closeWindow: appWindow.close(); break;
-      case Action.showNextWeek: showNextWeek(); break;
-      case Action.showPreviousWeek: showPreviousWeek(); break;
-      case Action.showCurrentWeek: showCurrentWeek(); break;
+      case Action.gotoNextTimePeriod: gotoNextTimePeriod(); break;
+      case Action.gotoPreviousTimePeriod: gotoPreviousTimePeriod(); break;
+      case Action.gotoCurrentTimePeriod: gotoCurrentTimePeriod(); break;
       case Action.escapePressed: handleOnCancel(); break;
       case Action.selectNextItem: selectNextItem(); break;
       case Action.selectPreviousItem: selectPreviousItem(); break;
@@ -125,14 +142,14 @@ function App() {
 
   const getItemIdFromItemIndex = function(index: number) {
     if (index == null) return null;
-    const length = weekStateRef.current.items[index].length;
+    const length = dataRef.current.items.length;
     if (index < 0 || index >= length) return null
-    const id = weekStateRef.current.items[index].id;
+    const id = dataRef.current.items[index].id;
     return id;
   }
 
   const getItemIndexFromItemId = function(id: number) {
-    const index = weekStateRef.current.items.findIndex(item => item.id == id);
+    const index = dataRef.current.items.findIndex(item => item.id == id);
     return index;
   }
 
@@ -140,9 +157,7 @@ function App() {
     setEditingId(ids.none);
     setSelectedId(ids.none);
     Keyboard.set_insert_mode(false);
-    invoke("get_week_state").then((result) => {
-      setWeekState(result as WeekState);
-    });
+    // refreshData();
   }
 
   const handleOnEdit = function(id: number) {
@@ -155,18 +170,20 @@ function App() {
   }
 
   const handleOnSelect = function(id: number) {
-    // console.log(`new onSelect(${id})`);
     setSelectedId(id);
-    // invoke("get_near_items_id", { id: id }).then((result) => {
-    //   console.log(result);
-    // });
+  }
+
+  const invoke_tauri_command_and_refresh_data = function(command: string, object: any) {
+    invoke(command, object).then((result) => {
+      const log = `command: ${command} -> ${result ? "success" : "failed"}`;
+      console.log(log);
+      refreshData();
+    });
   }
 
   const handleOnToggle = function(id: number) {
-    // console.log(`new handleOnToggle(${id})`);
-    invoke("toggle_item_state", { id: id }).then((result) => {
-      setWeekState(result as WeekState);
-    });
+    if (id < 0) return;
+    invoke_tauri_command_and_refresh_data("toggle_item_state", { id: id });
   }
 
   const handleOnFocusLeave = function({ id, text }: { id: number, text: string }) {
@@ -177,29 +194,23 @@ function App() {
     }
   }
 
-  const showNextWeek = function() {
+  const gotoNextTimePeriod = function() {
     setSelectedId(ids.none);
-    invoke("get_next_week").then((result) => {
-      setWeekState(result as WeekState);
-    });
+    invoke_tauri_command_and_refresh_data("next_time_period", { page: activePageRef.current });
   }
 
-  const showPreviousWeek = function() {
+  const gotoPreviousTimePeriod = function() {
     setSelectedId(ids.none);
-    invoke("get_previous_week").then((result) => {
-      setWeekState(result as WeekState);
-    });
+    invoke_tauri_command_and_refresh_data("previous_time_period", { page: activePageRef.current });
   }
 
-  const showCurrentWeek = function() {
+  const gotoCurrentTimePeriod = function() {
     setSelectedId(ids.none);
-    invoke("get_current_week").then((result) => {
-      setWeekState(result as WeekState);
-    });
+    invoke_tauri_command_and_refresh_data("current_time_period", { page: activePageRef.current });
   }
 
   const selectNextItem = function() {
-    const arrLen = weekStateRef.current.items.length;
+    const arrLen = dataRef.current.items.length;
     if (arrLen == 0) setSelectedId(ids.none);
     else if (selectedIdRef.current == ids.none) setSelectedId(getItemIdFromItemIndex(0));
     else {
@@ -209,7 +220,7 @@ function App() {
   }
 
   const selectPreviousItem = function() {
-    const arrLen = weekStateRef.current.items.length;
+    const arrLen = dataRef.current.items.length;
     if (arrLen == 0) setSelectedId(ids.none);
     else if (selectedIdRef.current == ids.none) setSelectedId(getItemIdFromItemIndex(arrLen - 1));
     else {
@@ -219,12 +230,12 @@ function App() {
   }
 
   const copyAllWeekItemsToClipboard = () => {
-    const currentWeekState: WeekState = weekStateRef.current;
+    const currentData: ItemsData = dataRef.current;
     console.log("copying all items...");
     let text: string = "";
-    text = currentWeekState.week_title;
+    text = currentData.title;
     text = text + "\n\n";
-    currentWeekState.items.forEach((item) => {
+    currentData.items.forEach((item) => {
       if (item.kind === itemKind.goal)
         text = text + item.title + "\n";
       if (item.kind === itemKind.note)
@@ -247,7 +258,7 @@ function App() {
   }
 
   const handleOnCopyText = function(id: number) {
-    const item = weekStateRef.current.items.find((item) => { return (item.id == id); });
+    const item = dataRef.current.items.find((item) => { return (item.id == id); });
     if (item.kind === itemKind.goal)
       navigator.clipboard.writeText(item.title);
     if (item.kind === itemKind.note)
@@ -256,66 +267,61 @@ function App() {
   const moveUpSelectedItem = function() {
     if (selectedIdRef.current < 0) return;
     invoke("move_up_selected_item", { id: selectedIdRef.current }).then((result) => {
-      setWeekState(result as WeekState);
+      setData(result as ItemsData);
     });
   }
 
   const moveDownSelectedItem = function() {
     if (selectedIdRef.current < 0) return;
     invoke("move_down_selected_item", { id: selectedIdRef.current }).then((result) => {
-      setWeekState(result as WeekState);
+      setData(result as ItemsData);
     });
   }
 
   const moveSelectedItemToNextWeek = function() {
     if (selectedIdRef.current < 0) return;
     invoke("move_selected_item_to_next_week", { id: selectedIdRef.current }).then((result) => {
-      setWeekState(result as WeekState);
+      setData(result as ItemsData);
     });
   }
 
   const moveSelectedItemToPreviousWeek = function() {
     if (selectedIdRef.current < 0) return;
     invoke("move_selected_item_to_previous_week", { id: selectedIdRef.current }).then((result) => {
-      setWeekState(result as WeekState);
+      setData(result as ItemsData);
     });
   }
 
   const handleOnSubmit = function({ id, text, keyboard_submit }: { id: number, text: string, keyboard_submit: boolean }) {
     if (id === undefined || text === undefined) return;
     if (id == ids.new_goal) {
-      invoke("add_new_goal", { text: text }).then((result) => {
-        setWeekState(result as WeekState);
-      });
+      invoke_tauri_command_and_refresh_data("add_new_item", { page: activePageRef.current, kind: itemKind.goal, text: text });
       // to continue adding new goals or not?
       if (keyboard_submit === undefined) {
         setEditingId(ids.none);
         Keyboard.set_insert_mode(false);
-      } else
+      } else {
         setEditingId(ids.new_goal);
+      }
     } else if (id == ids.new_note) {
       // comment if you want to continue new note section
       setEditingId(ids.none);
       Keyboard.set_insert_mode(false);
-      invoke("add_new_note", { text: text }).then((result) => {
-        setWeekState(result as WeekState);
-      });
+      invoke_tauri_command_and_refresh_data("add_new_item", { page: activePageRef.current, kind: itemKind.note, text: text });
     } else if (editingId == id) { // submiting an edit on previous item
       setEditingId(ids.none);
       Keyboard.set_insert_mode(false);
-      invoke("update_item", { id: id, text: text }).then((result) => {
-        setWeekState(result as WeekState);
-      });
+      invoke_tauri_command_and_refresh_data("update_item", { id: id, text: text });
     } else { }
   }
 
   const handleOnDelete = function(id: number) {
     let nextId: number;
-    invoke("get_near_items_id", { id: selectedIdRef.current }).then((result) => {
+    invoke("get_near_items_id", { id: selectedIdRef.current, page: activePageRef.current }).then((result) => {
       const two_ids = result as Array<any>;
       nextId = two_ids[1];
       invoke("delete_item", { id: id }).then((result) => {
-        setWeekState(result as WeekState);
+        refreshData();
         if (nextId != null) {
           setSelectedId(nextId);
         } else {
@@ -343,9 +349,9 @@ function App() {
     if (buttonId == SideButton.week) {
       console.log("displaying weeks page...");
       setActivePage(Page.weeks);
-    } else if (buttonId == SideButton.target) {
-      setActivePage(Page.targets);
-      console.log("displaying targes page...");
+    } else if (buttonId == SideButton.objective) {
+      setActivePage(Page.objectives);
+      console.log("displaying objectives page...");
     } else if (buttonId == SideButton.setting) {
       // setActivePage(Page.settings);
       console.log("displaying settings page...");
@@ -421,19 +427,20 @@ function App() {
         <CssBaseline>
           <div className="application" >
             <Header
-              today_persian_date={weekState.today_persian_date}
-              today_english_date={weekState.today_english_date}
+              // fix: get from today
+              today_persian_date={today.today_persian_date}
+              today_english_date={today.today_english_date}
             />
             <div className="main" >
               <SidebarNav onClick={handleSideBarNavButtonOnClick} activeSideButton={activeSideButton} />
               {activePage == Page.weeks ?
                 <Week
-                  itemsRefs={weeksItemsRefs}
-                  weekState={weekState}
+                  itemsRefs={itemsRefs}
+                  data={data}
                   editingId={editingId}
                   selectedId={selectedId}
-                  onNext={showNextWeek}
-                  onPrevious={showPreviousWeek}
+                  onNext={gotoNextTimePeriod}
+                  onPrevious={gotoPreviousTimePeriod}
                   onSubmit={handleOnSubmit}
                   onEdit={handleOnEdit}
                   onSelect={handleOnSelect}
@@ -443,16 +450,14 @@ function App() {
                   onCopyText={handleOnCopyText}
                   onFocusLeave={handleOnFocusLeave}
                 />
-                : activePage == Page.targets ?
+                : activePage == Page.objectives ? (
                   <Objectives
-                    itemsRefs={objectivesItemsRefs}
-                    objectivesState={objectivesState}
+                    itemsRefs={itemsRefs}
+                    data={data}
                     editingId={editingId}
                     selectedId={selectedId}
-                    onNext={showNextYear}
-                    onPrevious={showPreviousYear}
-                    onNext={showNextWeek}
-                    onPrevious={showPreviousWeek}
+                    onNext={gotoNextTimePeriod}
+                    onPrevious={gotoPreviousTimePeriod}
                     onSubmit={handleOnSubmit}
                     onEdit={handleOnEdit}
                     onSelect={handleOnSelect}
@@ -462,7 +467,7 @@ function App() {
                     onCopyText={handleOnCopyText}
                     onFocusLeave={handleOnFocusLeave}
                   />
-                  : <></>}
+                ) : (<></>)}
               {editingId == ids.none && <BasicSpeedDial onClick={onSpeedDialClick} />}
             </div>
           </div>

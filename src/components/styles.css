@@ -1,13 +1,12 @@
-div {
-	box-sizing: border-box;
+p,
+div,
+img {
 	margin: 0px;
 	padding: 0px;
 }
 
-p,
-img {
-	margin: 0px;
-	padding: 0px;
+div {
+	box-sizing: border-box;
 }
 
 .dummybackgroundpink {
@@ -151,4 +150,16 @@ img {
 	overflow-y: auto;
 	padding: 0px;
 	padding-bottom: 64px;
+}
+
+.objective-year-tag {
+	padding: 2px 3px 0px 3px;
+	font-size: 0.6em;
+	font-weight: bold;
+	box-sizing: border-box;
+	border-radius: 4px;
+	color: #364f75;
+	border: 1.5px dotted #364f75;
+	/* color: white; */
+	/* background-color: #364f75; */
 }

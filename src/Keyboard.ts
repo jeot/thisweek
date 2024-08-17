@@ -53,19 +53,19 @@ const handleUserKeyPress = (event: KeyboardEvent) => {
       (event.code === 'KeyW' && noModifiers) || (event.code === 'KeyL' && noModifiers) || (event.code === 'ArrowRight' && noModifiers);
     if (nextWeek) {
       event.preventDefault();
-      broadcastAction(Action.showNextWeek);
+      broadcastAction(Action.gotoNextTimePeriod);
     }
 
     const previousWeek: boolean =
       (event.code === 'KeyW' && shiftOnly) || (event.code === 'KeyH' && noModifiers) || (event.code === 'ArrowLeft' && noModifiers);
     if (previousWeek) {
       event.preventDefault();
-      broadcastAction(Action.showPreviousWeek);
+      broadcastAction(Action.gotoPreviousTimePeriod);
     }
 
     if (event.code === 'KeyT' && !event.shiftKey) {
       event.preventDefault();
-      broadcastAction(Action.showCurrentWeek);
+      broadcastAction(Action.gotoCurrentTimePeriod);
     }
 
     const selectNext: boolean = (event.code === 'ArrowDown' || event.code === 'KeyJ') && noModifiers;

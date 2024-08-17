@@ -44,12 +44,16 @@ const scrollIntoViewIfNeeded = (target: HTMLElement) => {
 // export default function GoalNoteItem({ item, editing, selected, onSubmit, onEdit, onSelect, onDelete, onCancel, onToggle, onCopyText, onFocusLeave }) {
 const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
   const { item, editing, selected, onSubmit, onEdit, onSelect, onDelete, onCancel, onToggle, onCopyText, onFocusLeave } = props;
+
   let text = (item.kind === itemKind.goal) ? item.title
-    : (item.kind === itemKind.note) ? item.note : "ERROR! INVALID ITEM!!";
+    : (item.kind === itemKind.note) ? item.note : null;
+  text ??= "ERROR! INVALID TEXT";
   let status = item.status === itemStatus.undone ? false :
     item.status === itemStatus.done ? true : false;
   let id = item.id;
   let kind = item.kind;
+
+  const isObjective = item.year ? true : false;
 
   useEffect(() => {
     if (selected) {
@@ -199,6 +203,7 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
               value={text}
               onMouseDown={() => { onSelect(id); }}
             />
+            {isObjective && <div className="objective-year-tag">{item.year}</div>}
             <IconButton
               aria-label="copy"
               size="small"
