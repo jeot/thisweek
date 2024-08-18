@@ -23,6 +23,13 @@ export enum Page {
   settings,
 };
 
+export enum ObjectiveType {
+  none = 0,
+  monthly,
+  seasonal,
+  yearly,
+};
+
 export enum Action {
   toggleMaximizeWindow = 1,
   closeWindow,

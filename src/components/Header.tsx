@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box';
 import './styles.css';
-import '../utilities.tsx';
+import '../prototypes.ts';
 
 export default function Header({ today_persian_date, today_english_date }: { today_persian_date: string, today_english_date: string }) {
   const en_date = today_english_date ?? "undefined en date!";

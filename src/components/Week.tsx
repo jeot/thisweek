@@ -1,6 +1,6 @@
 import ItemsList from "./ItemsList.tsx";
 import ItemsListNavBar from "./ItemsListNavBar.tsx";
-import "../utilities.tsx";
+import "../prototypes.ts";
 
 import './styles.css'
 

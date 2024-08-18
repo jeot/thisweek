@@ -152,14 +152,31 @@ div {
 	padding-bottom: 64px;
 }
 
-.objective-year-tag {
-	padding: 2px 3px 0px 3px;
-	font-size: 0.6em;
+.objective-tag {
+	padding: 2px 4px 0px 4px;
+	font-size: 0.7em;
 	font-weight: bold;
 	box-sizing: border-box;
-	border-radius: 4px;
-	color: #364f75;
-	border: 1.5px dotted #364f75;
+	border-radius: 20px;
 	/* color: white; */
 	/* background-color: #364f75; */
+}
+
+.objective-month-tag {
+	color: #064325;
+	border: 1.3px solid #364f75;
+}
+
+.objective-season-tag {
+	/* color: #a68f15; */
+	color: white;
+	background-color: #268f15;
+	border: 1.3px solid #268f15;
+}
+
+.objective-year-tag {
+	color: #718399;
+	border: 1.3px solid #718399;
+	color: white;
+	background-color: #718399;
 }

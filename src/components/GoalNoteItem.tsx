@@ -14,8 +14,8 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import ChatIcon from '@mui/icons-material/Chat';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
-import { getDirection } from "./../utilities.tsx"
-import { itemKind, itemStatus } from "../constants.ts";
+import { getDirection, toPersianDigits } from "../utilities.ts"
+import { ObjectiveType, itemKind, itemStatus } from "../constants.ts";
 
 import { forwardRef } from 'react';
 
@@ -53,7 +53,42 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
   let id = item.id;
   let kind = item.kind;
 
-  const isObjective = item.year ? true : false;
+  // todo: this should move to calendar system!
+  const objectivePeriodTagElement = function(item: any) {
+    const objectiveType = item.month ? ObjectiveType.monthly
+      : item.season ? ObjectiveType.seasonal
+        : item.year ? ObjectiveType.yearly : ObjectiveType.none;
+    if (objectiveType == ObjectiveType.none) {
+      return (<></>);
+    }
+
+    let year: string = item.year ?? "";
+    const seasons = ["", "بهار", "تابستان", "پاییز", "زمستان"];
+    const months = ["", "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور", "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"];
+    const seasonIndex = item.season ?? 0;
+    const monthIndex = item.month ?? 0;
+    let season: string = seasons[seasonIndex];
+    let month: string = months[monthIndex];
+    let text: string = "";
+    let style: string = "";
+    if (item.year && item.month) {
+      text = `${month}\xa0${year}`;
+      style = "objective-tag objective-month-tag"
+    } else if (item.year && item.season) {
+      text = `${season}\xa0${year}`;
+      style = "objective-tag objective-season-tag"
+    } else if (item.year) {
+      text = `${year}`;
+      style = "objective-tag objective-year-tag"
+    } else {
+      text = "error! invalid itme property!"
+    }
+    text = toPersianDigits(text.toString());
+    return (
+      <div className={style}>{text}</div>
+    );
+  }
+
 
   useEffect(() => {
     if (selected) {
@@ -203,7 +238,7 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
               value={text}
               onMouseDown={() => { onSelect(id); }}
             />
-            {isObjective && <div className="objective-year-tag">{item.year}</div>}
+            {objectivePeriodTagElement(item)}
             <IconButton
               aria-label="copy"
               size="small"
