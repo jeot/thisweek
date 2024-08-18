@@ -20,12 +20,7 @@ export const itemStatus = {
 export enum Page {
   weeks = 1,
   objectives,
-};
-
-export enum SideButton {
-  week = 1,
-  objective,
-  setting,
+  settings,
 };
 
 export enum Action {
@@ -35,6 +30,10 @@ export enum Action {
   gotoNextTimePeriod,
   gotoPreviousTimePeriod,
   gotoCurrentTimePeriod,
+  gotoNextWeek,
+  gotoPreviousWeek,
+  gotoNextYear,
+  gotoPreviousYear,
   selectNextItem,
   selectPreviousItem,
   copyAllItems,
@@ -46,8 +45,10 @@ export enum Action {
   toggleSelectedItemState,
   moveUpSelectedItem,
   moveDownSelectedItem,
-  moveSelectedItemToNextWeek,
-  moveSelectedItemToPreviousWeek,
+  moveSelectedItemToNextTimePeriod,
+  moveSelectedItemToPreviousTimePeriod,
+  displayWeeksPage,
+  displayObjectivesPage,
   backupDbFile,
 };
 

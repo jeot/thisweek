@@ -3,14 +3,14 @@ import { Calendar2Week as WeekIcon } from '@styled-icons/bootstrap/Calendar2Week
 import { Target as TargetsIcon } from '@styled-icons/fluentui-system-regular/Target'
 
 import './styles.css'
-import { SideButton } from '../constants.ts';
+import { Page } from '../constants.ts';
 
 type CallbackFunction = (buttonId: number) => void;
-interface FullProps { text: string, activeSideButton: number, buttonId: number, onClick: CallbackFunction, children: any }
+interface FullProps { text: string, activePage: number, buttonId: number, onClick: CallbackFunction, children: any }
 
 function SidebarButton(props: FullProps) {
-  const { text, activeSideButton, buttonId, onClick } = props;
-  const isActive = (buttonId == activeSideButton);
+  const { text, activePage, buttonId, onClick } = props;
+  const isActive = (buttonId == activePage);
   const classes = isActive ? "sidebar-btn active" : "sidebar-btn";
   return (
     <button className={classes} onClick={() => { onClick(buttonId); }}>
@@ -22,14 +22,14 @@ function SidebarButton(props: FullProps) {
 
 const WeekIconStyled = styled(WeekIcon)`color: black;`;
 const TargetsIconStyled = styled(TargetsIcon)`color: black;`;
-interface HalfProps { activeSideButton: number, onClick: CallbackFunction, children?: any }
+interface HalfProps { activePage: number, onClick: CallbackFunction, children?: any }
 
 export default function SidebarNav(props: HalfProps) {
 
   return (
     <div className="sidebar">
-      <SidebarButton text="This Week" buttonId={SideButton.week} {...props} ><WeekIconStyled className="sidebar-btn-icon week-icon" /></SidebarButton>
-      <SidebarButton text="Objectives" buttonId={SideButton.objective} {...props} ><TargetsIconStyled className="sidebar-btn-icon" /></SidebarButton>
+      <SidebarButton text="This Week" buttonId={Page.weeks} {...props} ><WeekIconStyled className="sidebar-btn-icon week-icon" /></SidebarButton>
+      <SidebarButton text="Objectives" buttonId={Page.objectives} {...props} ><TargetsIconStyled className="sidebar-btn-icon" /></SidebarButton>
     </div >
   );
 

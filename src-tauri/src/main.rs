@@ -1,6 +1,8 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 use std::sync::Mutex;
+use std::thread::sleep;
+use std::time::Duration;
 use tauri::State;
 
 use weeks_core::db_sqlite;
@@ -133,55 +135,63 @@ fn get_near_items_id(id: i32, page: i32, state: State<MyAppState>) -> (Option<i3
 }
 
 #[tauri::command]
-fn move_up_selected_item_in_week(id: i32, state: State<MyAppState>) -> bool {
-    let mut week = state.week.lock().unwrap();
-    if let Ok(key) = week.generate_key_for_move_up_with_id(id) {
-        db_sqlite::update_item_week_ordering_key(id, key).is_ok()
-    } else {
-        false
+fn move_up_selected_item(page: i32, id: i32, state: State<MyAppState>) -> bool {
+    let mut result = false;
+    if page == LIST_TYPE_WEEKS {
+        let mut week = state.week.lock().unwrap();
+        if let Ok(key) = week.generate_key_for_move_up_with_id(id) {
+            result = db_sqlite::update_item_week_ordering_key(id, key).is_ok()
+        }
+        let _ = week.update();
+    } else if page == LIST_TYPE_OBJECTIVES {
+        let mut year = state.year.lock().unwrap();
+        if let Ok(key) = year.generate_key_for_move_up_with_id(id) {
+            result = db_sqlite::update_item_year_ordering_key(id, key).is_ok()
+        }
+        let _ = year.update();
     }
+    result
 }
 
 #[tauri::command]
-fn move_down_selected_item_in_week(id: i32, state: State<MyAppState>) -> bool {
-    let mut week = state.week.lock().unwrap();
-    if let Ok(key) = week.generate_key_for_move_down_with_id(id) {
-        db_sqlite::update_item_week_ordering_key(id, key).is_ok()
-    } else {
-        false
+fn move_down_selected_item(page: i32, id: i32, state: State<MyAppState>) -> bool {
+    let mut result = false;
+    if page == LIST_TYPE_WEEKS {
+        let mut week = state.week.lock().unwrap();
+        if let Ok(key) = week.generate_key_for_move_down_with_id(id) {
+            result = db_sqlite::update_item_week_ordering_key(id, key).is_ok()
+        }
+        let _ = week.update();
+    } else if page == LIST_TYPE_OBJECTIVES {
+        let mut year = state.year.lock().unwrap();
+        if let Ok(key) = year.generate_key_for_move_down_with_id(id) {
+            result = db_sqlite::update_item_year_ordering_key(id, key).is_ok()
+        }
+        let _ = year.update();
     }
+    result
 }
 
 #[tauri::command]
-fn move_up_selected_item_in_year(id: i32, state: State<MyAppState>) -> bool {
-    let mut year = state.year.lock().unwrap();
-    if let Ok(key) = year.generate_key_for_move_up_with_id(id) {
-        db_sqlite::update_item_year_ordering_key(id, key).is_ok()
-    } else {
-        false
+fn move_item_to_other_time_period_offset(
+    page: i32,
+    id: i32,
+    offset: i32,
+    state: State<MyAppState>,
+) -> bool {
+    let mut result = false;
+    if page == LIST_TYPE_WEEKS {
+        let mut week = state.week.lock().unwrap();
+        result = week
+            .move_item_to_other_time_period_offset(id, offset)
+            .is_ok()
+    } else if page == LIST_TYPE_OBJECTIVES {
+        let mut year = state.year.lock().unwrap();
+        result = year
+            .move_item_to_other_time_period_offset(id, offset)
+            .is_ok()
     }
-}
-
-#[tauri::command]
-fn move_down_selected_item_in_year(id: i32, state: State<MyAppState>) -> bool {
-    let mut year = state.year.lock().unwrap();
-    if let Ok(key) = year.generate_key_for_move_down_with_id(id) {
-        db_sqlite::update_item_year_ordering_key(id, key).is_ok()
-    } else {
-        false
-    }
-}
-
-#[tauri::command]
-fn move_selected_item_to_next_week(id: i32, state: State<MyAppState>) -> bool {
-    let mut week = state.week.lock().unwrap();
-    week.move_selected_item_to_next_week(id).is_ok()
-}
-
-#[tauri::command]
-fn move_selected_item_to_previous_week(id: i32, state: State<MyAppState>) -> bool {
-    let mut week = state.week.lock().unwrap();
-    week.move_selected_item_to_previous_week(id).is_ok()
+    result
 }
 
 #[tauri::command]
@@ -201,17 +211,12 @@ fn main() {
         })
         .invoke_handler(tauri::generate_handler![
             get_today,
-            // week stuff
             get_week,
-            move_up_selected_item_in_week,
-            move_selected_item_to_next_week,
-            move_selected_item_to_previous_week,
-            // year stuff
             get_year,
-            move_up_selected_item_in_year,
-            // todo: move_selected_item_to_next_year,
-            // todo: move_selected_item_to_previous_year,
-            // common
+            // common stuff
+            move_up_selected_item,
+            move_down_selected_item,
+            move_item_to_other_time_period_offset,
             current_time_period,
             next_time_period,
             previous_time_period,

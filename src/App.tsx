@@ -29,7 +29,7 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
 import { createTheme, ThemeProvider } from '@mui/material';
-import { Action, ids, itemKind, Page, SideButton } from './constants.ts';
+import { Action, ids, itemKind, Page } from './constants.ts';
 
 import './components/styles.css';
 
@@ -57,10 +57,9 @@ function App() {
   };
 
   const [activePage, setActivePage, activePageRef] = useStateRef(Page.weeks);
-  const [activeSideButton, setActiveSideButton] = useState(SideButton.week);
   const [editingId, setEditingId] = useState(ids.none);
   const [selectedId, setSelectedId, selectedIdRef] = useStateRef(ids.none);
-  const [today, setToday, dataToday] = useStateRef<Today>(today_init);
+  const [today, setToday, _todayRef] = useStateRef<Today>(today_init);
   const [data, setData, dataRef] = useStateRef<ItemsData>(items_data_init);
   // const [refreshData, setRefreshData] = useState<boolean>(true);
   // const [refreshData, setRefreshData, refreshDataRef] = useStateRef<boolean>(true);
@@ -114,6 +113,10 @@ function App() {
       case Action.gotoNextTimePeriod: gotoNextTimePeriod(); break;
       case Action.gotoPreviousTimePeriod: gotoPreviousTimePeriod(); break;
       case Action.gotoCurrentTimePeriod: gotoCurrentTimePeriod(); break;
+      case Action.gotoNextWeek: gotoNextWeek(); break;
+      case Action.gotoPreviousWeek: gotoPreviousWeek(); break;
+      case Action.gotoNextYear: gotoNextYear(); break;
+      case Action.gotoPreviousYear: gotoPreviousYear(); break;
       case Action.escapePressed: handleOnCancel(); break;
       case Action.selectNextItem: selectNextItem(); break;
       case Action.selectPreviousItem: selectPreviousItem(); break;
@@ -131,8 +134,10 @@ function App() {
       case Action.toggleSelectedItemState: handleOnToggle(selectedIdRef.current); break;
       case Action.moveUpSelectedItem: moveUpSelectedItem(); break;
       case Action.moveDownSelectedItem: moveDownSelectedItem(); break;
-      case Action.moveSelectedItemToNextWeek: moveSelectedItemToNextWeek(); break;
-      case Action.moveSelectedItemToPreviousWeek: moveSelectedItemToPreviousWeek(); break;
+      case Action.moveSelectedItemToNextTimePeriod: moveSelectedItemToNextTimePeriod(); break;
+      case Action.moveSelectedItemToPreviousTimePeriod: moveSelectedItemToPreviousTimePeriod(); break;
+      case Action.displayWeeksPage: displayPage(Page.weeks); break;
+      case Action.displayObjectivesPage: displayPage(Page.objectives); break;
       case Action.copyAllItems: copyAllWeekItemsToClipboard(); break;
       case Action.backupDbFile: backupDbFile(); break;
       default:
@@ -209,6 +214,38 @@ function App() {
     invoke_tauri_command_and_refresh_data("current_time_period", { page: activePageRef.current });
   }
 
+  const gotoNextWeek = function() {
+    if (activePageRef.current == Page.weeks) gotoNextTimePeriod();
+    else {
+      setActivePage(Page.weeks);
+      invoke_tauri_command_and_refresh_data("current_time_period", { page: activePageRef.current });
+    }
+  }
+
+  const gotoPreviousWeek = function() {
+    if (activePageRef.current == Page.weeks) gotoPreviousTimePeriod();
+    else {
+      setActivePage(Page.weeks);
+      invoke_tauri_command_and_refresh_data("current_time_period", { page: activePageRef.current });
+    }
+  }
+
+  const gotoNextYear = function() {
+    if (activePageRef.current == Page.objectives) gotoNextTimePeriod();
+    else {
+      setActivePage(Page.objectives);
+      invoke_tauri_command_and_refresh_data("current_time_period", { page: activePageRef.current });
+    }
+  }
+
+  const gotoPreviousYear = function() {
+    if (activePageRef.current == Page.objectives) gotoPreviousTimePeriod();
+    else {
+      setActivePage(Page.objectives);
+      invoke_tauri_command_and_refresh_data("current_time_period", { page: activePageRef.current });
+    }
+  }
+
   const selectNextItem = function() {
     const arrLen = dataRef.current.items.length;
     if (arrLen == 0) setSelectedId(ids.none);
@@ -264,32 +301,27 @@ function App() {
     if (item.kind === itemKind.note)
       navigator.clipboard.writeText(item.note);
   }
+
   const moveUpSelectedItem = function() {
     if (selectedIdRef.current < 0) return;
-    invoke("move_up_selected_item", { id: selectedIdRef.current }).then((result) => {
-      setData(result as ItemsData);
-    });
+    invoke_tauri_command_and_refresh_data("move_up_selected_item", { page: activePageRef.current, id: selectedIdRef.current });
   }
 
   const moveDownSelectedItem = function() {
     if (selectedIdRef.current < 0) return;
-    invoke("move_down_selected_item", { id: selectedIdRef.current }).then((result) => {
-      setData(result as ItemsData);
-    });
+    invoke_tauri_command_and_refresh_data("move_down_selected_item", { page: activePageRef.current, id: selectedIdRef.current });
   }
 
-  const moveSelectedItemToNextWeek = function() {
+  const moveSelectedItemToNextTimePeriod = function() {
     if (selectedIdRef.current < 0) return;
-    invoke("move_selected_item_to_next_week", { id: selectedIdRef.current }).then((result) => {
-      setData(result as ItemsData);
-    });
+    invoke_tauri_command_and_refresh_data("move_item_to_other_time_period_offset", { page: activePageRef.current, id: selectedIdRef.current, offset: 1 });
+    invoke_tauri_command_and_refresh_data("next_time_period", { page: activePageRef.current });
   }
 
-  const moveSelectedItemToPreviousWeek = function() {
+  const moveSelectedItemToPreviousTimePeriod = function() {
     if (selectedIdRef.current < 0) return;
-    invoke("move_selected_item_to_previous_week", { id: selectedIdRef.current }).then((result) => {
-      setData(result as ItemsData);
-    });
+    invoke_tauri_command_and_refresh_data("move_item_to_other_time_period_offset", { page: activePageRef.current, id: selectedIdRef.current, offset: -1 });
+    invoke_tauri_command_and_refresh_data("previous_time_period", { page: activePageRef.current });
   }
 
   const handleOnSubmit = function({ id, text, keyboard_submit }: { id: number, text: string, keyboard_submit: boolean }) {
@@ -320,7 +352,7 @@ function App() {
     invoke("get_near_items_id", { id: selectedIdRef.current, page: activePageRef.current }).then((result) => {
       const two_ids = result as Array<any>;
       nextId = two_ids[1];
-      invoke("delete_item", { id: id }).then((result) => {
+      invoke("delete_item", { id: id }).then((_result) => {
         refreshData();
         if (nextId != null) {
           setSelectedId(nextId);
@@ -344,15 +376,16 @@ function App() {
     }
   }
 
-  const handleSideBarNavButtonOnClick = function(buttonId: number) {
-    setActiveSideButton(buttonId);
-    if (buttonId == SideButton.week) {
+  const displayPage = function(page: number) {
+    if (page == Page.weeks) {
       console.log("displaying weeks page...");
       setActivePage(Page.weeks);
-    } else if (buttonId == SideButton.objective) {
+      invoke_tauri_command_and_refresh_data("current_time_period", { page: activePageRef.current });
+    } else if (page == Page.objectives) {
       setActivePage(Page.objectives);
+      invoke_tauri_command_and_refresh_data("current_time_period", { page: activePageRef.current });
       console.log("displaying objectives page...");
-    } else if (buttonId == SideButton.setting) {
+    } else if (page == Page.settings) {
       // setActivePage(Page.settings);
       console.log("displaying settings page...");
     } else {
@@ -432,7 +465,7 @@ function App() {
               today_english_date={today.today_english_date}
             />
             <div className="main" >
-              <SidebarNav onClick={handleSideBarNavButtonOnClick} activeSideButton={activeSideButton} />
+              <SidebarNav onClick={displayPage} activePage={activePage} />
               {activePage == Page.weeks ?
                 <Week
                   itemsRefs={itemsRefs}

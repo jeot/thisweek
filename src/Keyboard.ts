@@ -49,16 +49,16 @@ const handleUserKeyPress = (event: KeyboardEvent) => {
 
   if (!insert_mode) {
     // console.log('event', event);
-    const nextWeek: boolean =
-      (event.code === 'KeyW' && noModifiers) || (event.code === 'KeyL' && noModifiers) || (event.code === 'ArrowRight' && noModifiers);
-    if (nextWeek) {
+    const goNext: boolean =
+      (event.code === 'KeyL' && noModifiers) || (event.code === 'ArrowRight' && noModifiers);
+    if (goNext) {
       event.preventDefault();
       broadcastAction(Action.gotoNextTimePeriod);
     }
 
-    const previousWeek: boolean =
-      (event.code === 'KeyW' && shiftOnly) || (event.code === 'KeyH' && noModifiers) || (event.code === 'ArrowLeft' && noModifiers);
-    if (previousWeek) {
+    const goPrevious: boolean =
+      (event.code === 'KeyH' && noModifiers) || (event.code === 'ArrowLeft' && noModifiers);
+    if (goPrevious) {
       event.preventDefault();
       broadcastAction(Action.gotoPreviousTimePeriod);
     }
@@ -67,6 +67,35 @@ const handleUserKeyPress = (event: KeyboardEvent) => {
       event.preventDefault();
       broadcastAction(Action.gotoCurrentTimePeriod);
     }
+
+    const goNextWeek: boolean =
+      (event.code === 'KeyW' && noModifiers);
+    if (goNextWeek) {
+      event.preventDefault();
+      broadcastAction(Action.gotoNextWeek);
+    }
+
+    const goPreviousWeek: boolean =
+      (event.code === 'KeyW' && shiftOnly);
+    if (goPreviousWeek) {
+      event.preventDefault();
+      broadcastAction(Action.gotoPreviousWeek);
+    }
+
+    const goNextYear: boolean =
+      (event.code === 'KeyO' && noModifiers);
+    if (goNextYear) {
+      event.preventDefault();
+      broadcastAction(Action.displayObjectivesPage);
+    }
+
+    // const goPreviousYear: boolean =
+    //   (event.code === 'KeyO' && shiftOnly);
+    // if (goPreviousYear) {
+    //   event.preventDefault();
+    //   broadcastAction(Action.gotoPreviousYear);
+    // }
+
 
     const selectNext: boolean = (event.code === 'ArrowDown' || event.code === 'KeyJ') && noModifiers;
     if (selectNext) {
@@ -116,18 +145,18 @@ const handleUserKeyPress = (event: KeyboardEvent) => {
       broadcastAction(Action.moveDownSelectedItem);
     }
 
-    // Ctrl-L or Ctrl-Right: move item to next week
+    // Ctrl-L or Ctrl-Right: move item to next time period
     const moveNext = (event.code === 'KeyL' || event.code === 'ArrowRight') && ctrlOnly;
     if (moveNext) {
       event.preventDefault();
-      broadcastAction(Action.moveSelectedItemToNextWeek);
+      broadcastAction(Action.moveSelectedItemToNextTimePeriod);
     }
 
-    // Ctrl-H or Ctrl-Left: move item to previous week
+    // Ctrl-H or Ctrl-Left: move item to previous time period
     const movePrevious = (event.code === 'KeyH' || event.code === 'ArrowLeft') && ctrlOnly;
     if (movePrevious) {
       event.preventDefault();
-      broadcastAction(Action.moveSelectedItemToPreviousWeek);
+      broadcastAction(Action.moveSelectedItemToPreviousTimePeriod);
     }
 
     // new with N leader key
