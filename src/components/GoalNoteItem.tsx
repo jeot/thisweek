@@ -15,9 +15,10 @@ import ChatIcon from '@mui/icons-material/Chat';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 import { getDirection, toPersianDigits } from "../utilities.ts"
-import { ObjectiveType, itemKind, itemStatus } from "../constants.ts";
+import { ObjectiveType, ItemKind, ItemStatus } from "../constants.ts";
 
 import { forwardRef } from 'react';
+import type { Item } from "../my_types.ts";
 
 /**
  * Method to scroll into view port, if it's outside the viewport
@@ -43,18 +44,37 @@ const scrollIntoViewIfNeeded = (target: HTMLElement) => {
 
 // export default function GoalNoteItem({ item, editing, selected, onSubmit, onEdit, onSelect, onDelete, onCancel, onToggle, onCopyText, onFocusLeave }) {
 const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
-  const { item, editing, selected, onSubmit, onEdit, onSelect, onDelete, onCancel, onToggle, onCopyText, onFocusLeave } = props;
+  const { editing, selected, onSubmit, onEdit, onSelect, onDelete, onCancel, onToggle, onCopyText, onFocusLeave } = props;
 
-  let text = (item.kind === itemKind.goal) ? item.title
-    : (item.kind === itemKind.note) ? item.note : null;
-  text ??= "ERROR! INVALID TEXT";
-  let status = item.status === itemStatus.undone ? false :
-    item.status === itemStatus.done ? true : false;
-  let id = item.id;
-  let kind = item.kind;
+  if (props.item === null || props.item === undefined) {
+    console.log("item null");
+    return;
+  }
+
+  const [editingItem, setEditingItem] = useState(props.item);
+  const [dir, setDir] = useState('rtl');
+  const [hovered, setHovered] = useState(false);
+
+  useEffect(() => {
+  }, []);
+
+  const temp1 = (props.item.kind === ItemKind.goal) ? props.item.title
+    : (props.item.kind === ItemKind.note) ? props.item.note : "ERROR!";
+  const fixedText = temp1 ?? "ERROR! INVALID TEXT";
+  // console.log("editingItem", editingItem);
+  const temp2 = (editingItem.kind === ItemKind.goal) ? editingItem.title
+    : (editingItem.kind === ItemKind.note) ? editingItem.note : "ERROR!";
+  const editingText = temp2 ?? "ERROR! INVALID TEXT";
+  const statusFixed = props.item.status === ItemStatus.undone ? false :
+    props.item.status === ItemStatus.done ? true : false;
+  const statusEditing = editingItem.status === ItemStatus.undone ? false :
+    editingItem.status === ItemStatus.done ? true : false;
+  let status = editing ? statusEditing : statusFixed;
+  let id = editing ? editingItem.id : props.item.id;
+  let kind = editing ? editingItem.kind : props.item.kind;
 
   // todo: this should move to calendar system!
-  const objectivePeriodTagElement = function(item: any) {
+  const objectivePeriodTagElement = function(item: Item) {
     const objectiveType = item.month ? ObjectiveType.monthly
       : item.season ? ObjectiveType.seasonal
         : item.year ? ObjectiveType.yearly : ObjectiveType.none;
@@ -62,7 +82,7 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
       return (<></>);
     }
 
-    let year: string = item.year ?? "";
+    let year: string = item.year?.toString() ?? "";
     const seasons = ["", "بهار", "تابستان", "پاییز", "زمستان"];
     const months = ["", "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور", "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"];
     const seasonIndex = item.season ?? 0;
@@ -81,7 +101,7 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
       text = `${year}`;
       style = "objective-tag objective-year-tag"
     } else {
-      text = "error! invalid itme property!"
+      text = "error!"
     }
     text = toPersianDigits(text.toString());
     return (
@@ -98,13 +118,9 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
     }
   }, [selected]);
 
-  const [editingText, setEditingText] = useState(text);
-  const [dir, setDir] = useState('rtl');
-  const [hovered, setHovered] = useState(false);
-
   useEffect(() => {
     if (editing) {
-      setEditingText(text);
+      setEditingItem(props.item);
     }
   }, [editing]);
 
@@ -112,9 +128,9 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
     if (editing) {
       setDir(getDirection(editingText));
     } else {
-      setDir(getDirection(text));
+      setDir(getDirection(fixedText));
     }
-  }, [text, editingText, editing]);
+  }, [editingText, fixedText, editing]); // fix: these are not states. is this correct?
 
   const onFocus = () => { }
 
@@ -122,24 +138,40 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
     onFocusLeave({ id: id, text: editingText });
   }
 
+  const setEditingItemText = function(text: string) {
+    setEditingItem({
+      ...editingItem,
+      title: (editingItem.kind === ItemKind.goal) ? text : null,
+      note: (editingItem.kind === ItemKind.note) ? text : null,
+    });
+  }
   const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (event: any) => {
-    if (editing && event.key === 'Enter' && event.shiftKey && kind == itemKind.note) {
+    if (editing && event.key === 'Enter' && event.shiftKey && kind == ItemKind.note) {
       if (editingText == "") onCancel(id);
       else {
         /* here input field will automatically insert a new line! */
       }
     } else if (editing && event.key === 'Enter') {
       if (editingText == "") onCancel(id);
-      else onSubmit({ id: id, text: editingText, keyboard_submit: true });
-      setEditingText("");
+      else {
+        onSubmit({ item: editingItem, keyboard_submit: true });
+        setEditingItemText("");
+      }
     } else if (editing && event.key === 'Escape') {
       onCancel(id);
-      setEditingText("");
+      setEditingItemText("");
     } else { }
   };
 
   const onCheckBoxChanged = () => {
-    onToggle(id);
+    if (editing) {
+      setEditingItem({
+        ...editingItem,
+        status: editingItem.status == ItemStatus.done ? ItemStatus.undone : ItemStatus.done,
+      });
+    } else {
+      onToggle(id);
+    }
   }
 
   return (
@@ -161,14 +193,14 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
         justifyContent="center"
         spacing={1}
       >
-        {(kind == itemKind.goal) &&
+        {(kind == ItemKind.goal) &&
           <Checkbox
             checked={status}
             onChange={onCheckBoxChanged}
             size="small"
           />
         }
-        {(kind == itemKind.note) &&
+        {(kind == ItemKind.note) &&
           <IconButton aria-label="note" size="small" disabled color="secondary" >
             <ChatIcon color="warning" />
             {/*<ChatIcon color="inherit" />*/}
@@ -182,27 +214,31 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
               size="small"
               inputProps={{
                 style: {
-                  fontSize: (kind == itemKind.note) ? "0.85em" : "1em",
-                  fontWeight: (kind == itemKind.note) ? 300 : 400,
+                  fontSize: (kind == ItemKind.note) ? "0.85em" : "1em",
+                  fontWeight: (kind == ItemKind.note) ? 300 : 400,
                 }
               }}
-              multiline={(kind == itemKind.note)}
-              maxRows={(kind == itemKind.note) ? 40 : 1}
+              multiline={(kind == ItemKind.note)}
+              maxRows={(kind == ItemKind.note) ? 40 : 1}
               fullWidth
               autoFocus
               onFocus={onFocus}
               onBlur={onBlur}
               value={editingText}
               onKeyDown={handleKeyDown}
-              onChange={(e) => setEditingText(e.currentTarget.value)}
+              onChange={(e) => setEditingItemText(e.currentTarget.value)}
             />
+            {objectivePeriodTagElement(editingItem)}
             <IconButton
               aria-label="ok"
               size="small"
               color="success"
               onClick={() => {
-                onSubmit({ id: id, text: editingText });
-                setEditingText("");
+                let item = editingItem;
+                if (kind == ItemKind.goal) item.title = editingText;
+                if (kind == ItemKind.note) item.note = editingText;
+                onSubmit({ item: item, keyboard_submit: false });
+                setEditingItemText("");
               }}
             >
               <CheckCircleIcon fontSize="small" />
@@ -213,7 +249,7 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
               color="default"
               onClick={() => {
                 onCancel(id);
-                setEditingText("");
+                setEditingItemText("");
               }}
             >
               <CancelIcon fontSize="small" />
@@ -227,18 +263,18 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
               size="small"
               inputProps={{
                 style: {
-                  fontSize: (kind == itemKind.note) ? "0.85em" : "1em",
-                  fontWeight: (kind == itemKind.note) ? 300 : 400,
+                  fontSize: (kind == ItemKind.note) ? "0.85em" : "1em",
+                  fontWeight: (kind == ItemKind.note) ? 300 : 400,
                   caretColor: 'transparent',
                 }
               }}
-              multiline={(kind == itemKind.note)}
-              maxRows={(kind == itemKind.note) ? 40 : 1}
+              multiline={(kind == ItemKind.note)}
+              maxRows={(kind == ItemKind.note) ? 40 : 1}
               fullWidth
-              value={text}
+              value={fixedText}
               onMouseDown={() => { onSelect(id); }}
             />
-            {objectivePeriodTagElement(item)}
+            {objectivePeriodTagElement(editingItem)}
             <IconButton
               aria-label="copy"
               size="small"

@@ -1,20 +1,18 @@
 // constants file: matched with rust backend implementation
-export const ids = {
-  none: -1,
-  new_goal: -2,
-  new_note: -3,
-  new_event: -4,
+export enum ID {
+  none = -1,
+  new_item = -2,
 };
 
-export const itemKind = {
-  goal: 1,
-  note: 2,
-  event: 3,
+export enum ItemKind {
+  goal = 1,
+  note,
+  event,
 };
 
-export const itemStatus = {
-  undone: 0,
-  done: 1,
+export enum ItemStatus {
+  undone = 0,
+  done,
 };
 
 export enum Page {

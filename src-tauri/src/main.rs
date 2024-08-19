@@ -1,8 +1,6 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 use std::sync::Mutex;
-use std::thread::sleep;
-use std::time::Duration;
 use tauri::State;
 
 use weeks_core::db_sqlite;
@@ -75,26 +73,23 @@ fn next_time_period(page: i32, state: State<MyAppState>) -> bool {
 
 // related to item manipulations
 #[tauri::command]
-fn add_new_item(page: i32, kind: i32, text: String, state: State<MyAppState>) -> bool {
-    if page == LIST_TYPE_WEEKS {
+fn add_new_item(mut item: Item, state: State<MyAppState>) -> bool {
+    item.calendar = CALENDAR_PERSIAN;
+    if item.year.is_none() && item.season.is_none() && item.month.is_none() {
         let mut week = state.week.lock().unwrap();
-        if kind == ITEM_KIND_GOAL {
-            return week.add_new_goal(text).is_ok();
-        }
-        if kind == ITEM_KIND_NOTE {
-            return week.add_new_note(text).is_ok();
-        }
-    }
-    if page == LIST_TYPE_OBJECTIVES {
+        item.order_in_week = Some(week.get_new_ordering_key());
+        item.day = week.middle_day;
+        let result = db_sqlite::create_item(&NewItem::from(&item));
+        let _ = week.update();
+        result.is_ok()
+    } else {
         let mut year = state.year.lock().unwrap();
-        if kind == ITEM_KIND_GOAL {
-            return year.add_new_goal(text).is_ok();
-        }
-        if kind == ITEM_KIND_NOTE {
-            return year.add_new_note(text).is_ok();
-        }
+        item.order_in_resolution = Some(year.get_new_ordering_key());
+        item.day = 0;
+        let result = db_sqlite::create_item(&NewItem::from(&item));
+        let _ = year.update();
+        result.is_ok()
     }
-    false
 }
 
 #[tauri::command]
@@ -106,8 +101,8 @@ fn delete_item(id: i32, state: State<MyAppState>) -> bool {
 }
 
 #[tauri::command]
-fn update_item(id: i32, text: String, state: State<MyAppState>) -> bool {
-    let result = db_sqlite::update_item_text(id, text);
+fn update_item(item: Item, state: State<MyAppState>) -> bool {
+    let result = db_sqlite::update_item(&item);
     let _ = state.week.lock().unwrap().update();
     let _ = state.year.lock().unwrap().update();
     result.is_ok()

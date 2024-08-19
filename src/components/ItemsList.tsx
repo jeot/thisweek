@@ -1,8 +1,8 @@
+import { Item } from "../my_types";
 import GoalNoteItem from "./GoalNoteItem";
-import { ids, itemKind, itemStatus } from "./../constants.ts";
 
-export default function ItemsList(props) {
-  const item_elements = props.items.map((item, i) => {
+export default function ItemsList(props: any) {
+  const item_elements = props.items.map((item: Item, i: number) => {
     let editing = (item.id == props.editingId);
     let selected = (item.id == props.selectedId);
 
@@ -21,26 +21,14 @@ export default function ItemsList(props) {
   return (
     <div className="items-list">
       {item_elements}
-      {
-        (props.editingId == ids.new_goal) &&
-        <GoalNoteItem
-          key={'new_goal_key'}
-          item={{ id: ids.new_goal, kind: itemKind.goal, title: "", note: "", status: itemStatus.undone }}
-          editing={true}
-          selected={false}
-          {...props}
-        />
-      }
-      {
-        (props.editingId == ids.new_note) &&
-        <GoalNoteItem
-          key={'new_note_key'}
-          item={{ id: ids.new_note, kind: itemKind.note, title: "", note: "", status: itemStatus.undone }}
-          editing={true}
-          selected={false}
-          {...props}
-        />
-      }
+
+      {props.newItem ? <GoalNoteItem
+        key={'new_item_key'}
+        item={props.newItem}
+        editing={true}
+        selected={false}
+        {...props}
+      /> : <></>}
     </div>
   );
 

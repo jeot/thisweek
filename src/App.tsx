@@ -29,40 +29,54 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
 import { createTheme, ThemeProvider } from '@mui/material';
-import { Action, ids, itemKind, Page } from './constants.ts';
+import { Action, ID, ItemKind, ObjectiveType, Page, ItemStatus } from './constants.ts';
 
 import './components/styles.css';
+import type { Today, Item, ItemsData } from "./my_types.ts"
 
 function App() {
 
-  // interface Item { };
-  interface Today {
-    today_persian_date: string;
-    today_english_date: string;
-  }
-  interface ItemsData {
-    title: string;
-    info: string;
-    items: Array<any>;
-  };
-
   const today_init: Today = {
+    calendar: 0,
+    year: 0,
+    month: 0,
+    day: 0,
     today_persian_date: "",
     today_english_date: "",
   };
+  const item_init: Item = {
+    id: ID.none,
+    calendar: 1,
+    year: null,
+    season: null,
+    month: null,
+    day: 0,
+    kind: ItemKind.goal,
+    fixed_date: false,
+    all_day: false,
+    title: "",
+    note: "",
+    datetime: null,
+    duration: null,
+    status: ItemStatus.undone,
+    order_in_week: null,
+    order_in_resolution: null,
+    sync: null,
+    uuid: null,
+  }
   const items_data_init: ItemsData = {
     title: "",
     info: "",
+    year: 0,
     items: [],
   };
 
-  const [activePage, setActivePage, activePageRef] = useStateRef(Page.weeks);
-  const [editingId, setEditingId] = useState(ids.none);
-  const [selectedId, setSelectedId, selectedIdRef] = useStateRef(ids.none);
+  const [activePage, setActivePage, activePageRef] = useStateRef<number>(Page.weeks);
+  const [editingId, setEditingId] = useState<number>(ID.none);
+  const [selectedId, setSelectedId, selectedIdRef] = useStateRef<number>(ID.none);
   const [today, setToday, _todayRef] = useStateRef<Today>(today_init);
   const [data, setData, dataRef] = useStateRef<ItemsData>(items_data_init);
-  // const [refreshData, setRefreshData] = useState<boolean>(true);
-  // const [refreshData, setRefreshData, refreshDataRef] = useStateRef<boolean>(true);
+  const [newItem, setNewItem, _newItemRef] = useStateRef<Item | null>(null);
 
   const itemsCount = (data?.items.length) ?? 0;
   const itemsRefs = useRef<Array<undefined | React.RefObject<unknown>>>(Array(0));
@@ -117,16 +131,14 @@ function App() {
       case Action.gotoPreviousWeek: gotoPreviousWeek(); break;
       case Action.gotoNextYear: gotoNextYear(); break;
       case Action.gotoPreviousYear: gotoPreviousYear(); break;
-      case Action.escapePressed: handleOnCancel(); break;
+      case Action.escapePressed: cancelEditingOrSelectionOrNewItem(); break;
       case Action.selectNextItem: selectNextItem(); break;
       case Action.selectPreviousItem: selectPreviousItem(); break;
       case Action.newGoal:
-        setEditingId(ids.new_goal);
-        Keyboard.set_insert_mode(true);
+        startCreatingNewItem(ItemKind.goal, ObjectiveType.none);
         break;
       case Action.newNote:
-        setEditingId(ids.new_note);
-        Keyboard.set_insert_mode(true);
+        startCreatingNewItem(ItemKind.note, ObjectiveType.none);
         break;
       case Action.editSelectedItem: handleOnEdit(selectedIdRef.current); break;
       case Action.deleteSelectedItem: handleOnDelete(selectedIdRef.current); break;
@@ -158,16 +170,17 @@ function App() {
     return index;
   }
 
-  const handleOnCancel = function() {
-    setEditingId(ids.none);
-    setSelectedId(ids.none);
+  const cancelEditingOrSelectionOrNewItem = function() {
+    setEditingId(ID.none);
+    setSelectedId(ID.none);
+    setNewItem(null);
     Keyboard.set_insert_mode(false);
-    // refreshData();
   }
 
   const handleOnEdit = function(id: number) {
+    if (id < 0) return;
     // console.log(`new onEdit(${id})`);
-    if (editingId != ids.none) {
+    if (editingId != ID.none) {
       console.log("error: editingId is already set.");
     }
     setEditingId(id);
@@ -175,6 +188,7 @@ function App() {
   }
 
   const handleOnSelect = function(id: number) {
+    if (id < 0) return;
     setSelectedId(id);
   }
 
@@ -194,23 +208,23 @@ function App() {
   const handleOnFocusLeave = function({ id, text }: { id: number, text: string }) {
     // disable text field if it's for new goal/note input and is empty
     if (text != "") return;
-    if (id == ids.new_goal || id == ids.new_note) {
-      handleOnCancel();
+    if (id == ID.new_item) {
+      cancelEditingOrSelectionOrNewItem();
     }
   }
 
   const gotoNextTimePeriod = function() {
-    setSelectedId(ids.none);
+    setSelectedId(ID.none);
     invoke_tauri_command_and_refresh_data("next_time_period", { page: activePageRef.current });
   }
 
   const gotoPreviousTimePeriod = function() {
-    setSelectedId(ids.none);
+    setSelectedId(ID.none);
     invoke_tauri_command_and_refresh_data("previous_time_period", { page: activePageRef.current });
   }
 
   const gotoCurrentTimePeriod = function() {
-    setSelectedId(ids.none);
+    setSelectedId(ID.none);
     invoke_tauri_command_and_refresh_data("current_time_period", { page: activePageRef.current });
   }
 
@@ -248,8 +262,8 @@ function App() {
 
   const selectNextItem = function() {
     const arrLen = dataRef.current.items.length;
-    if (arrLen == 0) setSelectedId(ids.none);
-    else if (selectedIdRef.current == ids.none) setSelectedId(getItemIdFromItemIndex(0));
+    if (arrLen == 0) setSelectedId(ID.none);
+    else if (selectedIdRef.current == ID.none) setSelectedId(getItemIdFromItemIndex(0));
     else {
       const index = getItemIndexFromItemId(selectedIdRef.current);
       if ((index + 1) < arrLen) setSelectedId(getItemIdFromItemIndex(index + 1));
@@ -258,8 +272,8 @@ function App() {
 
   const selectPreviousItem = function() {
     const arrLen = dataRef.current.items.length;
-    if (arrLen == 0) setSelectedId(ids.none);
-    else if (selectedIdRef.current == ids.none) setSelectedId(getItemIdFromItemIndex(arrLen - 1));
+    if (arrLen == 0) setSelectedId(ID.none);
+    else if (selectedIdRef.current == ID.none) setSelectedId(getItemIdFromItemIndex(arrLen - 1));
     else {
       const index = getItemIndexFromItemId(selectedIdRef.current);
       if (index > 0) setSelectedId(getItemIdFromItemIndex(index - 1));
@@ -273,9 +287,9 @@ function App() {
     text = currentData.title;
     text = text + "\n\n";
     currentData.items.forEach((item) => {
-      if (item.kind === itemKind.goal)
+      if (item.kind === ItemKind.goal)
         text = text + item.title + "\n";
-      if (item.kind === itemKind.note)
+      if (item.kind === ItemKind.note)
         text = text + item.note + "\n";
     });
     console.log("Copied all items in the week into clipboard:");
@@ -296,9 +310,9 @@ function App() {
 
   const handleOnCopyText = function(id: number) {
     const item = dataRef.current.items.find((item) => { return (item.id == id); });
-    if (item.kind === itemKind.goal)
+    if (item.kind === ItemKind.goal)
       navigator.clipboard.writeText(item.title);
-    if (item.kind === itemKind.note)
+    if (item.kind === ItemKind.note)
       navigator.clipboard.writeText(item.note);
   }
 
@@ -324,30 +338,23 @@ function App() {
     invoke_tauri_command_and_refresh_data("previous_time_period", { page: activePageRef.current });
   }
 
-  const handleOnSubmit = function({ id, text, keyboard_submit }: { id: number, text: string, keyboard_submit: boolean }) {
-    if (id === undefined || text === undefined) return;
-    if (id == ids.new_goal) {
-      invoke_tauri_command_and_refresh_data("add_new_item", { page: activePageRef.current, kind: itemKind.goal, text: text });
-      // to continue adding new goals or not?
-      if (keyboard_submit === undefined) {
-        setEditingId(ids.none);
-        Keyboard.set_insert_mode(false);
-      } else {
-        setEditingId(ids.new_goal);
+  const handleOnSubmit = function({ item, keyboard_submit }: { item: Item, keyboard_submit: boolean }) {
+    if (item.id == ID.new_item && item.kind == ItemKind.goal) {
+      invoke_tauri_command_and_refresh_data("add_new_item", { item: item });
+      if (!keyboard_submit) {
+        cancelEditingOrSelectionOrNewItem();
       }
-    } else if (id == ids.new_note) {
-      // comment if you want to continue new note section
-      setEditingId(ids.none);
-      Keyboard.set_insert_mode(false);
-      invoke_tauri_command_and_refresh_data("add_new_item", { page: activePageRef.current, kind: itemKind.note, text: text });
-    } else if (editingId == id) { // submiting an edit on previous item
-      setEditingId(ids.none);
-      Keyboard.set_insert_mode(false);
-      invoke_tauri_command_and_refresh_data("update_item", { id: id, text: text });
+    } else if (item.id == ID.new_item && item.kind == ItemKind.note) {
+      invoke_tauri_command_and_refresh_data("add_new_item", { item: item });
+      cancelEditingOrSelectionOrNewItem();
+    } else if (editingId == item.id) { // submiting an edit on previous item
+      invoke_tauri_command_and_refresh_data("update_item", { item: item });
+      cancelEditingOrSelectionOrNewItem();
     } else { }
   }
 
   const handleOnDelete = function(id: number) {
+    if (selectedIdRef.current < 0) return;
     let nextId: number;
     invoke("get_near_items_id", { id: selectedIdRef.current, page: activePageRef.current }).then((result) => {
       const two_ids = result as Array<any>;
@@ -357,23 +364,32 @@ function App() {
         if (nextId != null) {
           setSelectedId(nextId);
         } else {
-          setSelectedId(ids.none);
+          setSelectedId(ID.none);
         }
       });
     });
   }
 
-  const onSpeedDialClick = function(action_name: string) {
-    if (editingId != ids.none) return;
-    // console.log(action_name);
-    if (action_name == 'Goal' && editingId == ids.none) {
-      setEditingId(ids.new_goal);
-      Keyboard.set_insert_mode(true);
-    }
-    if (action_name == 'Note' && editingId == ids.none) {
-      setEditingId(ids.new_note);
-      Keyboard.set_insert_mode(true);
-    }
+  const startCreatingNewItem = function(itemKind: number, objectiveType: number) {
+    if (editingId != ID.none) return;
+    if (activePageRef.current == Page.weeks)
+      objectiveType = ObjectiveType.none;
+    if (objectiveType == ObjectiveType.none && activePageRef.current == Page.objectives)
+      objectiveType = ObjectiveType.yearly;
+
+    if (objectiveType != ObjectiveType.none && (data.year === undefined || data.year === null))
+      return;
+
+    setEditingId(ID.new_item);
+    Keyboard.set_insert_mode(true);
+    let item = item_init;
+    item.id = ID.new_item;
+    item.kind = itemKind;
+    if (objectiveType != ObjectiveType.none) item.year = dataRef.current.year;
+    if (objectiveType == ObjectiveType.monthly) item.month = 1;
+    if (objectiveType == ObjectiveType.seasonal) item.season = 1;
+    console.log("the newItem template: ", item);
+    setNewItem(item);
   }
 
   const displayPage = function(page: number) {
@@ -470,6 +486,7 @@ function App() {
                 <Week
                   itemsRefs={itemsRefs}
                   data={data}
+                  newItem={newItem}
                   editingId={editingId}
                   selectedId={selectedId}
                   onNext={gotoNextTimePeriod}
@@ -478,7 +495,7 @@ function App() {
                   onEdit={handleOnEdit}
                   onSelect={handleOnSelect}
                   onDelete={handleOnDelete}
-                  onCancel={handleOnCancel}
+                  onCancel={cancelEditingOrSelectionOrNewItem}
                   onToggle={handleOnToggle}
                   onCopyText={handleOnCopyText}
                   onFocusLeave={handleOnFocusLeave}
@@ -487,6 +504,7 @@ function App() {
                   <Objectives
                     itemsRefs={itemsRefs}
                     data={data}
+                    newItem={newItem}
                     editingId={editingId}
                     selectedId={selectedId}
                     onNext={gotoNextTimePeriod}
@@ -495,13 +513,13 @@ function App() {
                     onEdit={handleOnEdit}
                     onSelect={handleOnSelect}
                     onDelete={handleOnDelete}
-                    onCancel={handleOnCancel}
+                    onCancel={cancelEditingOrSelectionOrNewItem}
                     onToggle={handleOnToggle}
                     onCopyText={handleOnCopyText}
                     onFocusLeave={handleOnFocusLeave}
                   />
                 ) : (<></>)}
-              {editingId == ids.none && <BasicSpeedDial onClick={onSpeedDialClick} />}
+              {editingId == ID.none && <BasicSpeedDial page={activePageRef.current} onNewAction={startCreatingNewItem} />}
             </div>
           </div>
         </CssBaseline>
