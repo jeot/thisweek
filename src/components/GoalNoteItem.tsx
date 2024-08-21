@@ -52,7 +52,6 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
   }
 
   const [editingItem, setEditingItem] = useState(props.item);
-  const [dir, setDir] = useState('rtl');
   const [hovered, setHovered] = useState(false);
 
   useEffect(() => {
@@ -72,6 +71,7 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
   let status = editing ? statusEditing : statusFixed;
   let id = editing ? editingItem.id : props.item.id;
   let kind = editing ? editingItem.kind : props.item.kind;
+  let dir = editing ? getDirection(editingText) : getDirection(fixedText);
 
   // todo: this should move to calendar system!
   const objectivePeriodTagElement = function(item: Item) {
@@ -123,14 +123,6 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
       setEditingItem(props.item);
     }
   }, [editing]);
-
-  useEffect(() => {
-    if (editing) {
-      setDir(getDirection(editingText));
-    } else {
-      setDir(getDirection(fixedText));
-    }
-  }, [editingText, fixedText, editing]); // fix: these are not states. is this correct?
 
   const onFocus = () => { }
 
