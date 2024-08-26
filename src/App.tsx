@@ -213,6 +213,12 @@ function App() {
     }
   }
 
+  const handleOnObjectiveTypeChanged = function(id: number, year: number, season: number | null, month: number | null) {
+    console.log("changing the objective type...");
+    console.log(id, year, season, month);
+    invoke_tauri_command_and_refresh_data("change_item_objective_period", { id: id, year: year, season: season, month: month });
+  }
+
   const gotoNextTimePeriod = function() {
     setSelectedId(ID.none);
     invoke_tauri_command_and_refresh_data("next_time_period", { page: activePageRef.current });
@@ -380,6 +386,7 @@ function App() {
     if (objectiveType != ObjectiveType.none && (data.year === undefined || data.year === null))
       return;
 
+    setSelectedId(ID.none);
     setEditingId(ID.new_item);
     Keyboard.set_insert_mode(true);
     let item = item_init;
@@ -499,6 +506,7 @@ function App() {
                   onToggle={handleOnToggle}
                   onCopyText={handleOnCopyText}
                   onFocusLeave={handleOnFocusLeave}
+                  onObjectiveTypeChanged={handleOnObjectiveTypeChanged}
                 />
                 : activePage == Page.objectives ? (
                   <Objectives
@@ -517,6 +525,7 @@ function App() {
                     onToggle={handleOnToggle}
                     onCopyText={handleOnCopyText}
                     onFocusLeave={handleOnFocusLeave}
+                    onObjectiveTypeChanged={handleOnObjectiveTypeChanged}
                   />
                 ) : (<></>)}
               {editingId == ID.none && <BasicSpeedDial page={activePageRef.current} onNewAction={startCreatingNewItem} />}

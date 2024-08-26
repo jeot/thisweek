@@ -6,7 +6,7 @@ import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 export default function ItemsListNavBar(props: any) {
   const { title, textNext, textPrevious, onNext, onPrevious } = props;
   return (
-    <div className="week-header">
+    <div className="items-list-header">
       <Tooltip title={textNext}>
         <IconButton aria-label="next" size="small" color="primary"
           onClick={() => { onNext(); }}

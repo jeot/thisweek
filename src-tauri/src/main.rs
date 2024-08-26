@@ -117,6 +117,20 @@ fn toggle_item_state(id: i32, state: State<MyAppState>) -> bool {
 }
 
 #[tauri::command]
+fn change_item_objective_period(
+    id: i32,
+    year: Option<i32>,
+    season: Option<i32>,
+    month: Option<i32>,
+    state: State<MyAppState>,
+) -> bool {
+    let result = db_sqlite::update_item_objective_period(id, year, season, month);
+    let _ = state.week.lock().unwrap().update();
+    let _ = state.year.lock().unwrap().update();
+    result.is_ok()
+}
+
+#[tauri::command]
 fn get_near_items_id(id: i32, page: i32, state: State<MyAppState>) -> (Option<i32>, Option<i32>) {
     if page == LIST_TYPE_WEEKS {
         let week = state.week.lock().unwrap();
@@ -219,6 +233,7 @@ fn main() {
             delete_item,
             update_item,
             toggle_item_state,
+            change_item_objective_period,
             backup_database_file,
             get_near_items_id,
         ])

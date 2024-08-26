@@ -114,7 +114,9 @@ const handleUserKeyPress = (event: KeyboardEvent) => {
       broadcastAction(Action.editSelectedItem);
     }
 
-    const deleteSelected: boolean = (event.code === 'KeyD' || event.code === 'Delete') && noModifiers;
+    // todo: should have some confirmation on delete!!
+    // const deleteSelected: boolean = (event.code === 'KeyD' || event.code === 'Delete') && noModifiers;
+    const deleteSelected: boolean = (event.code === 'Delete') && noModifiers;
     if (deleteSelected) {
       event.preventDefault();
       broadcastAction(Action.deleteSelectedItem);

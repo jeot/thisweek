@@ -128,8 +128,7 @@ div {
 	flex-direction: column;
 }
 
-.week-header,
-.objectives-header {
+.items-list-header {
 	flex: 0 1 auto;
 	padding: 0px;
 
@@ -144,22 +143,66 @@ div {
 	background-color: #EBEDEF;
 }
 
-.week-main {
+.items-list {
 	direction: rtl;
 	flex: 1 1 auto;
 	overflow-y: auto;
 	padding: 0px;
 	padding-bottom: 64px;
+	/* display: flex; */
+	/* flex-direction: column; */
+}
+
+.goal-note-item {
+	display: block;
+	box-sizing: border-box;
+	border: 1px solid white;
+	border-right: 8px solid white;
+	padding: 0px;
+}
+
+.goal-note-item:hover {
+	background-color: aliceblue;
+}
+
+.goal-note-item-selected {
+	box-sizing: border-box;
+	border: 1px solid darkorchid;
+	border-right: 8px solid darkorchid;
+	background-color: aliceblue;
+}
+
+.goal-note-item-input {
+	box-sizing: content-box;
 }
 
 .objective-tag {
+	position: relative;
+}
+
+.objective-type-selection {
+	width: 100px;
+	height: 100px;
+	background-color: blue;
+	position: absolute;
+	top: 32px;
+	left: 0px;
+	z-index: 2;
+	transition: all 0.5s;
+}
+
+.objective-tag-btn {
 	padding: 2px 4px 0px 4px;
-	font-size: 0.7em;
-	font-weight: bold;
 	box-sizing: border-box;
 	border-radius: 20px;
+	cursor: pointer;
 	/* color: white; */
 	/* background-color: #364f75; */
+}
+
+.objective-tag-btn:hover {
+	/* border: 1px solid black; */
+	outline: 2px solid rgba(0, 0, 0, 0.2);
 }
 
 .objective-month-tag {
@@ -175,9 +218,38 @@ div {
 }
 
 .objective-year-tag {
-	color: #718399;
-	border: 1.3px solid #718399;
+	/* color: #718399; */
+	border: 1.3px solid #616379;
 	color: white;
 	background-color: #718399;
+}
 
+.objective-popover {
+	display: flex;
+	flex-direction: column;
+	/* border: 1px solid rgba(0, 0, 0, 0.2); */
+	width: 300px;
+	padding: 5px;
+}
+
+.objective-popover-section {
+	/* border: 1px dashed red; */
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	padding: 8px;
+}
+
+.objective-popover-tag {
+	flex: 1 0;
+	margin: 2px;
+}
+
+.objective-popover-tag-selected {
+	/* outline: 2px solid rgba(0, 0, 0, 0.2); */
+	border: 2px solid black;
+}
+
+.flex-break-three-element {
+	flex: 1 0 30% !important;
 }

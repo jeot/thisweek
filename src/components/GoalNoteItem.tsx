@@ -7,6 +7,7 @@ import Checkbox from '@mui/material/Checkbox';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 
+
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -19,6 +20,7 @@ import { ObjectiveType, ItemKind, ItemStatus } from "../constants.ts";
 
 import { forwardRef } from 'react';
 import type { Item } from "../my_types.ts";
+import ObjectivesPopover from "./ObjectivesPopover.tsx";
 
 /**
  * Method to scroll into view port, if it's outside the viewport
@@ -44,7 +46,7 @@ const scrollIntoViewIfNeeded = (target: HTMLElement) => {
 
 // export default function GoalNoteItem({ item, editing, selected, onSubmit, onEdit, onSelect, onDelete, onCancel, onToggle, onCopyText, onFocusLeave }) {
 const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
-  const { editing, selected, onSubmit, onEdit, onSelect, onDelete, onCancel, onToggle, onCopyText, onFocusLeave } = props;
+  const { editing, selected, onSubmit, onEdit, onSelect, onDelete, onCancel, onToggle, onCopyText, onFocusLeave, onObjectiveTypeChanged } = props;
 
   if (props.item === null || props.item === undefined) {
     console.log("item null");
@@ -53,7 +55,6 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
 
   const [editingItem, setEditingItem] = useState(props.item);
   const [hovered, setHovered] = useState(false);
-
   useEffect(() => {
   }, []);
 
@@ -72,43 +73,6 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
   let id = editing ? editingItem.id : props.item.id;
   let kind = editing ? editingItem.kind : props.item.kind;
   let dir = editing ? getDirection(editingText) : getDirection(fixedText);
-
-  // todo: this should move to calendar system!
-  const objectivePeriodTagElement = function(item: Item) {
-    const objectiveType = item.month ? ObjectiveType.monthly
-      : item.season ? ObjectiveType.seasonal
-        : item.year ? ObjectiveType.yearly : ObjectiveType.none;
-    if (objectiveType == ObjectiveType.none) {
-      return (<></>);
-    }
-
-    let year: string = item.year?.toString() ?? "";
-    const seasons = ["", "بهار", "تابستان", "پاییز", "زمستان"];
-    const months = ["", "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور", "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"];
-    const seasonIndex = item.season ?? 0;
-    const monthIndex = item.month ?? 0;
-    let season: string = seasons[seasonIndex];
-    let month: string = months[monthIndex];
-    let text: string = "";
-    let style: string = "";
-    if (item.year && item.month) {
-      text = `${month}\xa0${year}`;
-      style = "objective-tag objective-month-tag"
-    } else if (item.year && item.season) {
-      text = `${season}\xa0${year}`;
-      style = "objective-tag objective-season-tag"
-    } else if (item.year) {
-      text = `${year}`;
-      style = "objective-tag objective-year-tag"
-    } else {
-      text = "error!"
-    }
-    text = toPersianDigits(text.toString());
-    return (
-      <div className={style}>{text}</div>
-    );
-  }
-
 
   useEffect(() => {
     if (selected) {
@@ -155,6 +119,20 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
     } else { }
   };
 
+  const handleObjectiveTypeChange = function(year: number, season: number | null, month: number | null) {
+    if (editing) {
+      setEditingItem({
+        ...editingItem,
+        year: year,
+        season: season,
+        month: month,
+      });
+    } else {
+      onObjectiveTypeChanged(id, year, season, month);
+    }
+
+  }
+
   const onCheckBoxChanged = () => {
     if (editing) {
       setEditingItem({
@@ -166,24 +144,34 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
     }
   }
 
+  const style = `goal-note-item ${selected ? "goal-note-item-selected" : ""}`;
+  const inputPropsStyle = function(itemkind: number) {
+    return {
+      boxSizing: "border-box",
+      fontSize: (itemkind == ItemKind.note) ? "0.85em" : "1em",
+      fontWeight: (itemkind == ItemKind.note) ? 300 : 400,
+      padding: (itemkind == ItemKind.note) ? "0.2em 0.5em 0.2em 0.5em" : "1em 0.5em 1em 0.5em",
+      // border: "1px dashed gray",
+      // outline: "1px dotted black",
+      // inset: "0px",
+      // caretColor: 'transparent',
+    }
+  }
+
   return (
     <Box
       ref={ref}
       dir="rtl"
       id={id}
-      className="goal_note_item"
+      className={style}
       onMouseEnter={() => { setHovered(true); }}
       onMouseLeave={() => { setHovered(false); }}
-      sx={{
-        borderRight: selected ? '4px solid darkorchid' : hovered ? '4px solid aliceblue' : '4px solid white',
-        backgroundColor: selected ? 'lavender' : hovered ? 'aliceblue' : 'white',
-      }}
     >
       <Stack
         direction="row"
         alignItems="center"
         justifyContent="center"
-        spacing={1}
+        spacing={0}
       >
         {(kind == ItemKind.goal) &&
           <Checkbox
@@ -205,10 +193,7 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
               variant="outlined"
               size="small"
               inputProps={{
-                style: {
-                  fontSize: (kind == ItemKind.note) ? "0.85em" : "1em",
-                  fontWeight: (kind == ItemKind.note) ? 300 : 400,
-                }
+                style: inputPropsStyle(kind),
               }}
               multiline={(kind == ItemKind.note)}
               maxRows={(kind == ItemKind.note) ? 40 : 1}
@@ -220,7 +205,10 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
               onKeyDown={handleKeyDown}
               onChange={(e) => setEditingItemText(e.currentTarget.value)}
             />
-            {objectivePeriodTagElement(editingItem)}
+            <ObjectivesPopover
+              year={editingItem.year} season={editingItem.season} month={editingItem.month}
+              onChange={handleObjectiveTypeChange}
+            />
             <IconButton
               aria-label="ok"
               size="small"
@@ -255,10 +243,9 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
               size="small"
               inputProps={{
                 style: {
-                  fontSize: (kind == ItemKind.note) ? "0.85em" : "1em",
-                  fontWeight: (kind == ItemKind.note) ? 300 : 400,
                   caretColor: 'transparent',
-                }
+                  ...inputPropsStyle(kind)
+                },
               }}
               multiline={(kind == ItemKind.note)}
               maxRows={(kind == ItemKind.note) ? 40 : 1}
@@ -266,7 +253,10 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
               value={fixedText}
               onMouseDown={() => { onSelect(id); }}
             />
-            {objectivePeriodTagElement(editingItem)}
+            <ObjectivesPopover
+              year={props.item.year} season={props.item.season} month={props.item.month}
+              onChange={handleObjectiveTypeChange}
+            />
             <IconButton
               aria-label="copy"
               size="small"
