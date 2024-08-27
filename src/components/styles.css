@@ -156,7 +156,7 @@ div {
 	/* flex-direction: column; */
 }
 
-.goal-note-item {
+.item {
 	display: block;
 	box-sizing: border-box;
 	border: 1px solid white;
@@ -164,19 +164,20 @@ div {
 	padding: 0px;
 }
 
-.goal-note-item:hover {
+.item:hover {
 	background-color: aliceblue;
 }
 
-.goal-note-item-selected {
+.item-selected {
 	box-sizing: border-box;
 	border: 1px solid darkorchid;
 	border-right: 8px solid darkorchid;
 	background-color: aliceblue;
 }
 
-.goal-note-item-input {
+.item-input {
 	box-sizing: content-box;
+	/* background: red; */
 }
 
 .objective-tag {

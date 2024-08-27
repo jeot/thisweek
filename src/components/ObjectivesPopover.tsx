@@ -5,7 +5,7 @@ import './styles.css';
 import { ObjectiveType } from '../constants';
 import { toPersianDigits } from "../utilities.ts"
 
-export default function ObjectivesPopover(props: { year: number, month: number, season: number, onChange: any }) {
+export default function ObjectivesPopover(props: any) {
 
   const currentObjectiveType = props.month ? ObjectiveType.monthly
     : props.season ? ObjectiveType.seasonal

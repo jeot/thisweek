@@ -15,8 +15,8 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import ChatIcon from '@mui/icons-material/Chat';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
-import { getDirection, toPersianDigits } from "../utilities.ts"
-import { ObjectiveType, ItemKind, ItemStatus } from "../constants.ts";
+import { getDirection } from "../utilities.ts"
+import { ItemKind, ItemStatus } from "../constants.ts";
 
 import { forwardRef } from 'react';
 import type { Item } from "../my_types.ts";
@@ -53,8 +53,8 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
     return;
   }
 
-  const [editingItem, setEditingItem] = useState(props.item);
-  const [hovered, setHovered] = useState(false);
+  const [editingItem, setEditingItem] = useState<Item>(props.item);
+
   useEffect(() => {
   }, []);
 
@@ -144,17 +144,13 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
     }
   }
 
-  const style = `goal-note-item ${selected ? "goal-note-item-selected" : ""}`;
+  const style_item = `item ${selected ? "item-selected" : ""} ${kind == ItemKind.goal ? "item-goal" : "item-note"}`;
+  const style_input = `item-input ${kind == ItemKind.goal ? "item-input-goal" : "item-input-note"}`;
   const inputPropsStyle = function(itemkind: number) {
     return {
-      boxSizing: "border-box",
       fontSize: (itemkind == ItemKind.note) ? "0.85em" : "1em",
       fontWeight: (itemkind == ItemKind.note) ? 300 : 400,
-      padding: (itemkind == ItemKind.note) ? "0.2em 0.5em 0.2em 0.5em" : "1em 0.5em 1em 0.5em",
-      // border: "1px dashed gray",
-      // outline: "1px dotted black",
-      // inset: "0px",
-      // caretColor: 'transparent',
+      caretColor: editing ? "visible" : "transparent",
     }
   }
 
@@ -163,9 +159,7 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
       ref={ref}
       dir="rtl"
       id={id}
-      className={style}
-      onMouseEnter={() => { setHovered(true); }}
-      onMouseLeave={() => { setHovered(false); }}
+      className={style_item}
     >
       <Stack
         direction="row"
@@ -192,9 +186,8 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
               dir={dir}
               variant="outlined"
               size="small"
-              inputProps={{
-                style: inputPropsStyle(kind),
-              }}
+              className={style_input}
+              inputProps={{ style: inputPropsStyle(kind) }}
               multiline={(kind == ItemKind.note)}
               maxRows={(kind == ItemKind.note) ? 40 : 1}
               fullWidth
@@ -241,12 +234,8 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
             <InputBase
               dir={dir}
               size="small"
-              inputProps={{
-                style: {
-                  caretColor: 'transparent',
-                  ...inputPropsStyle(kind)
-                },
-              }}
+              className={style_input}
+              inputProps={{ style: inputPropsStyle(kind) }}
               multiline={(kind == ItemKind.note)}
               maxRows={(kind == ItemKind.note) ? 40 : 1}
               fullWidth
