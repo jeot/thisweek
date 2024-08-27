@@ -42,7 +42,7 @@ export default function ObjectivesPopover(props: { year: number, month: number, 
     } else {
       text = "error!"
     }
-    text = toPersianDigits(text.toString());
+    text = toPersianDigits(text);
     return { style, text };
   }
 
@@ -91,7 +91,7 @@ export default function ObjectivesPopover(props: { year: number, month: number, 
             className={yearStyle}
             onClick={() => { handleOnChange(year, null, null); }}
           >
-            <Typography variant="caption">{year.toString()}</Typography>
+            <Typography variant="caption">{toPersianDigits(year.toString())}</Typography>
           </button>
         </div>
         {createObjectiveTagsElement(seasons_names, "objective-tag-btn objective-season-tag objective-popover-tag", year, season, ObjectiveType.seasonal)}

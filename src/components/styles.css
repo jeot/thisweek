@@ -195,7 +195,7 @@ div {
 }
 
 .objective-tag-btn {
-	padding: 2px 4px 0px 4px;
+	padding: 2px 8px 0px 8px;
 	box-sizing: border-box;
 	border-radius: 20px;
 	cursor: pointer;
@@ -204,27 +204,31 @@ div {
 }
 
 .objective-tag-btn:hover {
-	/* border: 1px solid black; */
 	outline: 2px solid rgba(0, 0, 0, 0.2);
 }
 
+.objective-tag-btn:focus {
+	outline: 2px solid rgba(0, 0, 0, 0.2);
+}
+
+
 .objective-month-tag {
-	color: #064325;
-	border: 1.3px solid #364f75;
+	color: #222222;
+	border: 1.3px solid #bbbbbb;
 }
 
 .objective-season-tag {
 	/* color: #a68f15; */
-	color: white;
-	background-color: #268f15;
-	border: 1.3px solid #268f15;
+	color: #222222;
+	background-color: #eeddee;
+	border: 1.3px solid #bbbbbb;
 }
 
 .objective-year-tag {
 	/* color: #718399; */
-	border: 1.3px solid #616379;
-	color: white;
-	background-color: #718399;
+	border: 1.3px solid #888888;
+	color: #222222;
+	background-color: #d1e1f1;
 }
 
 .objective-popover {
