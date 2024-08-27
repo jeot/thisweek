@@ -33,9 +33,9 @@ import { Action, ID, ItemKind, ObjectiveType, Page, ItemStatus } from './constan
 
 import './components/styles.css';
 import type { Today, Item, ItemsData } from "./my_types.ts"
+import { getName, getVersion } from '@tauri-apps/api/app';
 
 function App() {
-
   const today_init: Today = {
     calendar: 0,
     year: 0,
@@ -77,6 +77,16 @@ function App() {
   const [today, setToday, _todayRef] = useStateRef<Today>(today_init);
   const [data, setData, dataRef] = useStateRef<ItemsData>(items_data_init);
   const [newItem, setNewItem, _newItemRef] = useStateRef<Item | null>(null);
+  const [appName, setAppName] = useState<string>("");
+  const [appVersion, setAppVersion] = useState<string>("");
+
+  getName().then((result: string) => {
+    setAppName(result);
+  });
+
+  getVersion().then((result: string) => {
+    setAppVersion(result);
+  });
 
   const itemsCount = (data?.items.length) ?? 0;
   const itemsRefs = useRef<Array<undefined | React.RefObject<unknown>>>(Array(0));
@@ -530,6 +540,7 @@ function App() {
                 ) : (<></>)}
               {editingId == ID.none && <BasicSpeedDial page={activePageRef.current} onNewAction={startCreatingNewItem} />}
             </div>
+            <div className="app-info">{appName}&nbsp;{appVersion}</div>
           </div>
         </CssBaseline>
       </ThemeProvider>

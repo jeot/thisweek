@@ -20,6 +20,17 @@ div {
 	align-items: stretch;
 }
 
+.app-info {
+	font-family: Roboto, Arial;
+	font-size: 0.6em;
+	position: fixed;
+	bottom: 0px;
+	left: 0px;
+	color: gray;
+	background-color: rgba(0, 0, 0, 0.0);
+	padding: 0px 4px;
+}
+
 .header {
 	flex: 0 1 auto;
 	/* shorthand for following syntax */

@@ -6,11 +6,16 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "weeks",
-    "version": "0.0.0"
+    "productName": "Weeks",
+    "version": "0.0.1"
   },
   "tauri": {
     "allowlist": {
+      "app": {
+        "all": true,
+        "show": true,
+        "hide": true
+      },
       "all": false,
       "shell": {
         "all": false,
