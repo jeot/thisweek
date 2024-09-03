@@ -402,9 +402,12 @@ function App() {
     let item = item_init;
     item.id = ID.new_item;
     item.kind = itemKind;
-    if (objectiveType != ObjectiveType.none) item.year = dataRef.current.year;
+    if (objectiveType == ObjectiveType.none) item.year = null;
+    else item.year = dataRef.current.year;
     if (objectiveType == ObjectiveType.monthly) item.month = 1;
+    else item.month = null;
     if (objectiveType == ObjectiveType.seasonal) item.season = 1;
+    else item.season = null;
     console.log("the newItem template: ", item);
     setNewItem(item);
   }

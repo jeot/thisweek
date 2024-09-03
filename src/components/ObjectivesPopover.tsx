@@ -3,13 +3,11 @@ import { useState } from "react";
 import { Popover, Typography } from "@mui/material";
 import './styles.css';
 import { ObjectiveType } from '../constants';
-import { toPersianDigits } from "../utilities.ts"
+import { getItemObjectiveType, getObjectiveTypeFromFields, toPersianDigits } from "../utilities.ts"
 
 export default function ObjectivesPopover(props: any) {
 
-  const currentObjectiveType = props.month ? ObjectiveType.monthly
-    : props.season ? ObjectiveType.seasonal
-      : props.year ? ObjectiveType.yearly : ObjectiveType.none;
+  const currentObjectiveType = getObjectiveTypeFromFields(props.year, props.season, props.month);
   if (currentObjectiveType == ObjectiveType.none) {
     return (<></>);
   }
