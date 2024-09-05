@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Popover, Typography } from "@mui/material";
 import './styles.css';
 import { ObjectiveType } from '../constants';
-import { getItemObjectiveType, getObjectiveTypeFromFields, toPersianDigits } from "../utilities.ts"
+import { getObjectiveTypeFromFields, toPersianDigits } from "../utilities.ts"
 
 export default function ObjectivesPopover(props: any) {
 

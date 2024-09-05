@@ -15,7 +15,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import ChatIcon from '@mui/icons-material/Chat';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
-import { getDirection, getItemObjectiveType } from "../utilities.ts"
+import { getDirection } from "../utilities.ts"
 import { ItemKind, ItemStatus } from "../constants.ts";
 
 import { forwardRef } from 'react';
@@ -73,7 +73,7 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
   let id = editing ? editingItem.id : props.item.id;
   let kind = editing ? editingItem.kind : props.item.kind;
   let dir = editing ? getDirection(editingText) : getDirection(fixedText);
-  let objectiveType = editing ? getItemObjectiveType(editingItem) : getItemObjectiveType(props.item);
+  // let objectiveType = editing ? getItemObjectiveType(editingItem) : getItemObjectiveType(props.item);
 
   useEffect(() => {
     if (selected) {
