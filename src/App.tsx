@@ -499,7 +499,6 @@ function App() {
         <CssBaseline>
           <div className="application" >
             <Header
-              // fix: get from today
               today_persian_date={today.today_persian_date}
               today_english_date={today.today_english_date}
             />
