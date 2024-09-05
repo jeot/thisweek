@@ -151,7 +151,7 @@ function App() {
         startCreatingNewItem(ItemKind.note, ObjectiveType.none);
         break;
       case Action.editSelectedItem: handleOnEdit(selectedIdRef.current); break;
-      case Action.deleteSelectedItem: handleOnDelete(selectedIdRef.current); break;
+      case Action.deleteSelectedItem: deleteSelectedItem(); break;
       case Action.copySelectedItemText: handleOnCopyText(selectedIdRef.current); break;
       case Action.toggleSelectedItemState: handleOnToggle(selectedIdRef.current); break;
       case Action.moveUpSelectedItem: moveUpSelectedItem(); break;
@@ -369,21 +369,24 @@ function App() {
     } else { }
   }
 
-  const handleOnDelete = function(id: number) {
+  const deleteSelectedItem = function() {
     if (selectedIdRef.current < 0) return;
-    let nextId: number;
+    let nextId: number | null = null;
     invoke("get_near_items_id", { id: selectedIdRef.current, page: activePageRef.current }).then((result) => {
       const two_ids = result as Array<any>;
       nextId = two_ids[1];
-      invoke("delete_item", { id: id }).then((_result) => {
-        refreshData();
-        if (nextId != null) {
-          setSelectedId(nextId);
-        } else {
-          setSelectedId(ID.none);
-        }
-      });
+      handleOnDelete(selectedIdRef.current);
+      if (nextId != null) {
+        setSelectedId(nextId);
+      } else {
+        setSelectedId(ID.none);
+      }
     });
+  }
+
+  const handleOnDelete = function(id: number) {
+    if (id < 0) return;
+    invoke_tauri_command_and_refresh_data("delete_item", { id: id });
   }
 
   const startCreatingNewItem = function(itemKind: number, objectiveType: number) {
