@@ -1,7 +1,42 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 use std::sync::Mutex;
-use tauri::State;
+use tauri::{State, Manager, AppHandle};
+use once_cell::sync::OnceCell;
+
+#[derive(Clone, serde::Serialize, Default)]
+struct EventPayload {
+    command: String,
+    message: String,
+}
+
+static GLOBAL_APP_HANDLE: OnceCell<AppHandle> = OnceCell::new();
+
+// this execute on my other script
+pub fn send_event_to_frontend(name: &str, payload: &EventPayload) {
+    if let Some(app_handle) = GLOBAL_APP_HANDLE.get() {
+        app_handle.emit_all(name, payload.clone()).unwrap();
+    }
+}
+
+fn config_changed_callback() {
+    println!("config file changed!");
+    // we need to triger the config to be reloaded
+    config::init_config();
+    // we need to reload the backend data
+    refresh_data();
+    // send command to front to be reloaded!
+    send_event_to_frontend("ConfigChanged", &EventPayload::default());
+}
+
+fn refresh_data() {
+    if let Some(app) = GLOBAL_APP_HANDLE.get() {
+        let state = app.state::<MyAppState>();
+        let _ = state.today.lock().unwrap().update();
+        let _ = state.week.lock().unwrap().update();
+        let _ = state.year.lock().unwrap().update();
+    }
+}
 
 use weeks_core::db_sqlite;
 use weeks_core::models::ItemsList;
@@ -10,11 +45,14 @@ use weeks_core::ordering::Ordering;
 use weeks_core::today::Today;
 use weeks_core::week::Week;
 use weeks_core::year::Year;
+use weeks_core::notify::Notify;
+use weeks_core::config;
 
 struct MyAppState {
     today: Mutex<Today>,
     week: Mutex<Week>,
     year: Mutex<Year>,
+    notify: Mutex<Notify>,
 }
 
 #[tauri::command]
@@ -74,11 +112,13 @@ fn next_time_period(page: i32, state: State<MyAppState>) -> bool {
 // related to item manipulations
 #[tauri::command]
 fn add_new_item(mut item: Item, state: State<MyAppState>) -> bool {
-    item.calendar = CALENDAR_PERSIAN;
+    item.calendar = weeks_core::calendar::CALENDAR_PERSIAN; // todo: fix this!
     if item.year.is_none() && item.season.is_none() && item.month.is_none() {
         let mut week = state.week.lock().unwrap();
         item.order_in_week = Some(week.get_new_ordering_key());
         item.day = week.middle_day;
+        // todo: the tauri is only an interface
+        // all the logic (like creating a new item and saving) should be in the core
         let result = db_sqlite::create_item(&NewItem::from(&item));
         let _ = week.update();
         result.is_ok()
@@ -209,6 +249,7 @@ fn backup_database_file(state: State<MyAppState>) -> bool {
     week.backup_database_file().is_ok()
 }
 
+
 fn main() {
     println!("Hello, tauri.");
 
@@ -217,6 +258,7 @@ fn main() {
             today: Mutex::new(Today::new()),
             week: Mutex::new(Week::new()),
             year: Mutex::new(Year::new()),
+            notify: Mutex::new(Notify::new(config_changed_callback)),
         })
         .invoke_handler(tauri::generate_handler![
             get_today,
@@ -237,8 +279,15 @@ fn main() {
             backup_database_file,
             get_near_items_id,
         ])
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .build(tauri::generate_context!())
+        .expect("error while running tauri application")
+        .run(|_app_handle, event| match event {
+            tauri::RunEvent::Ready => {
+                println!("Window loaded");
+                GLOBAL_APP_HANDLE.set(_app_handle.clone()).expect("Failed to set global app handle");
+            }
+            _ => {}
+        });
 
     println!("can not reach this line!!!!");
 }

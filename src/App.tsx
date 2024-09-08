@@ -3,6 +3,9 @@ import { useState, useEffect, useRef, createRef } from "react";
 import useStateRef from 'react-usestateref'
 import { invoke } from "@tauri-apps/api/tauri";
 import { appWindow } from '@tauri-apps/api/window'
+
+import { listen } from "@tauri-apps/api/event";
+
 import Week from "./components/Week.tsx"
 import Objectives from "./components/Objectives.tsx"
 import BasicSpeedDial from "./components/BasicSpeedDial.tsx"
@@ -34,8 +37,23 @@ import { Action, ID, ItemKind, ObjectiveType, Page, ItemStatus } from './constan
 import './components/styles.css';
 import type { Today, Item, ItemsData } from "./my_types.ts"
 import { getName, getVersion } from '@tauri-apps/api/app';
+// same type as payload
+type EventPayload = {
+  command: string;
+  message: string;
+};
 
 function App() {
+  // async function startBackendEventListener() {
+  //   console.log("listening started!");
+  //   const unlisten = await listen<EventPayload>('ConfigChanged', (event) => {
+  //     console.log("config file changed.");
+  //     console.log(event.payload);
+  //   });
+  //   console.log("listening ended!");
+  //   return unlisten;
+  // }
+
   const today_init: Today = {
     calendar: 0,
     year: 0,
@@ -98,27 +116,46 @@ function App() {
       .map((_, i) => itemsRefs.current[i] || createRef());
   }
 
-  useEffect(() => {
-    refreshData();
-  }, [activePage]);
+  async function startBackendEventListenning() {
+    const unlisten = await listen<EventPayload>('ConfigChanged', (event) => {
+      console.log("config file changed.");
+      console.log(event.payload);
+      refreshData();
+    });
+    return unlisten;
+  }
 
+  // first time only
   useEffect(() => {
     Keyboard.init();
     Keyboard.listen(keyboard_action_callback);
 
-
-    invoke("get_today").then((result) => {
-      // console.log("today result: ", result);
-      setToday(result as Today);
-    });
+    console.log("backend event listening started!");
+    const unlisten_promiss = startBackendEventListenning();
 
     refreshData();
+
+    // clean up
+    return () => {
+      unlisten_promiss.then((unlisten_func) => unlisten_func());
+    };
   }, []
   );
 
+  useEffect(() => {
+    refreshData();
+  }, [activePage]);
+
+
   const refreshData = function() {
+    invoke("get_today").then((result) => {
+      console.log("today result: ", result);
+      setToday(result as Today);
+    });
+
     if (activePageRef.current == Page.weeks) {
       invoke("get_week").then((result) => {
+        console.log("week result: ", result);
         setData(result as ItemsData);
       });
     }
