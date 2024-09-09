@@ -118,8 +118,8 @@ function App() {
 
   async function startBackendEventListenning() {
     const unlisten = await listen<EventPayload>('ConfigChanged', (event) => {
-      console.log("config file changed.");
-      console.log(event.payload);
+      // console.log("config file changed.");
+      // console.log(event.payload);
       refreshData();
     });
     return unlisten;
@@ -130,7 +130,7 @@ function App() {
     Keyboard.init();
     Keyboard.listen(keyboard_action_callback);
 
-    console.log("backend event listening started!");
+    // console.log("backend event listening started!");
     const unlisten_promiss = startBackendEventListenning();
 
     refreshData();
@@ -149,13 +149,13 @@ function App() {
 
   const refreshData = function() {
     invoke("get_today").then((result) => {
-      console.log("today result: ", result);
+      // console.log("today result: ", result);
       setToday(result as Today);
     });
 
     if (activePageRef.current == Page.weeks) {
       invoke("get_week").then((result) => {
-        console.log("week result: ", result);
+        // console.log("week result: ", result);
         setData(result as ItemsData);
       });
     }
@@ -242,7 +242,7 @@ function App() {
   const invoke_tauri_command_and_refresh_data = function(command: string, object: any) {
     invoke(command, object).then((result) => {
       const log = `command: ${command} -> ${result ? "success" : "failed"}`;
-      console.log(log);
+      // console.log(log);
       refreshData();
     });
   }
@@ -261,8 +261,8 @@ function App() {
   }
 
   const handleOnObjectiveTypeChanged = function(id: number, year: number, season: number | null, month: number | null) {
-    console.log("changing the objective type...");
-    console.log(id, year, season, month);
+    // console.log("changing the objective type...");
+    // console.log(id, year, season, month);
     invoke_tauri_command_and_refresh_data("change_item_objective_period", { id: id, year: year, season: season, month: month });
   }
 
@@ -335,7 +335,7 @@ function App() {
 
   const copyAllWeekItemsToClipboard = () => {
     const currentData: ItemsData = dataRef.current;
-    console.log("copying all items...");
+    // console.log("copying all items...");
     let text: string = "";
     text = currentData.title;
     text = text + "\n\n";
@@ -454,16 +454,14 @@ function App() {
 
   const displayPage = function(page: number) {
     if (page == Page.weeks) {
-      console.log("displaying weeks page...");
       setActivePage(Page.weeks);
       invoke_tauri_command_and_refresh_data("current_time_period", { page: activePageRef.current });
     } else if (page == Page.objectives) {
       setActivePage(Page.objectives);
       invoke_tauri_command_and_refresh_data("current_time_period", { page: activePageRef.current });
-      console.log("displaying objectives page...");
     } else if (page == Page.settings) {
       // setActivePage(Page.settings);
-      console.log("displaying settings page...");
+      console.log("todo: displaying settings page...");
     } else {
       console.log("other click. ignored.");
     }
@@ -546,6 +544,7 @@ function App() {
                   itemsRefs={itemsRefs}
                   data={data}
                   newItem={newItem}
+                  today={today}
                   editingId={editingId}
                   selectedId={selectedId}
                   onNext={gotoNextTimePeriod}

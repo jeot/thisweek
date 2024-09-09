@@ -29,9 +29,28 @@ export interface Today {
   today_english_date: string;
 }
 
+export interface DateView {
+  unix_day: number;
+  day: string;
+  month: string;
+  weekday: string;
+  year: string;
+
+};
+
+export interface WeekInfo {
+  calendar: string;
+  language: string;
+  direction: string;
+  dates: Array<DateView>;
+  month_year_info: string;
+};
+
 export interface ItemsData {
   title: string;
   info: string;
+  week_info: WeekInfo;
+  aux_week_info: WeekInfo | null;
   year: number | null;
   items: Array<any>;
 };
