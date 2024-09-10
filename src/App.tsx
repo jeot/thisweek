@@ -54,14 +54,8 @@ function App() {
   //   return unlisten;
   // }
 
-  const today_init: Today = {
-    calendar: 0,
-    year: 0,
-    month: 0,
-    day: 0,
-    today_persian_date: "",
-    today_english_date: "",
-  };
+  const today_init: Today = undefined;
+
   const item_init: Item = {
     id: ID.none,
     calendar: 1,
@@ -156,6 +150,8 @@ function App() {
     if (activePageRef.current == Page.weeks) {
       invoke("get_week").then((result) => {
         // console.log("week result: ", result);
+        console.log(result.week_info);
+        console.log(result.aux_week_info);
         setData(result as ItemsData);
       });
     }
@@ -534,8 +530,7 @@ function App() {
         <CssBaseline>
           <div className="application" >
             <Header
-              today_persian_date={today.today_persian_date}
-              today_english_date={today.today_english_date}
+              today={today}
             />
             <div className="main" >
               <SidebarNav onClick={displayPage} activePage={activePage} />

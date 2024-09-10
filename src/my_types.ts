@@ -20,14 +20,13 @@ export interface Item {
   uuid: string | null;
 };
 
-export interface Today {
-  calendar: number;
-  year: number;
-  month: number;
-  day: number;
-  today_persian_date: string;
-  today_english_date: string;
-}
+export interface Date {
+  calendar: any,
+  weekday: number,
+  day: number,
+  month: number,
+  year: number,
+};
 
 export interface DateView {
   unix_day: number;
@@ -35,12 +34,17 @@ export interface DateView {
   month: string;
   weekday: string;
   year: string;
+};
 
+export interface Today {
+  main_date: Date,
+  main_date_view: DateView,
+  aux_date_view: DateView | null,
 };
 
 export interface WeekInfo {
-  calendar: string;
-  language: string;
+  calendar: any;
+  language: any;
   direction: string;
   dates: Array<DateView>;
   month_year_info: string;

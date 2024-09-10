@@ -1,20 +1,28 @@
 import Box from '@mui/material/Box';
 import './styles.css';
 import '../prototypes.ts';
+import { DateView, Today } from '../my_types.ts';
 
-export default function Header({ today_persian_date, today_english_date }: { today_persian_date: string, today_english_date: string }) {
-  const en_date = today_english_date ?? "undefined en date!";
-  let fa_date = today_persian_date?.toPersianDigits();
-  fa_date ??= "undefined fa date!";
-  // console.log(en_date, fa_date);
+export default function Header({ today }: { today: Today }) {
+  if (today === undefined) return;
+  console.log(today);
+  function build_date_string(dw: DateView | null) {
+    if (dw === null) return null;
+    else return `${dw.weekday}, ${dw.day} ${dw.month} ${dw.year}`;
+  }
+  const main_date = build_date_string(today.main_date_view);
+  const aux_date = build_date_string(today.aux_date_view);
   return (
     <div className="header">
       <Box className="" dir="auto">
-        Today, {en_date}
+        {main_date}
       </Box>
-      <Box className="" dir="auto">
-        امروز، {fa_date}
-      </Box>
+      {aux_date && <div>
+        &nbsp;|&nbsp;
+      </div>}
+      {aux_date && <Box className="" dir="auto">
+        {aux_date}
+      </Box>}
     </div>
   );
 

@@ -7,19 +7,19 @@ export default function ItemsListNavBar(props: any) {
   const { title, textNext, textPrevious, onNext, onPrevious } = props;
   return (
     <div className="items-list-header">
-      <Tooltip title={textNext}>
-        <IconButton aria-label="next" size="small" color="primary"
-          onClick={() => { onNext(); }}
-        >
-          <NavigateNextIcon fontSize="small" />
-        </IconButton>
-      </Tooltip>
-      {title}
       <Tooltip title={textPrevious}>
         <IconButton aria-label="previous" size="small" color="primary"
           onClick={() => { onPrevious(); }}
         >
           <NavigateBeforeIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
+      {title}
+      <Tooltip title={textNext}>
+        <IconButton aria-label="next" size="small" color="primary"
+          onClick={() => { onNext(); }}
+        >
+          <NavigateNextIcon fontSize="small" />
         </IconButton>
       </Tooltip>
     </div>
