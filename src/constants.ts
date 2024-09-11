@@ -28,6 +28,11 @@ export enum ObjectiveType {
   yearly,
 };
 
+export enum CalendarPriorityType {
+  main = 0,
+  secondary,
+};
+
 export enum Action {
   toggleMaximizeWindow = 1,
   closeWindow,

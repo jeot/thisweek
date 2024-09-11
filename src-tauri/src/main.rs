@@ -1,8 +1,12 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
-use std::sync::Mutex;
-use tauri::{State, Manager, AppHandle};
 use once_cell::sync::OnceCell;
+use std::path::Path;
+use std::sync::Mutex;
+use tauri::{AppHandle, Manager, State};
+use weeks_core::calendar::Calendar;
+use weeks_core::calendar::CalendarView;
+use weeks_core::language::Language;
 
 #[derive(Clone, serde::Serialize, Default)]
 struct EventPayload {
@@ -38,15 +42,15 @@ fn refresh_data() {
     }
 }
 
+use weeks_core::config;
 use weeks_core::db_sqlite;
 use weeks_core::models::ItemsList;
 use weeks_core::models::*;
+use weeks_core::notify::Notify;
 use weeks_core::ordering::Ordering;
 use weeks_core::today::Today;
 use weeks_core::week::Week;
 use weeks_core::year::Year;
-use weeks_core::notify::Notify;
-use weeks_core::config;
 
 struct MyAppState {
     today: Mutex<Today>,
@@ -68,6 +72,24 @@ fn get_week(state: State<MyAppState>) -> Week {
 #[tauri::command]
 fn get_year(state: State<MyAppState>) -> Year {
     state.year.lock().unwrap().clone()
+}
+
+#[tauri::command]
+fn get_calendar_views() -> (CalendarView, Option<CalendarView>) {
+    let main_cal: Calendar = config::get_config().main_calendar_type.into();
+    let main_lang: Language = config::get_config().main_calendar_language.into();
+    let main_cal_view: CalendarView = main_cal.get_calendar_view(&main_lang);
+    let aux_cal: Option<Calendar> = config::get_config()
+        .secondary_calendar_type
+        .map(Calendar::from);
+    let aux_cal_view: Option<CalendarView> = aux_cal.map(|cal| {
+        let aux_lang: Language = config::get_config()
+            .secondary_calendar_language
+            .unwrap_or_default()
+            .into();
+        cal.get_calendar_view(&aux_lang)
+    });
+    (main_cal_view, aux_cal_view)
 }
 
 #[tauri::command]
@@ -112,7 +134,8 @@ fn next_time_period(page: i32, state: State<MyAppState>) -> bool {
 // related to item manipulations
 #[tauri::command]
 fn add_new_item(mut item: Item, state: State<MyAppState>) -> bool {
-    item.calendar = weeks_core::calendar::CALENDAR_PERSIAN; // todo: fix this!
+    let main_cal: Calendar = config::get_config().main_calendar_type.into();
+    item.calendar = main_cal.into();
     if item.year.is_none() && item.season.is_none() && item.month.is_none() {
         let mut week = state.week.lock().unwrap();
         item.order_in_week = Some(week.get_new_ordering_key());
@@ -249,7 +272,6 @@ fn backup_database_file(state: State<MyAppState>) -> bool {
     week.backup_database_file().is_ok()
 }
 
-
 fn main() {
     println!("Hello, tauri.");
 
@@ -258,12 +280,16 @@ fn main() {
             today: Mutex::new(Today::new()),
             week: Mutex::new(Week::new()),
             year: Mutex::new(Year::new()),
-            notify: Mutex::new(Notify::new(config_changed_callback)),
+            notify: Mutex::new(Notify::new(
+                &config::default_config_path(),
+                config_changed_callback,
+            )),
         })
         .invoke_handler(tauri::generate_handler![
             get_today,
             get_week,
             get_year,
+            get_calendar_views,
             // common stuff
             move_up_selected_item,
             move_down_selected_item,
@@ -284,7 +310,9 @@ fn main() {
         .run(|_app_handle, event| match event {
             tauri::RunEvent::Ready => {
                 println!("Window loaded");
-                GLOBAL_APP_HANDLE.set(_app_handle.clone()).expect("Failed to set global app handle");
+                GLOBAL_APP_HANDLE
+                    .set(_app_handle.clone())
+                    .expect("Failed to set global app handle");
             }
             _ => {}
         });

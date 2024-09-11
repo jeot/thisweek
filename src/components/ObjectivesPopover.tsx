@@ -1,29 +1,40 @@
 import * as React from 'react';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Popover, Typography } from "@mui/material";
 import './styles.css';
-import { ObjectiveType } from '../constants';
+import { CalendarPriorityType, ObjectiveType } from '../constants';
 import { getObjectiveTypeFromFields, toPersianDigits } from "../utilities.ts"
+import * as Globals from "./../Globals.ts"
 
 export default function ObjectivesPopover(props: any) {
 
+  // console.log("props of ObjectivesPopover:", props);
   const currentObjectiveType = getObjectiveTypeFromFields(props.year, props.season, props.month);
   if (currentObjectiveType == ObjectiveType.none) {
     return (<></>);
   }
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [calInUse, setCalInUse] = useState<number>(CalendarPriorityType.main);
 
-  const seasons_names = ["", "بهار", "تابستان", "پاییز", "زمستان"];
-  const months_names = ["", "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور", "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"];
+  useEffect(() => {
+
+  }, [calInUse]);
+
+
+
+  const seasons_names = calInUse == CalendarPriorityType.main ? Globals.getMainCalendarView().seasons_names : Globals.getAuxCalendarView()?.seasons_names;
+  const months_names = calInUse == CalendarPriorityType.main ? Globals.getMainCalendarView().months_names : Globals.getAuxCalendarView()?.months_names;
+  const lang = calInUse == CalendarPriorityType.main ? Globals.getMainCalendarView().language : Globals.getAuxCalendarView()?.language;
+  const direction = calInUse == CalendarPriorityType.main ? Globals.getMainCalendarView().direction : Globals.getAuxCalendarView()?.direction;
+  const main_cal_name = Globals.getMainCalendarView().calendar_name;
+  const aux_cal_name = Globals.getAuxCalendarView()?.calendar_name ?? null;
 
   const getTagStyleText = function(yearIndex: number, seasonIndex: number, monthIndex: number) {
     yearIndex = yearIndex ?? 0;
     seasonIndex = seasonIndex ?? 0;
     monthIndex = monthIndex ?? 0;
     let year: string = yearIndex.toString() ?? "";
-    // const seasons = ["", "بهار", "تابستان", "پاییز", "زمستان"];
-    // const months = ["", "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور", "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"];
     let season: string = seasons_names[seasonIndex];
     let month: string = months_names[monthIndex];
     let text: string = "";
@@ -83,13 +94,13 @@ export default function ObjectivesPopover(props: any) {
     if (month == 0 && season == 0) yearStyle = "objective-tag-btn objective-year-tag objective-popover-tag objective-popover-tag-selected";
     else yearStyle = "objective-tag-btn objective-year-tag objective-popover-tag";
     return (
-      <div className="objective-popover" dir="rtl">
+      <div className="objective-popover" dir={direction}>
         <div className="objective-popover-section">
           <button
             className={yearStyle}
             onClick={() => { handleOnChange(year, null, null); }}
           >
-            <Typography variant="caption">{toPersianDigits(year.toString())}</Typography>
+            <Typography variant="caption">{year}</Typography>
           </button>
         </div>
         {createObjectiveTagsElement(seasons_names, "objective-tag-btn objective-season-tag objective-popover-tag", year, season, ObjectiveType.seasonal)}
@@ -128,6 +139,8 @@ export default function ObjectivesPopover(props: any) {
           horizontal: 'left',
         }}
       >
+        <button onClick={() => setCalInUse(CalendarPriorityType.main)}>{main_cal_name}</button>
+        <button onClick={() => setCalInUse(CalendarPriorityType.secondary)}>{aux_cal_name}</button>
         <PopoverContent {...props} />
       </Popover>
     </div>

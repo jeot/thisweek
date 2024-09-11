@@ -73,7 +73,6 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
   let id = editing ? editingItem.id : props.item.id;
   let kind = editing ? editingItem.kind : props.item.kind;
   let dir = editing ? getDirection(editingText) : getDirection(fixedText);
-  // let objectiveType = editing ? getItemObjectiveType(editingItem) : getItemObjectiveType(props.item);
 
   useEffect(() => {
     if (selected) {
@@ -200,7 +199,9 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
               onChange={(e) => setEditingItemText(e.currentTarget.value)}
             />
             <ObjectivesPopover
-              year={editingItem.year} season={editingItem.season} month={editingItem.month}
+              year={editingItem.year}
+              season={editingItem.season}
+              month={editingItem.month}
               onChange={handleObjectiveTypeChange}
             />
             <IconButton
@@ -244,7 +245,9 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
               onMouseDown={() => { onSelect(id); }}
             />
             <ObjectivesPopover
-              year={props.item.year} season={props.item.season} month={props.item.month}
+              year={props.item.year}
+              season={props.item.season}
+              month={props.item.month}
               onChange={handleObjectiveTypeChange}
             />
             <IconButton

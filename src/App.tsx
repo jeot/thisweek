@@ -12,6 +12,7 @@ import BasicSpeedDial from "./components/BasicSpeedDial.tsx"
 import Header from "./components/Header.tsx"
 import SidebarNav from './components/SidebarNav.tsx';
 import * as Keyboard from "./Keyboard.ts"
+import * as Globals from "./Globals.ts"
 
 import CssBaseline from '@mui/material/CssBaseline';
 // import ScopedCssBaseline from '@mui/material/ScopedCssBaseline';
@@ -35,7 +36,7 @@ import { createTheme, ThemeProvider } from '@mui/material';
 import { Action, ID, ItemKind, ObjectiveType, Page, ItemStatus } from './constants.ts';
 
 import './components/styles.css';
-import type { Today, Item, ItemsData } from "./my_types.ts"
+import type { Today, Item, ItemsData, CalendarInfo } from "./my_types.ts"
 import { getName, getVersion } from '@tauri-apps/api/app';
 // same type as payload
 type EventPayload = {
@@ -121,6 +122,8 @@ function App() {
 
   // first time only
   useEffect(() => {
+    Globals.init();
+
     Keyboard.init();
     Keyboard.listen(keyboard_action_callback);
 
@@ -150,13 +153,15 @@ function App() {
     if (activePageRef.current == Page.weeks) {
       invoke("get_week").then((result) => {
         // console.log("week result: ", result);
-        console.log(result.week_info);
-        console.log(result.aux_week_info);
+        // console.log(result.week_info);
+        // console.log(result.aux_week_info);
+        // console.log(result.items);
         setData(result as ItemsData);
       });
     }
     if (activePageRef.current == Page.objectives) {
       invoke("get_year").then((result) => {
+        console.log("year items:", result.items);
         setData(result as ItemsData);
       });
     }
@@ -524,6 +529,36 @@ function App() {
     },
   });
 
+  const MainPageView = function() {
+    const props = {
+      itemsRefs: itemsRefs,
+      data: data,
+      newItem: newItem,
+      today: today,
+      editingId: editingId,
+      selectedId: selectedId,
+      onNext: gotoNextTimePeriod,
+      onPrevious: gotoPreviousTimePeriod,
+      onSubmit: handleOnSubmit,
+      onEdit: handleOnEdit,
+      onSelect: handleOnSelect,
+      onDelete: handleOnDelete,
+      onCancel: cancelEditingOrSelectionOrNewItem,
+      onToggle: handleOnToggle,
+      onCopyText: handleOnCopyText,
+      onFocusLeave: handleOnFocusLeave,
+      onObjectiveTypeChanged: handleOnObjectiveTypeChanged,
+    };
+    if (activePage == Page.weeks)
+      return (<Week {...props} />);
+    if (activePage == Page.objectives)
+      return (<Objectives {...props} />);
+    // if (activePage == Page.settings)
+    // return (<Settings {...props} />);
+    else
+      return (<></>);
+  }
+
   return (
     <React.Fragment>
       <ThemeProvider theme={theme}>
@@ -534,46 +569,7 @@ function App() {
             />
             <div className="main" >
               <SidebarNav onClick={displayPage} activePage={activePage} />
-              {activePage == Page.weeks ?
-                <Week
-                  itemsRefs={itemsRefs}
-                  data={data}
-                  newItem={newItem}
-                  today={today}
-                  editingId={editingId}
-                  selectedId={selectedId}
-                  onNext={gotoNextTimePeriod}
-                  onPrevious={gotoPreviousTimePeriod}
-                  onSubmit={handleOnSubmit}
-                  onEdit={handleOnEdit}
-                  onSelect={handleOnSelect}
-                  onDelete={handleOnDelete}
-                  onCancel={cancelEditingOrSelectionOrNewItem}
-                  onToggle={handleOnToggle}
-                  onCopyText={handleOnCopyText}
-                  onFocusLeave={handleOnFocusLeave}
-                  onObjectiveTypeChanged={handleOnObjectiveTypeChanged}
-                />
-                : activePage == Page.objectives ? (
-                  <Objectives
-                    itemsRefs={itemsRefs}
-                    data={data}
-                    newItem={newItem}
-                    editingId={editingId}
-                    selectedId={selectedId}
-                    onNext={gotoNextTimePeriod}
-                    onPrevious={gotoPreviousTimePeriod}
-                    onSubmit={handleOnSubmit}
-                    onEdit={handleOnEdit}
-                    onSelect={handleOnSelect}
-                    onDelete={handleOnDelete}
-                    onCancel={cancelEditingOrSelectionOrNewItem}
-                    onToggle={handleOnToggle}
-                    onCopyText={handleOnCopyText}
-                    onFocusLeave={handleOnFocusLeave}
-                    onObjectiveTypeChanged={handleOnObjectiveTypeChanged}
-                  />
-                ) : (<></>)}
+              <MainPageView />
               {editingId == ID.none && <BasicSpeedDial page={activePageRef.current} onNewAction={startCreatingNewItem} />}
             </div>
             <div className="app-info">{appName}&nbsp;{appVersion}</div>

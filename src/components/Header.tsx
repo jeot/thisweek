@@ -5,7 +5,6 @@ import { DateView, Today } from '../my_types.ts';
 
 export default function Header({ today }: { today: Today }) {
   if (today === undefined) return;
-  console.log(today);
   function build_date_string(dw: DateView | null) {
     if (dw === null) return null;
     else return `${dw.weekday}, ${dw.day} ${dw.month} ${dw.year}`;
@@ -18,7 +17,7 @@ export default function Header({ today }: { today: Today }) {
         {main_date}
       </Box>
       {aux_date && <div>
-        &nbsp;|&nbsp;
+        &nbsp;&nbsp;|&nbsp;&nbsp;
       </div>}
       {aux_date && <Box className="" dir="auto">
         {aux_date}

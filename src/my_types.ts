@@ -1,3 +1,11 @@
+export interface CalendarView {
+  calendar: number;
+  calendar_name: string
+  language: string;
+  direction: string;
+  months_names: Array<string>;
+  seasons_names: Array<string>;
+};
 
 export interface Item {
   id: number;
