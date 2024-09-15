@@ -7,7 +7,6 @@ import Checkbox from '@mui/material/Checkbox';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 
-
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -53,6 +52,8 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
     return;
   }
 
+  // console.log(props.data);
+
   const [editingItem, setEditingItem] = useState<Item>(props.item);
 
   useEffect(() => {
@@ -73,6 +74,8 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
   let id = editing ? editingItem.id : props.item.id;
   let kind = editing ? editingItem.kind : props.item.kind;
   let dir = editing ? getDirection(editingText) : getDirection(fixedText);
+  const year_title = props.data.title;
+  // console.log(year_title);
 
   useEffect(() => {
     if (selected) {
@@ -203,6 +206,8 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
               season={editingItem.season}
               month={editingItem.month}
               calendar={editingItem.calendar}
+              reference_calendar={props.data.reference_calendar}
+              year_title={year_title}
               onChange={handleObjectiveTypeChange}
             />
             <IconButton
@@ -250,6 +255,8 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
               season={props.item.season}
               month={props.item.month}
               calendar={props.item.calendar}
+              reference_calendar={props.data.reference_calendar}
+              year_title={year_title}
               onChange={handleObjectiveTypeChange}
             />
             <IconButton

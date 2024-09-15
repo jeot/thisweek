@@ -161,7 +161,8 @@ function App() {
     }
     if (activePageRef.current == Page.objectives) {
       invoke("get_year").then((result) => {
-        console.log("year items:", result.items);
+        // console.log("year items:", result.items);
+        // console.log("get year:", result);
         setData(result as ItemsData);
       });
     }

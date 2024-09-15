@@ -15,20 +15,15 @@ export default function ObjectivesPopover(props: any) {
   }
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const [calInUse, setCalInUse] = useState<number>(CalendarPriorityType.main);
 
-  useEffect(() => {
-
-  }, [calInUse]);
-
-
-
+  const calInUse = props.reference_calendar;
   const seasons_names = calInUse == CalendarPriorityType.main ? Globals.getMainCalendarView().seasons_names : Globals.getAuxCalendarView()?.seasons_names;
   const months_names = calInUse == CalendarPriorityType.main ? Globals.getMainCalendarView().months_names : Globals.getAuxCalendarView()?.months_names;
   const lang = calInUse == CalendarPriorityType.main ? Globals.getMainCalendarView().language : Globals.getAuxCalendarView()?.language;
   const direction = calInUse == CalendarPriorityType.main ? Globals.getMainCalendarView().direction : Globals.getAuxCalendarView()?.direction;
   const main_cal_name = Globals.getMainCalendarView().calendar_name;
-  const aux_cal_name = Globals.getAuxCalendarView()?.calendar_name ?? null;
+  const aux_cal_name = Globals.getAuxCalendarView()?.calendar_name ?? "Error! NO CAL";
+  const cal_name = calInUse == CalendarPriorityType.main ? main_cal_name : aux_cal_name;
 
   const getTagStyleText = function(yearIndex: number, seasonIndex: number, monthIndex: number) {
     yearIndex = yearIndex ?? 0;
@@ -51,7 +46,7 @@ export default function ObjectivesPopover(props: any) {
     } else {
       text = "error!"
     }
-    text = toPersianDigits(text);
+    // text = toPersianDigits(text);
     return { style, text };
   }
 
@@ -85,7 +80,8 @@ export default function ObjectivesPopover(props: any) {
   }
 
   const PopoverContent = function(props: any) {
-    let { year, season, month, calendar } = props;
+    let { year_title, year, season, month, calendar } = props;
+    year_title = year_title ?? "Error, year value!";
     year = year ?? 0;
     season = season ?? 0;
     month = month ?? 0;
@@ -101,7 +97,7 @@ export default function ObjectivesPopover(props: any) {
             className={yearStyle}
             onClick={() => { handleOnChange(year, null, null); }}
           >
-            <Typography variant="caption">{year}</Typography>
+            <Typography variant="caption">{year_title}</Typography>
           </button>
         </div>
         {createObjectiveTagsElement(seasons_names, "objective-tag-btn objective-season-tag objective-popover-tag", year, season, ObjectiveType.seasonal)}
@@ -140,7 +136,9 @@ export default function ObjectivesPopover(props: any) {
           horizontal: 'left',
         }}
       >
-        todo: display calendar type
+        <div className="objective-popover-calendar-title">
+          {cal_name}&nbsp;Calendar
+        </div>
         <PopoverContent {...props} />
       </Popover>
     </div>

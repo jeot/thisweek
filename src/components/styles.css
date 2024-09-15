@@ -383,6 +383,16 @@ div {
 	border: 2px solid black;
 }
 
+.objective-popover-calendar-title {
+	font-family: Roboto, Arial;
+	font-size: 0.8em;
+	color: white;
+	background-color: lightslategray;
+	text-align: center;
+	padding: 2px;
+	/* border: 1px solid red; */
+}
+
 .flex-break-three-element {
 	flex: 1 0 30% !important;
 }
