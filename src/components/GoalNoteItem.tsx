@@ -202,6 +202,7 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
               year={editingItem.year}
               season={editingItem.season}
               month={editingItem.month}
+              calendar={editingItem.calendar}
               onChange={handleObjectiveTypeChange}
             />
             <IconButton
@@ -248,6 +249,7 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
               year={props.item.year}
               season={props.item.season}
               month={props.item.month}
+              calendar={props.item.calendar}
               onChange={handleObjectiveTypeChange}
             />
             <IconButton

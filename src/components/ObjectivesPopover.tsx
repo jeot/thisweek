@@ -85,10 +85,11 @@ export default function ObjectivesPopover(props: any) {
   }
 
   const PopoverContent = function(props: any) {
-    let { year, season, month } = props;
+    let { year, season, month, calendar } = props;
     year = year ?? 0;
     season = season ?? 0;
     month = month ?? 0;
+    calendar = calendar ?? 0;
     // console.log({ year, season, month });
     let yearStyle = "";
     if (month == 0 && season == 0) yearStyle = "objective-tag-btn objective-year-tag objective-popover-tag objective-popover-tag-selected";
@@ -139,8 +140,7 @@ export default function ObjectivesPopover(props: any) {
           horizontal: 'left',
         }}
       >
-        <button onClick={() => setCalInUse(CalendarPriorityType.main)}>{main_cal_name}</button>
-        <button onClick={() => setCalInUse(CalendarPriorityType.secondary)}>{aux_cal_name}</button>
+        todo: display calendar type
         <PopoverContent {...props} />
       </Popover>
     </div>

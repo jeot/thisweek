@@ -89,6 +89,13 @@ const handleUserKeyPress = (event: KeyboardEvent) => {
       broadcastAction(Action.displayObjectivesPage);
     }
 
+    const switchObjectivesCalendar: boolean =
+      (event.code === 'KeyS' && noModifiers);
+    if (switchObjectivesCalendar) {
+      event.preventDefault();
+      broadcastAction(Action.switchObjectivesCalendar);
+    }
+
     // const goPreviousYear: boolean =
     //   (event.code === 'KeyO' && shiftOnly);
     // if (goPreviousYear) {

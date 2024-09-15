@@ -33,6 +33,12 @@ export enum CalendarPriorityType {
   secondary,
 };
 
+export enum Calendar {
+  Gregorian = 0,
+  Persian = 1,
+};
+
+
 export enum Action {
   toggleMaximizeWindow = 1,
   closeWindow,
@@ -59,6 +65,7 @@ export enum Action {
   moveSelectedItemToPreviousTimePeriod,
   displayWeeksPage,
   displayObjectivesPage,
+  switchObjectivesCalendar,
   backupDbFile,
 };
 

@@ -198,6 +198,7 @@ function App() {
       case Action.moveSelectedItemToPreviousTimePeriod: moveSelectedItemToPreviousTimePeriod(); break;
       case Action.displayWeeksPage: displayPage(Page.weeks); break;
       case Action.displayObjectivesPage: displayPage(Page.objectives); break;
+      case Action.switchObjectivesCalendar: switchObjectivesCalendar(); break;
       case Action.copyAllItems: copyAllWeekItemsToClipboard(); break;
       case Action.backupDbFile: backupDbFile(); break;
       default:
@@ -280,6 +281,12 @@ function App() {
   const gotoCurrentTimePeriod = function() {
     setSelectedId(ID.none);
     invoke_tauri_command_and_refresh_data("current_time_period", { page: activePageRef.current });
+  }
+
+  const switchObjectivesCalendar = function() {
+    if (activePageRef.current != Page.objectives) return;
+    setSelectedId(ID.none);
+    invoke_tauri_command_and_refresh_data("switch_objectives_calendar", { page: activePageRef.current });
   }
 
   const gotoNextWeek = function() {
@@ -539,6 +546,7 @@ function App() {
       selectedId: selectedId,
       onNext: gotoNextTimePeriod,
       onPrevious: gotoPreviousTimePeriod,
+      onSwitchObjectivesCalendar: switchObjectivesCalendar,
       onSubmit: handleOnSubmit,
       onEdit: handleOnEdit,
       onSelect: handleOnSelect,

@@ -1,5 +1,5 @@
 import ItemsList from "./ItemsList.tsx";
-import ItemsListNavBar from "./ItemsListNavBar.tsx";
+import ObjectivesHeader from "./ObjectivesHeader.tsx";
 import "../prototypes.ts";
 
 import './styles.css'
@@ -7,8 +7,8 @@ import './styles.css'
 export default function Objectives(props: any) {
   return (
     <div className="objectives-section">
-      <ItemsListNavBar
-        title={props.data.title.toPersianDigits()}
+      <ObjectivesHeader
+        title={props.data.title}
         textNext="Next Year"
         textPrevious="Previous Year"
         {...props}

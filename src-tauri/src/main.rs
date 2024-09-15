@@ -44,7 +44,7 @@ fn refresh_data() {
 
 use weeks_core::config;
 use weeks_core::db_sqlite;
-use weeks_core::models::ItemsList;
+use weeks_core::models::AsItemsList;
 use weeks_core::models::*;
 use weeks_core::notify::Notify;
 use weeks_core::ordering::Ordering;
@@ -126,6 +126,16 @@ fn next_time_period(page: i32, state: State<MyAppState>) -> bool {
     } else if page == LIST_TYPE_OBJECTIVES {
         let mut year = state.year.lock().unwrap();
         year.next().is_ok()
+    } else {
+        false
+    }
+}
+
+#[tauri::command]
+fn switch_objectives_calendar(page: i32, state: State<MyAppState>) -> bool {
+    if page == LIST_TYPE_OBJECTIVES {
+        let mut year = state.year.lock().unwrap();
+        year.switch_calendar().is_ok()
     } else {
         false
     }
@@ -297,6 +307,7 @@ fn main() {
             current_time_period,
             next_time_period,
             previous_time_period,
+            switch_objectives_calendar,
             add_new_item,
             delete_item,
             update_item,
