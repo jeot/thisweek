@@ -121,7 +121,9 @@ export default function ObjectivesPopover(props: any) {
 
   return (
     <div className="objective-time-period-selection">
-      <button className={style} onClick={handleOpenPopover}><Typography variant="caption">{text}</Typography></button>
+      <button className={style} onClick={handleOpenPopover}>
+        <Typography variant="caption">{text}</Typography>
+      </button>
       <Popover
         id={popoverId}
         open={open}

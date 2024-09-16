@@ -144,9 +144,9 @@ fn switch_objectives_calendar(page: i32, state: State<MyAppState>) -> bool {
 // related to item manipulations
 #[tauri::command]
 fn add_new_item(mut item: Item, state: State<MyAppState>) -> bool {
-    let main_cal: Calendar = config::get_config().main_calendar_type.into();
-    item.calendar = main_cal.into();
     if item.year.is_none() && item.season.is_none() && item.month.is_none() {
+        let main_cal: Calendar = config::get_config().main_calendar_type.into();
+        item.calendar = main_cal.into();
         let mut week = state.week.lock().unwrap();
         item.order_in_week = Some(week.get_new_ordering_key());
         item.day = week.middle_day;
@@ -157,6 +157,7 @@ fn add_new_item(mut item: Item, state: State<MyAppState>) -> bool {
         result.is_ok()
     } else {
         let mut year = state.year.lock().unwrap();
+        item.calendar = (year.get_calendar() as &Calendar).clone().into();
         item.order_in_resolution = Some(year.get_new_ordering_key());
         item.day = 0;
         let result = db_sqlite::create_item(&NewItem::from(&item));

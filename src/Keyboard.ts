@@ -9,7 +9,7 @@ let newKeyFlag: boolean = false;
 let copyKeyFlag: boolean = false;
 
 export function listen(cb: (action: number) => void) {
-  console.log("registering new callback for keyboard actions");
+  // console.log("registering new callback for keyboard actions");
   if (!listeners.includes(cb)) { // avoid multiple same callback register
     listeners.push(cb);
   }
@@ -209,7 +209,7 @@ const handleUserKeyPress = (event: KeyboardEvent) => {
 }
 
 function init() {
-  console.log("adding new keydown event listener");
+  // console.log("adding new keydown event listener");
   window.addEventListener("keydown", handleUserKeyPress);
   listeners = [];
   insert_mode = false;

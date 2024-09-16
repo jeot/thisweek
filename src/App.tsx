@@ -101,15 +101,15 @@ function App() {
     setAppVersion(result);
   });
 
-  const itemsCount = (data?.items.length) ?? 0;
-  const itemsRefs = useRef<Array<undefined | React.RefObject<unknown>>>(Array(0));
-
-  if (itemsRefs.current.length !== itemsCount) {
-    // add or remove refs
-    itemsRefs.current = Array(itemsCount) // make an empty slot array with defined length
-      .fill(undefined) // fill them all with undefined
-      .map((_, i) => itemsRefs.current[i] || createRef());
-  }
+  // const itemsCount = (data?.items.length) ?? 0;
+  // const itemsRefs = useRef<Array<undefined | React.RefObject<unknown>>>(Array(0));
+  // console.log(itemsCount);
+  // if (itemsRefs.current.length != itemsCount) {
+  //   // add or remove refs
+  //   itemsRefs.current = Array(itemsCount) // make an empty slot array with defined length
+  //     .fill(undefined) // fill them all with undefined
+  //     .map((_, i) => itemsRefs.current[i] || createRef());
+  // }
 
   async function startBackendEventListenning() {
     const unlisten = await listen<EventPayload>('ConfigChanged', (event) => {
@@ -146,12 +146,14 @@ function App() {
 
   const refreshData = function() {
     invoke("get_today").then((result) => {
+      // console.log("today");
       // console.log("today result: ", result);
       setToday(result as Today);
     });
 
     if (activePageRef.current == Page.weeks) {
       invoke("get_week").then((result) => {
+        // console.log("week");
         // console.log("week result: ", result);
         // console.log(result.week_info);
         // console.log(result.aux_week_info);
@@ -324,9 +326,11 @@ function App() {
 
   const selectNextItem = function() {
     const arrLen = dataRef.current.items.length;
-    if (arrLen == 0) setSelectedId(ID.none);
-    else if (selectedIdRef.current == ID.none) setSelectedId(getItemIdFromItemIndex(0));
-    else {
+    if (arrLen == 0) {
+      setSelectedId(ID.none);
+    } else if (selectedIdRef.current == ID.none) {
+      setSelectedId(getItemIdFromItemIndex(0));
+    } else {
       const index = getItemIndexFromItemId(selectedIdRef.current);
       if ((index + 1) < arrLen) setSelectedId(getItemIdFromItemIndex(index + 1));
     }
@@ -442,7 +446,7 @@ function App() {
     if (objectiveType == ObjectiveType.none && activePageRef.current == Page.objectives)
       objectiveType = ObjectiveType.yearly;
 
-    if (objectiveType != ObjectiveType.none && (data.year === undefined || data.year === null))
+    if (objectiveType != ObjectiveType.none && (dataRef.current.year === undefined || dataRef.current.year === null))
       return;
 
     setSelectedId(ID.none);
@@ -537,37 +541,6 @@ function App() {
     },
   });
 
-  const MainPageView = function() {
-    const props = {
-      itemsRefs: itemsRefs,
-      data: data,
-      newItem: newItem,
-      today: today,
-      editingId: editingId,
-      selectedId: selectedId,
-      onNext: gotoNextTimePeriod,
-      onPrevious: gotoPreviousTimePeriod,
-      onSwitchObjectivesCalendar: switchObjectivesCalendar,
-      onSubmit: handleOnSubmit,
-      onEdit: handleOnEdit,
-      onSelect: handleOnSelect,
-      onDelete: handleOnDelete,
-      onCancel: cancelEditingOrSelectionOrNewItem,
-      onToggle: handleOnToggle,
-      onCopyText: handleOnCopyText,
-      onFocusLeave: handleOnFocusLeave,
-      onObjectiveTypeChanged: handleOnObjectiveTypeChanged,
-    };
-    if (activePage == Page.weeks)
-      return (<Week {...props} />);
-    if (activePage == Page.objectives)
-      return (<Objectives {...props} />);
-    // if (activePage == Page.settings)
-    // return (<Settings {...props} />);
-    else
-      return (<></>);
-  }
-
   return (
     <React.Fragment>
       <ThemeProvider theme={theme}>
@@ -578,7 +551,46 @@ function App() {
             />
             <div className="main" >
               <SidebarNav onClick={displayPage} activePage={activePage} />
-              <MainPageView />
+              {(activePage == Page.weeks) &&
+                <Week
+                  data={data}
+                  newItem={newItem}
+                  today={today}
+                  editingId={editingId}
+                  selectedId={selectedId}
+                  onNext={gotoNextTimePeriod}
+                  onPrevious={gotoPreviousTimePeriod}
+                  onSwitchObjectivesCalendar={switchObjectivesCalendar}
+                  onSubmit={handleOnSubmit}
+                  onEdit={handleOnEdit}
+                  onSelect={handleOnSelect}
+                  onDelete={handleOnDelete}
+                  onCancel={cancelEditingOrSelectionOrNewItem}
+                  onToggle={handleOnToggle}
+                  onCopyText={handleOnCopyText}
+                  onFocusLeave={handleOnFocusLeave}
+                  onObjectiveTypeChanged={handleOnObjectiveTypeChanged}
+                />}
+              {(activePage == Page.objectives) &&
+                <Objectives
+                  data={data}
+                  newItem={newItem}
+                  today={today}
+                  editingId={editingId}
+                  selectedId={selectedId}
+                  onNext={gotoNextTimePeriod}
+                  onPrevious={gotoPreviousTimePeriod}
+                  onSwitchObjectivesCalendar={switchObjectivesCalendar}
+                  onSubmit={handleOnSubmit}
+                  onEdit={handleOnEdit}
+                  onSelect={handleOnSelect}
+                  onDelete={handleOnDelete}
+                  onCancel={cancelEditingOrSelectionOrNewItem}
+                  onToggle={handleOnToggle}
+                  onCopyText={handleOnCopyText}
+                  onFocusLeave={handleOnFocusLeave}
+                  onObjectiveTypeChanged={handleOnObjectiveTypeChanged}
+                />}
               {editingId == ID.none && <BasicSpeedDial page={activePageRef.current} onNewAction={startCreatingNewItem} />}
             </div>
             <div className="app-info">{appName}&nbsp;{appVersion}</div>

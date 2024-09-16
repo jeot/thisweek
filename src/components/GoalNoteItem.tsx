@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, createRef } from "react";
 
 import IconButton from '@mui/material/IconButton';
 import InputBase from '@mui/material/InputBase';
@@ -17,7 +17,6 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { getDirection } from "../utilities.ts"
 import { ItemKind, ItemStatus } from "../constants.ts";
 
-import { forwardRef } from 'react';
 import type { Item } from "../my_types.ts";
 import ObjectivesPopover from "./ObjectivesPopover.tsx";
 
@@ -28,23 +27,35 @@ import ObjectivesPopover from "./ObjectivesPopover.tsx";
  * @returns {undefined}
  */
 const scrollIntoViewIfNeeded = (target: HTMLElement) => {
+  const itemTop = target.getBoundingClientRect().top;
+  // console.log("top", itemTop);
+  const itemBot = target.getBoundingClientRect().bottom;
+  // console.log("bot", itemBot);
+  // console.log("window inner height", window.innerHeight);
+  // console.log("window inner width", window.innerWidth);
+  // console.log("doc height", document.documentElement.clientHeight);
+  // console.log("doc width", document.documentElement.clientWidth);
   // Target is outside the viewport from the bottom
-  if (target.getBoundingClientRect().bottom > window.innerHeight) {
+  const itemsBoxTop = document.getElementById("items-list-id")?.getBoundingClientRect().top;
+  const itemsBoxBot = document.getElementById("items-list-id")?.getBoundingClientRect().bottom;
+  // console.log(itemsBoxTop, itemsBoxBot);
+  if (itemBot > itemsBoxBot) {
     //  The bottom of the target will be aligned to the bottom of the visible area of the scrollable ancestor.
     // target.scrollIntoView(false);
+    // console.log("scrollIntoView bottom");
     target.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
   }
 
   // Target is outside the view from the top
-  if (target.getBoundingClientRect().top < 0) {
+  if (itemTop < itemsBoxTop) {
     // The top of the target will be aligned to the top of the visible area of the scrollable ancestor
     // target.scrollIntoView();
+    // console.log("scrollIntoView top");
     target.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
   }
 };
 
-// export default function GoalNoteItem({ item, editing, selected, onSubmit, onEdit, onSelect, onDelete, onCancel, onToggle, onCopyText, onFocusLeave }) {
-const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
+function GoalNoteItem(props: any) {
   const { editing, selected, onSubmit, onEdit, onSelect, onDelete, onCancel, onToggle, onCopyText, onFocusLeave, onObjectiveTypeChanged } = props;
 
   if (props.item === null || props.item === undefined) {
@@ -52,11 +63,13 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
     return;
   }
 
-  // console.log(props.data);
+  const itemRef = useRef<null | React.RefObject<unknown>>(null);
 
   const [editingItem, setEditingItem] = useState<Item>(props.item);
 
   useEffect(() => {
+    // console.log("item did mount");
+    return () => { /* console.log("item unmounted"); */ };
   }, []);
 
   const temp1 = (props.item.kind === ItemKind.goal) ? props.item.title
@@ -79,9 +92,8 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
 
   useEffect(() => {
     if (selected) {
-      // console.log(ref);
-      scrollIntoViewIfNeeded(ref.current);
-      // ref.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
+      // console.log(itemRef.current);
+      scrollIntoViewIfNeeded(itemRef.current);
     }
   }, [selected]);
 
@@ -159,7 +171,7 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
 
   return (
     <Box
-      ref={ref}
+      ref={itemRef}
       dir="rtl"
       id={id}
       className={style_item}
@@ -290,6 +302,6 @@ const GoalNoteItem = forwardRef(function GoalNoteItem(props: any, ref: any) {
       </Stack>
     </Box>
   );
-});
+}
 
 export default GoalNoteItem;
