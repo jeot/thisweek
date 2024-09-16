@@ -52,6 +52,7 @@ div {
 .main {
 	flex: 1 1 auto;
 	overflow-y: auto;
+	overflow-anchor: none;
 
 	display: flex;
 	flex-direction: row;
@@ -133,6 +134,7 @@ div {
 .objectives-section {
 	flex: 1 1 auto;
 	overflow-y: auto;
+	overflow-anchor: none;
 	/* inside items arrangement */
 	display: flex;
 	flex-direction: column;
@@ -273,6 +275,7 @@ div {
 	direction: rtl;
 	flex: 1 1 auto;
 	overflow-y: auto;
+	overflow-anchor: none;
 	padding: 0px;
 	padding-top: 8px;
 	padding-bottom: 128px;
@@ -324,12 +327,13 @@ div {
 	box-sizing: border-box;
 	border-radius: 20px;
 	cursor: pointer;
+	margin: 0px 4px;
 	/* color: white; */
 	/* background-color: #364f75; */
 }
 
 .objective-tag-btn:hover {
-	outline: 2px solid rgba(0, 0, 0, 0.2);
+	outline: 1px solid purple
 }
 
 .objective-tag-btn:focus {
@@ -340,13 +344,28 @@ div {
 .objective-month-tag {
 	color: #222222;
 	border: 1.3px solid #bbbbbb;
+
+	color: black;
+	background-color: rgba(255, 240, 245, 0.5);
+	border: 1px solid rgba(128, 0, 128, 0.2);
+	box-shadow: inset 0px 0px 2px 0px rgba(128, 0, 128, 0.2);
 }
+
+/* .objective-season-tag span, */
+/* .objective-year-tag span { */
+/* 	font-weight: 700; */
+/* } */
 
 .objective-season-tag {
 	/* color: #a68f15; */
 	color: #222222;
 	background-color: #eeddee;
 	border: 1.3px solid #bbbbbb;
+
+	color: black;
+	background-color: rgb(255, 240, 245);
+	border: 1px solid rgba(128, 0, 128, 0.2);
+	box-shadow: inset 0px 0px 2px 0px rgba(128, 0, 128, 0.2);
 }
 
 .objective-year-tag {
@@ -354,6 +373,11 @@ div {
 	border: 1.3px solid #888888;
 	color: #222222;
 	background-color: #d1e1f1;
+
+	color: black;
+	background-color: lavenderblush;
+	border: 1px solid rgba(128, 0, 128, 0.2);
+	box-shadow: inset 0px 0px 2px 0px rgba(128, 0, 128, 0.2);
 }
 
 .objective-popover {
@@ -380,7 +404,8 @@ div {
 
 .objective-popover-tag-selected {
 	/* outline: 2px solid rgba(0, 0, 0, 0.2); */
-	border: 2px solid black;
+	border: 1px solid indigo;
+	background-color: rgb(128, 0, 128, 0.2);
 }
 
 .objective-popover-calendar-title {
