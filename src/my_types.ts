@@ -7,25 +7,15 @@ export interface CalendarView {
   seasons_names: Array<string>;
 };
 
-export interface Item {
-  id: number;
-  calendar: number;
-  year: number | null;
-  season: number | null;
-  month: number | null;
-  day: number;
-  kind: number;
-  fixed_date: boolean;
-  all_day: boolean;
-  title: string | null;
-  note: string | null;
-  datetime: string | null;
-  duration: number | null;
-  status: number | null;
-  order_in_week: string | null;
-  order_in_resolution: string | null;
-  sync: number | null;
-  uuid: string | null;
+export interface ItemView {
+  id: number,
+  calendar: number,
+  kind: number,
+  text: string,
+  status: boolean,
+  fixed_day_tag: string | null,
+  objective_tag: any | null,
+  uuid: string | null,
 };
 
 export interface Date {
@@ -61,8 +51,8 @@ export interface WeekInfo {
 export interface ItemsData {
   title: string;
   info: string;
-  week_info: WeekInfo;
-  aux_week_info: WeekInfo | null;
-  year: number | null;
+  week_info_main: WeekInfo;
+  week_info_aux: WeekInfo | null;
+  year: string;
   items: Array<any>;
 };

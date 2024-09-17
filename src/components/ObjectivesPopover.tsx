@@ -7,51 +7,32 @@ import { getObjectiveTypeFromFields, toPersianDigits } from "../utilities.ts"
 import * as Globals from "./../Globals.ts"
 
 export default function ObjectivesPopover(props: any) {
-
   // console.log("props of ObjectivesPopover:", props);
-  const currentObjectiveType = getObjectiveTypeFromFields(props.year, props.season, props.month);
-  if (currentObjectiveType == ObjectiveType.none) {
-    return (<></>);
-  }
+  if (props.objective_tag === null || props.objective_tag === undefined)
+    return;
+  // const currentObjectiveType = getObjectiveTypeFromFields(props.year, props.season, props.month);
+  // if (currentObjectiveType == ObjectiveType.none) {
+  //   return (<></>);
+  // }
+  const { onChange, objective_tag } = props;
+  const { calendar, text, type, calendar_name, language, year_string, year, season, month } = objective_tag;
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
-  const calInUse = props.reference_calendar;
+  let calInUse: null | number = null;
+  if (calendar == Globals.getMainCalendarView().calendar) calInUse = CalendarPriorityType.main;
+  if (calendar == Globals.getAuxCalendarView()?.calendar) calInUse = CalendarPriorityType.secondary;
+
   const seasons_names = calInUse == CalendarPriorityType.main ? Globals.getMainCalendarView().seasons_names : Globals.getAuxCalendarView()?.seasons_names;
   const months_names = calInUse == CalendarPriorityType.main ? Globals.getMainCalendarView().months_names : Globals.getAuxCalendarView()?.months_names;
-  const lang = calInUse == CalendarPriorityType.main ? Globals.getMainCalendarView().language : Globals.getAuxCalendarView()?.language;
-  const direction = calInUse == CalendarPriorityType.main ? Globals.getMainCalendarView().direction : Globals.getAuxCalendarView()?.direction;
-  const main_cal_name = Globals.getMainCalendarView().calendar_name;
-  const aux_cal_name = Globals.getAuxCalendarView()?.calendar_name ?? "Error! NO CAL";
-  const cal_name = calInUse == CalendarPriorityType.main ? main_cal_name : aux_cal_name;
-
-  const getTagStyleText = function(yearIndex: number, seasonIndex: number, monthIndex: number) {
-    yearIndex = yearIndex ?? 0;
-    seasonIndex = seasonIndex ?? 0;
-    monthIndex = monthIndex ?? 0;
-    let year: string = yearIndex.toString() ?? "";
-    let season: string = seasons_names[seasonIndex];
-    let month: string = months_names[monthIndex];
-    let text: string = "";
-    let style: string = "";
-    if (yearIndex && monthIndex) {
-      text = `${month}\xa0${year}`;
-      style = "objective-tag-btn objective-month-tag"
-    } else if (yearIndex && seasonIndex) {
-      text = `${season}\xa0${year}`;
-      style = "objective-tag-btn objective-season-tag"
-    } else if (yearIndex) {
-      text = `${year}`;
-      style = "objective-tag-btn objective-year-tag"
-    } else {
-      text = "error!"
-    }
-    // text = toPersianDigits(text);
-    return { style, text };
-  }
+  // const lang = calInUse == CalendarPriorityType.main ? Globals.getMainCalendarView().language : Globals.getAuxCalendarView()?.language;
+  // const direction = calInUse == CalendarPriorityType.main ? Globals.getMainCalendarView().direction : Globals.getAuxCalendarView()?.direction;
+  // const main_cal_name = Globals.getMainCalendarView().calendar_name;
+  // const aux_cal_name = Globals.getAuxCalendarView()?.calendar_name ?? "Error! NO CAL";
+  // const cal_name = calInUse == CalendarPriorityType.main ? main_cal_name : aux_cal_name;
 
   const handleOnChange = function(year: number, season: number | null, month: number | null) {
-    props.onChange(year, season, month);
+    onChange(year, season, month);
     setAnchorEl(null);
   }
 
@@ -80,16 +61,13 @@ export default function ObjectivesPopover(props: any) {
   }
 
   const PopoverContent = function(props: any) {
-    let { year_title, year, season, month, calendar } = props;
-    year_title = year_title ?? "Error, year value!";
-    year = year ?? 0;
-    season = season ?? 0;
-    month = month ?? 0;
-    calendar = calendar ?? 0;
-    // console.log({ year, season, month });
-    let yearStyle = "";
-    if (month == 0 && season == 0) yearStyle = "objective-tag-btn objective-year-tag objective-popover-tag objective-popover-tag-selected";
-    else yearStyle = "objective-tag-btn objective-year-tag objective-popover-tag";
+    const { calendar, text, type, calendar_name, language, year_string, year, season, month } = props.objective_tag;
+    const direction = language == "fa" ? "rtl" : "ltr";
+    // console.log(year, season, month, calendar, language, direction);
+    let yearStyle = "objective-tag-btn objective-year-tag objective-popover-tag";
+    const month_index = month ?? 0;
+    const season_index = month ?? 0;
+    if (month_index == 0 && season_index == 0) yearStyle = yearStyle + " objective-popover-tag-selected";
     return (
       <div className="objective-popover" dir={direction}>
         <div className="objective-popover-section">
@@ -97,17 +75,19 @@ export default function ObjectivesPopover(props: any) {
             className={yearStyle}
             onClick={() => { handleOnChange(year, null, null); }}
           >
-            <Typography variant="caption">{year_title}</Typography>
+            <Typography variant="caption">{year_string}</Typography>
           </button>
         </div>
-        {createObjectiveTagsElement(seasons_names, "objective-tag-btn objective-season-tag objective-popover-tag", year, season, ObjectiveType.seasonal)}
-        {createObjectiveTagsElement(months_names, "objective-tag-btn objective-month-tag objective-popover-tag flex-break-three-element", year, month, ObjectiveType.monthly)}
+        {createObjectiveTagsElement(seasons_names, "objective-tag-btn objective-season-tag objective-popover-tag", year, season_index, ObjectiveType.seasonal)}
+        {createObjectiveTagsElement(months_names, "objective-tag-btn objective-month-tag objective-popover-tag flex-break-three-element", year, month_index, ObjectiveType.monthly)}
       </div>
     );
 
   }
 
   const handleOpenPopover = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (calInUse === null)
+      return;
     setAnchorEl(event.currentTarget);
   };
 
@@ -115,14 +95,19 @@ export default function ObjectivesPopover(props: any) {
     setAnchorEl(null);
   };
 
+  let style: string = "";
+  if (type == ObjectiveType.monthly) style = "objective-tag-btn objective-month-tag";
+  if (type == ObjectiveType.seasonal) style = "objective-tag-btn objective-season-tag";
+  if (type == ObjectiveType.yearly) style = "objective-tag-btn objective-year-tag";
+
   const open = Boolean(anchorEl);
   const popoverId = open ? 'objective-time-period-selection-popover' : undefined;
-  const { style, text } = getTagStyleText(props.year, props.season, props.month);
+  const text2 = text.replace(/ /g, '\u00a0');;
 
   return (
     <div className="objective-time-period-selection">
       <button className={style} onClick={handleOpenPopover}>
-        <Typography variant="caption">{text}</Typography>
+        <Typography variant="caption">{text2}</Typography>
       </button>
       <Popover
         id={popoverId}
@@ -139,9 +124,9 @@ export default function ObjectivesPopover(props: any) {
         }}
       >
         <div className="objective-popover-calendar-title">
-          {cal_name}&nbsp;Calendar
+          <Typography variant="caption">{calendar_name}</Typography>
         </div>
-        <PopoverContent {...props} />
+        <PopoverContent objective_tag={objective_tag} />
       </Popover>
     </div>
   );

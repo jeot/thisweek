@@ -7,6 +7,8 @@ use tauri::{AppHandle, Manager, State};
 use weeks_core::calendar::Calendar;
 use weeks_core::calendar::CalendarView;
 use weeks_core::language::Language;
+use weeks_core::week::WeekView;
+use weeks_core::year::YearView;
 
 #[derive(Clone, serde::Serialize, Default)]
 struct EventPayload {
@@ -65,13 +67,13 @@ fn get_today(state: State<MyAppState>) -> Today {
 }
 
 #[tauri::command]
-fn get_week(state: State<MyAppState>) -> Week {
-    state.week.lock().unwrap().clone()
+fn get_week(state: State<MyAppState>) -> WeekView {
+    state.week.lock().unwrap().get_view().clone()
 }
 
 #[tauri::command]
-fn get_year(state: State<MyAppState>) -> Year {
-    state.year.lock().unwrap().clone()
+fn get_year(state: State<MyAppState>) -> YearView {
+    state.year.lock().unwrap().get_view().clone()
 }
 
 #[tauri::command]
@@ -278,9 +280,8 @@ fn move_item_to_other_time_period_offset(
 }
 
 #[tauri::command]
-fn backup_database_file(state: State<MyAppState>) -> bool {
-    let week = state.week.lock().unwrap();
-    week.backup_database_file().is_ok()
+fn backup_database_file(_state: State<MyAppState>) -> bool {
+    db_sqlite::backup_database_file().is_ok()
 }
 
 fn main() {

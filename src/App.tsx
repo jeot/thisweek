@@ -36,7 +36,7 @@ import { createTheme, ThemeProvider } from '@mui/material';
 import { Action, ID, ItemKind, ObjectiveType, Page, ItemStatus } from './constants.ts';
 
 import './components/styles.css';
-import type { Today, Item, ItemsData, CalendarInfo } from "./my_types.ts"
+import type { Today, Item, ItemsData } from "./my_types.ts"
 import { getName, getVersion } from '@tauri-apps/api/app';
 // same type as payload
 type EventPayload = {

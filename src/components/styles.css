@@ -384,7 +384,7 @@ div {
 	display: flex;
 	flex-direction: column;
 	/* border: 1px solid rgba(0, 0, 0, 0.2); */
-	width: 240px;
+	width: 256px;
 	padding: 5px;
 }
 

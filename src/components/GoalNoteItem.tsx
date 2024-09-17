@@ -17,7 +17,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { getDirection } from "../utilities.ts"
 import { ItemKind, ItemStatus } from "../constants.ts";
 
-import type { Item } from "../my_types.ts";
+import type { ItemView } from "../my_types.ts";
 import ObjectivesPopover from "./ObjectivesPopover.tsx";
 
 /**
@@ -65,30 +65,24 @@ function GoalNoteItem(props: any) {
 
   const itemRef = useRef<null | React.RefObject<unknown>>(null);
 
-  const [editingItem, setEditingItem] = useState<Item>(props.item);
+  const [editingItem, setEditingItem] = useState<ItemView>(props.item);
 
   useEffect(() => {
     // console.log("item did mount");
     return () => { /* console.log("item unmounted"); */ };
   }, []);
 
-  const temp1 = (props.item.kind === ItemKind.goal) ? props.item.title
-    : (props.item.kind === ItemKind.note) ? props.item.note : "ERROR!";
-  const fixedText = temp1 ?? "ERROR! INVALID TEXT";
-  // console.log("editingItem", editingItem);
-  const temp2 = (editingItem.kind === ItemKind.goal) ? editingItem.title
-    : (editingItem.kind === ItemKind.note) ? editingItem.note : "ERROR!";
-  const editingText = temp2 ?? "ERROR! INVALID TEXT";
-  const statusFixed = props.item.status === ItemStatus.undone ? false :
-    props.item.status === ItemStatus.done ? true : false;
-  const statusEditing = editingItem.status === ItemStatus.undone ? false :
-    editingItem.status === ItemStatus.done ? true : false;
+  const fixedText = props.item.text ?? "ERROR! INVALID TEXT";
+  const editingText = editingItem.text ?? "ERROR! INVALID TEXT";
+  const statusFixed = props.item.status ?? false;
+  const statusEditing = editingItem.status ?? false;
+  const objTagFixed = props.item.objective_tag;
+  const objTagEditing = editingItem.objective_tag;
   let status = editing ? statusEditing : statusFixed;
   let id = editing ? editingItem.id : props.item.id;
   let kind = editing ? editingItem.kind : props.item.kind;
   let dir = editing ? getDirection(editingText) : getDirection(fixedText);
-  const year_title = props.data.title;
-  // console.log(year_title);
+  const objective_tag = editing ? objTagEditing : objTagFixed;
 
   useEffect(() => {
     if (selected) {
@@ -214,12 +208,7 @@ function GoalNoteItem(props: any) {
               onChange={(e) => setEditingItemText(e.currentTarget.value)}
             />
             <ObjectivesPopover
-              year={editingItem.year}
-              season={editingItem.season}
-              month={editingItem.month}
-              calendar={editingItem.calendar}
-              reference_calendar={props.data.reference_calendar}
-              year_title={year_title}
+              objective_tag={objective_tag}
               onChange={handleObjectiveTypeChange}
             />
             <IconButton
@@ -263,12 +252,7 @@ function GoalNoteItem(props: any) {
               onMouseDown={() => { onSelect(id); }}
             />
             <ObjectivesPopover
-              year={props.item.year}
-              season={props.item.season}
-              month={props.item.month}
-              calendar={props.item.calendar}
-              reference_calendar={props.data.reference_calendar}
-              year_title={year_title}
+              objective_tag={objective_tag}
               onChange={handleObjectiveTypeChange}
             />
             <IconButton

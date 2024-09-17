@@ -9,7 +9,6 @@ export default function Week(props: any) {
   return (
     <div className="week-section">
       <WeekHeader
-        // title={props.data.title.toPersianDigits()}
         textNext="Next Week"
         textPrevious="Previous Week"
         {...props}

@@ -1,11 +1,11 @@
-import Tooltip from '@mui/material/Tooltip';
-import { DateView, Today, WeekInfo } from '../my_types';
+// import Tooltip from '@mui/material/Tooltip';
+import { DateView, WeekInfo } from '../my_types';
 
 export default function WeekDates(props: any) {
-  if (props.data.week_info === undefined || props.today === undefined) return;
-  const week_info: WeekInfo = props.data.week_info;
+  if (props.data.week_info_main === undefined || props.today === undefined) return;
+  const week_info: WeekInfo = props.data.week_info_main;
   const today: DateView = props.today.main_date_view;
-  const aux_week_info: WeekInfo = props.data.aux_week_info;
+  const aux_week_info: WeekInfo = props.data.week_info_aux;
   const date_view_elements = week_info.dates.map((dw: DateView, i: number) => {
     const dayClass = dw.unix_day == today.unix_day ? "week-header-date-day week-header-date-day-today" : "week-header-date-day";
     const weekdayClass = dw.unix_day == today.unix_day ? "week-header-date-weekday week-header-date-weekday-today" : "week-header-date-weekday";
