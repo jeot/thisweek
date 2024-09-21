@@ -133,10 +133,15 @@ div {
 .new-item {
 	display: flex;
 	flex-direction: row;
-	/* background-color: rgba(0, 0, 0, 0.05); */
-	background-color: #e5e7e9;
+	align-items: center;
+	background-color: rgba(246, 247, 248, 0.2);
+	border: 1px solid rgba(246, 247, 248);
 	box-shadow: 0px -1px 4px 0px rgba(0, 0, 0, 0.2);
-	padding: 8px 4px;
+	padding: 8px 0px;
+}
+
+.new-item-kind-button-group {
+	margin: 0px 8px;
 }
 
 .week-section,

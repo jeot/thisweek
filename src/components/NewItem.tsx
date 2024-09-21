@@ -7,12 +7,21 @@ import TextField from '@mui/material/TextField';
 import './styles.css'
 import { getDirection } from "../utilities";
 import { ItemKind } from "../constants";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import ToggleButton from "@mui/material/ToggleButton";
 
 export default function NewItem(props: any) {
 
   const { initKind, onSubmit, onCancel } = props;
   const [editingText, setEditingText] = useState<string>("");
   const [kind, setKind] = useState<number>(initKind);
+
+  const handleChange = (
+    _event: React.MouseEvent<HTMLElement>,
+    newKind: number,
+  ) => {
+    setKind(newKind);
+  };
 
   let dir = getDirection(editingText);
 
@@ -47,6 +56,20 @@ export default function NewItem(props: any) {
 
   return (
     <div className="new-item" dir="rtl">
+      <ToggleButtonGroup
+        className="new-item-kind-button-group"
+        dir="ltr"
+        color="info"
+        value={kind}
+        exclusive
+        onChange={handleChange}
+        aria-label="Platform"
+        size="small"
+      >
+        <ToggleButton value={ItemKind.goal}>Goal</ToggleButton>
+        <ToggleButton value={ItemKind.note}>Note</ToggleButton>
+      </ToggleButtonGroup>
+
       <TextField
         dir={dir}
         variant="outlined"
