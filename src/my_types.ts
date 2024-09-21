@@ -7,6 +7,18 @@ export interface CalendarView {
   seasons_names: Array<string>;
 };
 
+export interface ObjectiveTag {
+  calendar: number,
+  text: string,
+  type: number,
+  calendar_name: string,
+  language: string,
+  year_string: string,
+  year: number,
+  season: number | null,
+  month: number | null,
+}
+
 export interface ItemView {
   id: number,
   calendar: number,
@@ -14,7 +26,7 @@ export interface ItemView {
   text: string,
   status: boolean,
   fixed_day_tag: string | null,
-  objective_tag: any | null,
+  objective_tag: ObjectiveTag | null,
   uuid: string | null,
 };
 
@@ -54,5 +66,5 @@ export interface ItemsData {
   week_info_main: WeekInfo;
   week_info_aux: WeekInfo | null;
   year: string;
-  items: Array<any>;
+  items: Array<ItemView>;
 };

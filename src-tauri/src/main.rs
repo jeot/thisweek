@@ -1,7 +1,6 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 use once_cell::sync::OnceCell;
-use std::path::Path;
 use std::sync::Mutex;
 use tauri::{AppHandle, Manager, State};
 use weeks_core::calendar::Calendar;
@@ -145,24 +144,15 @@ fn switch_objectives_calendar(page: i32, state: State<MyAppState>) -> bool {
 
 // related to item manipulations
 #[tauri::command]
-fn add_new_item(mut item: Item, state: State<MyAppState>) -> bool {
-    if item.year.is_none() && item.season.is_none() && item.month.is_none() {
-        let main_cal: Calendar = config::get_config().main_calendar_type.into();
-        item.calendar = main_cal.into();
+fn add_new_item(page: i32, kind: i32, text: String, state: State<MyAppState>) -> bool {
+    if page == LIST_TYPE_WEEKS {
         let mut week = state.week.lock().unwrap();
-        item.order_in_week = Some(week.get_new_ordering_key());
-        item.day = week.middle_day;
-        // todo: the tauri is only an interface
-        // all the logic (like creating a new item and saving) should be in the core
-        let result = db_sqlite::create_item(&NewItem::from(&item));
+        let result = week.add_new_item(kind, text);
         let _ = week.update();
         result.is_ok()
     } else {
         let mut year = state.year.lock().unwrap();
-        item.calendar = (year.get_calendar() as &Calendar).clone().into();
-        item.order_in_resolution = Some(year.get_new_ordering_key());
-        item.day = 0;
-        let result = db_sqlite::create_item(&NewItem::from(&item));
+        let result = year.add_new_item(kind, text);
         let _ = year.update();
         result.is_ok()
     }
@@ -177,8 +167,8 @@ fn delete_item(id: i32, state: State<MyAppState>) -> bool {
 }
 
 #[tauri::command]
-fn update_item(item: Item, state: State<MyAppState>) -> bool {
-    let result = db_sqlite::update_item(&item);
+fn edit_item_text(id: i32, text: String, state: State<MyAppState>) -> bool {
+    let result = db_sqlite::edit_item_text(id, text);
     let _ = state.week.lock().unwrap().update();
     let _ = state.year.lock().unwrap().update();
     result.is_ok()
@@ -312,7 +302,7 @@ fn main() {
             switch_objectives_calendar,
             add_new_item,
             delete_item,
-            update_item,
+            edit_item_text,
             toggle_item_state,
             change_item_objective_period,
             backup_database_file,

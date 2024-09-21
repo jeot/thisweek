@@ -1,4 +1,3 @@
-import Box from '@mui/material/Box';
 import './styles.css';
 import '../prototypes.ts';
 import { DateView, Today } from '../my_types.ts';
@@ -13,15 +12,15 @@ export default function Header({ today }: { today: Today }) {
   const aux_date = build_date_string(today.aux_date_view);
   return (
     <div className="header">
-      <Box className="" dir="auto">
+      <div className="" dir="auto">
         {main_date}
-      </Box>
+      </div>
       {aux_date && <div>
         &nbsp;&nbsp;|&nbsp;&nbsp;
       </div>}
-      {aux_date && <Box className="" dir="auto">
+      {aux_date && <div className="" dir="auto">
         {aux_date}
-      </Box>}
+      </div>}
     </div>
   );
 

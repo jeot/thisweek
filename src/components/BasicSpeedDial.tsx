@@ -10,7 +10,7 @@ const actions = [
   { icon: <NoteAddIcon />, name: 'New\xa0Note', itemKind: ItemKind.note },
 ];
 
-type CallbackFunction = (itemKind: number, objectiveType: number) => void;
+type CallbackFunction = (itemKind: number) => void;
 
 export default function BasicSpeedDial({ page, onNewAction }: { page: number, onNewAction: CallbackFunction }) {
   return (
@@ -20,15 +20,13 @@ export default function BasicSpeedDial({ page, onNewAction }: { page: number, on
       icon={<SpeedDialIcon />}
     >
       {actions.map((action) => {
-        let objectiveType = ObjectiveType.none;
-        if (page == Page.objectives) objectiveType = ObjectiveType.yearly;
         return (
           <SpeedDialAction
             key={action.name}
             icon={action.icon}
             tooltipOpen
             tooltipTitle={action.name}
-            onClick={() => { onNewAction(action.itemKind, objectiveType); }}
+            onClick={() => { onNewAction(action.itemKind); }}
           />
         );
       }

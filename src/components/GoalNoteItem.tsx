@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, createRef } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import IconButton from '@mui/material/IconButton';
 import InputBase from '@mui/material/InputBase';
@@ -56,7 +56,7 @@ const scrollIntoViewIfNeeded = (target: HTMLElement) => {
 };
 
 function GoalNoteItem(props: any) {
-  const { editing, selected, onSubmit, onEdit, onSelect, onDelete, onCancel, onToggle, onCopyText, onFocusLeave, onObjectiveTypeChanged } = props;
+  const { editing, selected, onEditSubmit, onEdit, onSelect, onDelete, onCancel, onToggle, onCopyText, onFocusLeave, onObjectiveTypeChanged } = props;
 
   if (props.item === null || props.item === undefined) {
     console.log("item null");
@@ -65,7 +65,7 @@ function GoalNoteItem(props: any) {
 
   const itemRef = useRef<null | React.RefObject<unknown>>(null);
 
-  const [editingItem, setEditingItem] = useState<ItemView>(props.item);
+  const [editingText, setEditingText] = useState<string>(props.item.text);
 
   useEffect(() => {
     // console.log("item did mount");
@@ -73,16 +73,11 @@ function GoalNoteItem(props: any) {
   }, []);
 
   const fixedText = props.item.text ?? "ERROR! INVALID TEXT";
-  const editingText = editingItem.text ?? "ERROR! INVALID TEXT";
-  const statusFixed = props.item.status ?? false;
-  const statusEditing = editingItem.status ?? false;
-  const objTagFixed = props.item.objective_tag;
-  const objTagEditing = editingItem.objective_tag;
-  let status = editing ? statusEditing : statusFixed;
-  let id = editing ? editingItem.id : props.item.id;
-  let kind = editing ? editingItem.kind : props.item.kind;
+  const status = props.item.status ?? false;
+  let id = props.item.id;
+  let kind = props.item.kind;
   let dir = editing ? getDirection(editingText) : getDirection(fixedText);
-  const objective_tag = editing ? objTagEditing : objTagFixed;
+  const objective_tag = props.item.objective_tag;
 
   useEffect(() => {
     if (selected) {
@@ -93,65 +88,33 @@ function GoalNoteItem(props: any) {
 
   useEffect(() => {
     if (editing) {
-      setEditingItem(props.item);
+      setEditingText(props.item.text);
     }
   }, [editing]);
 
   const onFocus = () => { }
 
   const onBlur = () => {
-    onFocusLeave({ id: id, text: editingText });
+    // onFocusLeave({ id: id, text: editingText });
   }
 
-  const setEditingItemText = function(text: string) {
-    setEditingItem({
-      ...editingItem,
-      title: (editingItem.kind === ItemKind.goal) ? text : null,
-      note: (editingItem.kind === ItemKind.note) ? text : null,
-    });
-  }
   const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (event: any) => {
     if (editing && event.key === 'Enter' && event.shiftKey && kind == ItemKind.note) {
-      if (editingText == "") onCancel(id);
+      if (editingText == "") onCancel();
       else {
         /* here input field will automatically insert a new line! */
       }
     } else if (editing && event.key === 'Enter') {
-      if (editingText == "") onCancel(id);
+      if (editingText == "") onCancel();
       else {
-        onSubmit({ item: editingItem, keyboard_submit: true });
-        setEditingItemText("");
+        onEditSubmit(id, editingText);
+        setEditingText("");
       }
     } else if (editing && event.key === 'Escape') {
-      onCancel(id);
-      setEditingItemText("");
+      onCancel();
+      setEditingText("");
     } else { }
   };
-
-  const handleObjectiveTypeChange = function(year: number, season: number | null, month: number | null) {
-    if (editing) {
-      setEditingItem({
-        ...editingItem,
-        year: year,
-        season: season,
-        month: month,
-      });
-    } else {
-      onObjectiveTypeChanged(id, year, season, month);
-    }
-
-  }
-
-  const onCheckBoxChanged = () => {
-    if (editing) {
-      setEditingItem({
-        ...editingItem,
-        status: editingItem.status == ItemStatus.done ? ItemStatus.undone : ItemStatus.done,
-      });
-    } else {
-      onToggle(id);
-    }
-  }
 
   const style_item = `item ${selected ? "item-selected" : ""} ${kind == ItemKind.goal ? "item-goal" : "item-note"}`;
   const style_input = `item-input ${kind == ItemKind.goal ? "item-input-goal" : "item-input-note"}`;
@@ -179,112 +142,115 @@ function GoalNoteItem(props: any) {
         {(kind == ItemKind.goal) &&
           <Checkbox
             checked={status}
-            onChange={onCheckBoxChanged}
+            onChange={() => onToggle(id)}
             size="small"
           />
         }
         {(kind == ItemKind.note) &&
           <IconButton aria-label="note" size="small" disabled color="secondary" >
             <ChatIcon color="warning" />
-            {/*<ChatIcon color="inherit" />*/}
           </IconButton>
         }
-        {editing &&
-          <>
-            <TextField
-              dir={dir}
-              variant="outlined"
-              size="small"
-              className={style_input}
-              inputProps={{ style: inputPropsStyle(kind) }}
-              multiline={(kind == ItemKind.note)}
-              maxRows={(kind == ItemKind.note) ? 40 : 1}
-              fullWidth
-              autoFocus
-              onFocus={onFocus}
-              onBlur={onBlur}
-              value={editingText}
-              onKeyDown={handleKeyDown}
-              onChange={(e) => setEditingItemText(e.currentTarget.value)}
-            />
-            <ObjectivesPopover
-              objective_tag={objective_tag}
-              onChange={handleObjectiveTypeChange}
-            />
-            <IconButton
-              aria-label="ok"
-              size="small"
-              color="success"
-              onClick={() => {
-                let item = editingItem;
-                if (kind == ItemKind.goal) item.title = editingText;
-                if (kind == ItemKind.note) item.note = editingText;
-                onSubmit({ item: item, keyboard_submit: false });
-                setEditingItemText("");
-              }}
-            >
-              <CheckCircleIcon fontSize="small" />
-            </IconButton>
-            <IconButton
-              aria-label="cancel"
-              size="small"
-              color="default"
-              onClick={() => {
-                onCancel(id);
-                setEditingItemText("");
-              }}
-            >
-              <CancelIcon fontSize="small" />
-            </IconButton>
-          </>
-        }
-        {!editing &&
-          <>
-            <InputBase
-              dir={dir}
-              size="small"
-              className={style_input}
-              inputProps={{ style: inputPropsStyle(kind) }}
-              multiline={(kind == ItemKind.note)}
-              maxRows={(kind == ItemKind.note) ? 40 : 1}
-              fullWidth
-              value={fixedText}
-              onMouseDown={() => { onSelect(id); }}
-            />
-            <ObjectivesPopover
-              objective_tag={objective_tag}
-              onChange={handleObjectiveTypeChange}
-            />
-            <IconButton
-              aria-label="copy"
-              size="small"
-              color="secondary"
-              onClick={() => { onCopyText(id) }}
-            >
-              <ContentCopyIcon fontSize="small" />
-            </IconButton>
-            <IconButton
-              aria-label="edit"
-              size="small"
-              color="primary"
-              onClick={() => {
-                onEdit(id);
-              }}
-            >
-              <EditIcon fontSize="small" />
-            </IconButton>
-            <IconButton
-              aria-label="delete"
-              size="small"
-              color="error"
-              onClick={() => { onDelete(id) }}
-            >
-              <DeleteIcon fontSize="small" />
-            </IconButton>
-          </>
-        }
+
+        {editing && <>
+          <TextField
+            dir={dir}
+            variant="outlined"
+            size="small"
+            className={style_input}
+            inputProps={{ style: inputPropsStyle(kind) }}
+            multiline={(kind == ItemKind.note)}
+            maxRows={(kind == ItemKind.note) ? 40 : 1}
+            fullWidth
+            autoFocus
+            onFocus={onFocus}
+            onBlur={onBlur}
+            value={editingText}
+            onKeyDown={handleKeyDown}
+            onChange={(e) => setEditingText(e.currentTarget.value)}
+          />
+          {/*
+          <ObjectivesPopover
+            objective_tag={objective_tag}
+            onChange={onObjectiveTypeChanged}
+          />
+          */}
+        </>}
+
+        {!editing && <>
+          <InputBase
+            dir={dir}
+            size="small"
+            className={style_input}
+            inputProps={{ style: inputPropsStyle(kind) }}
+            multiline={(kind == ItemKind.note)}
+            maxRows={(kind == ItemKind.note) ? 40 : 1}
+            fullWidth
+            value={fixedText}
+            onMouseDown={() => { onSelect(id); }}
+          />
+          <ObjectivesPopover
+            objective_tag={objective_tag}
+            onChange={(y: number, s: number, m: number) => onObjectiveTypeChanged(id, y, s, m)}
+          />
+        </>}
+
+        {editing && <>
+          <IconButton
+            aria-label="ok"
+            size="small"
+            color="success"
+            onClick={() => {
+              onEditSubmit(id, editingText);
+              setEditingText("");
+            }}
+          >
+            <CheckCircleIcon fontSize="small" />
+          </IconButton>
+          <IconButton
+            aria-label="cancel"
+            size="small"
+            color="default"
+            onClick={() => {
+              onCancel(id);
+              setEditingText("");
+            }}
+          >
+            <CancelIcon fontSize="small" />
+          </IconButton>
+        </>}
+
+        {!editing && <>
+          <IconButton
+            aria-label="copy"
+            size="small"
+            color="secondary"
+            onClick={() => { onCopyText(id) }}
+          >
+            <ContentCopyIcon fontSize="small" />
+          </IconButton>
+          <IconButton
+            aria-label="edit"
+            size="small"
+            color="primary"
+            onClick={() => {
+              onEdit(id);
+            }}
+          >
+            <EditIcon fontSize="small" />
+          </IconButton>
+          <IconButton
+            aria-label="delete"
+            size="small"
+            color="error"
+            onClick={() => { onDelete(id) }}
+          >
+            <DeleteIcon fontSize="small" />
+          </IconButton>
+        </>}
+
       </Stack>
-    </Box>
+    </Box >
   );
 }
 

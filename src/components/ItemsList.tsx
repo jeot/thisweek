@@ -1,8 +1,8 @@
-import { Item } from "../my_types";
+import { ItemView } from "../my_types";
 import GoalNoteItem from "./GoalNoteItem";
 
 export default function ItemsList(props: any) {
-  const item_elements = props.items.map((item: Item, i: number) => {
+  const item_elements = props.items.map((item: ItemView, i: number) => {
     const editing = (item.id == props.editingId);
     const selected = (item.id == props.selectedId);
 
@@ -19,14 +19,6 @@ export default function ItemsList(props: any) {
   return (
     <div id="items-list-id" className="items-list">
       {item_elements}
-
-      {props.newItem ? <GoalNoteItem
-        key={'new_item_key'}
-        item={props.newItem}
-        editing={true}
-        selected={false}
-        {...props}
-      /> : <></>}
     </div>
   );
 

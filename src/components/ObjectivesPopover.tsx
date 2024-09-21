@@ -42,9 +42,8 @@ export default function ObjectivesPopover(props: any) {
         {
           string_array.map((name: string, i: number) => {
             if (i == 0) return;
-            let classStyle = "";
-            if (i == selectedIndex) classStyle = `objective-popover-tag objective-popover-tag-selected ${tagStyle}`;
-            else classStyle = `objective-popover-tag ${tagStyle}`;
+            let classStyle = tagStyle + " objective-tag-btn objective-popover-tag";
+            if (i == selectedIndex) classStyle = classStyle + " objective-popover-tag-selected";
             const season = objectiveTypeId == ObjectiveType.seasonal ? i : null;
             const month = objectiveTypeId == ObjectiveType.monthly ? i : null;
             return (
@@ -66,7 +65,7 @@ export default function ObjectivesPopover(props: any) {
     // console.log(year, season, month, calendar, language, direction);
     let yearStyle = "objective-tag-btn objective-year-tag objective-popover-tag";
     const month_index = month ?? 0;
-    const season_index = month ?? 0;
+    const season_index = season ?? 0;
     if (month_index == 0 && season_index == 0) yearStyle = yearStyle + " objective-popover-tag-selected";
     return (
       <div className="objective-popover" dir={direction}>
@@ -78,8 +77,8 @@ export default function ObjectivesPopover(props: any) {
             <Typography variant="caption">{year_string}</Typography>
           </button>
         </div>
-        {createObjectiveTagsElement(seasons_names, "objective-tag-btn objective-season-tag objective-popover-tag", year, season_index, ObjectiveType.seasonal)}
-        {createObjectiveTagsElement(months_names, "objective-tag-btn objective-month-tag objective-popover-tag flex-break-three-element", year, month_index, ObjectiveType.monthly)}
+        {createObjectiveTagsElement(seasons_names, "objective-season-tag", year, season_index, ObjectiveType.seasonal)}
+        {createObjectiveTagsElement(months_names, "objective-month-tag flex-break-three-element", year, month_index, ObjectiveType.monthly)}
       </div>
     );
 

@@ -130,8 +130,18 @@ div {
 	font-size: 2em;
 }
 
+.new-item {
+	display: flex;
+	flex-direction: row;
+	/* background-color: rgba(0, 0, 0, 0.05); */
+	background-color: #e5e7e9;
+	box-shadow: 0px -1px 4px 0px rgba(0, 0, 0, 0.2);
+	padding: 8px 4px;
+}
+
 .week-section,
-.objectives-section {
+.objectives-section,
+.content-section {
 	flex: 1 1 auto;
 	overflow-y: auto;
 	overflow-anchor: none;

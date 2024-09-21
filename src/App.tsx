@@ -6,16 +6,11 @@ import { appWindow } from '@tauri-apps/api/window'
 
 import { listen } from "@tauri-apps/api/event";
 
-import Week from "./components/Week.tsx"
-import Objectives from "./components/Objectives.tsx"
-import BasicSpeedDial from "./components/BasicSpeedDial.tsx"
 import Header from "./components/Header.tsx"
 import SidebarNav from './components/SidebarNav.tsx';
-import * as Keyboard from "./Keyboard.ts"
-import * as Globals from "./Globals.ts"
-
+import Content from './components/Content.tsx';
 import CssBaseline from '@mui/material/CssBaseline';
-// import ScopedCssBaseline from '@mui/material/ScopedCssBaseline';
+import { createTheme, ThemeProvider } from '@mui/material';
 
 import ShabnamThin from './assets/fonts/Shabnam-Thin.woff';
 import ShabnamLight from './assets/fonts/Shabnam-Light.woff';
@@ -23,21 +18,18 @@ import ShabnamNormal from './assets/fonts/Shabnam.woff';
 import ShabnamMedium from './assets/fonts/Shabnam-Medium.woff';
 import ShabnamBold from './assets/fonts/Shabnam-Bold.woff';
 
-// import ShabnamFD from './assets/fonts/Shabnam-FD.woff'
-// import Nazanin from './assets/fonts/B-NAZANIN.ttf';
-// import Rubik from './assets/fonts/Rubik-Regular.ttf';
-
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
-import { createTheme, ThemeProvider } from '@mui/material';
 import { Action, ID, ItemKind, ObjectiveType, Page, ItemStatus } from './constants.ts';
-
+import * as Keyboard from "./Keyboard.ts"
+import * as Globals from "./Globals.ts"
 import './components/styles.css';
-import type { Today, Item, ItemsData } from "./my_types.ts"
+import type { Today, ItemView, ItemsData } from "./my_types.ts"
 import { getName, getVersion } from '@tauri-apps/api/app';
+
 // same type as payload
 type EventPayload = {
   command: string;
@@ -45,42 +37,24 @@ type EventPayload = {
 };
 
 function App() {
-  // async function startBackendEventListener() {
-  //   console.log("listening started!");
-  //   const unlisten = await listen<EventPayload>('ConfigChanged', (event) => {
-  //     console.log("config file changed.");
-  //     console.log(event.payload);
-  //   });
-  //   console.log("listening ended!");
-  //   return unlisten;
-  // }
 
   const today_init: Today = undefined;
 
-  const item_init: Item = {
+  const item_init: ItemView = {
     id: ID.none,
-    calendar: 1,
-    year: null,
-    season: null,
-    month: null,
-    day: 0,
+    calendar: 0,
     kind: ItemKind.goal,
-    fixed_date: false,
-    all_day: false,
-    title: "",
-    note: "",
-    datetime: null,
-    duration: null,
-    status: ItemStatus.undone,
-    order_in_week: null,
-    order_in_resolution: null,
-    sync: null,
+    text: "",
+    status: false,
+    fixed_day_tag: null,
+    objective_tag: null,
     uuid: null,
   }
+
   const items_data_init: ItemsData = {
     title: "",
     info: "",
-    year: 0,
+    year: "",
     items: [],
   };
 
@@ -89,9 +63,9 @@ function App() {
   const [selectedId, setSelectedId, selectedIdRef] = useStateRef<number>(ID.none);
   const [today, setToday, _todayRef] = useStateRef<Today>(today_init);
   const [data, setData, dataRef] = useStateRef<ItemsData>(items_data_init);
-  const [newItem, setNewItem, _newItemRef] = useStateRef<Item | null>(null);
   const [appName, setAppName] = useState<string>("");
   const [appVersion, setAppVersion] = useState<string>("");
+  const [newItemKind, setNewItemKind] = useState<number>(ItemKind.goal);
 
   getName().then((result: string) => {
     setAppName(result);
@@ -186,10 +160,10 @@ function App() {
       case Action.selectNextItem: selectNextItem(); break;
       case Action.selectPreviousItem: selectPreviousItem(); break;
       case Action.newGoal:
-        startCreatingNewItem(ItemKind.goal, ObjectiveType.none);
+        startCreatingNewItem(ItemKind.goal);
         break;
       case Action.newNote:
-        startCreatingNewItem(ItemKind.note, ObjectiveType.none);
+        startCreatingNewItem(ItemKind.note);
         break;
       case Action.editSelectedItem: handleOnEdit(selectedIdRef.current); break;
       case Action.deleteSelectedItem: deleteSelectedItem(); break;
@@ -225,7 +199,6 @@ function App() {
   const cancelEditingOrSelectionOrNewItem = function() {
     setEditingId(ID.none);
     setSelectedId(ID.none);
-    setNewItem(null);
     Keyboard.set_insert_mode(false);
   }
 
@@ -404,17 +377,23 @@ function App() {
     invoke_tauri_command_and_refresh_data("previous_time_period", { page: activePageRef.current });
   }
 
-  const handleOnSubmit = function({ item, keyboard_submit }: { item: Item, keyboard_submit: boolean }) {
-    if (item.id == ID.new_item && item.kind == ItemKind.goal) {
-      invoke_tauri_command_and_refresh_data("add_new_item", { item: item });
+  const handleOnNewSubmit = function(kind: number, text: string, keyboard_submit: boolean) {
+    // console.log("handleOnNewSubmit: ", kind, text);
+    if (kind == ItemKind.goal) {
+      invoke_tauri_command_and_refresh_data("add_new_item", { page: activePageRef.current, kind: kind, text: text });
       if (!keyboard_submit) {
         cancelEditingOrSelectionOrNewItem();
       }
-    } else if (item.id == ID.new_item && item.kind == ItemKind.note) {
-      invoke_tauri_command_and_refresh_data("add_new_item", { item: item });
+    } else if (kind == ItemKind.note) {
+      invoke_tauri_command_and_refresh_data("add_new_item", { page: activePageRef.current, kind: kind, text: text });
       cancelEditingOrSelectionOrNewItem();
-    } else if (editingId == item.id) { // submiting an edit on previous item
-      invoke_tauri_command_and_refresh_data("update_item", { item: item });
+    } else { }
+  }
+
+  const handleOnEditSubmit = function(id: number, text: string) {
+    // console.log("handleOnEditSubmit: ", id, text);
+    if (editingId == id) {
+      invoke_tauri_command_and_refresh_data("edit_item_text", { id: id, text: text });
       cancelEditingOrSelectionOrNewItem();
     } else { }
   }
@@ -439,30 +418,12 @@ function App() {
     invoke_tauri_command_and_refresh_data("delete_item", { id: id });
   }
 
-  const startCreatingNewItem = function(itemKind: number, objectiveType: number) {
+  const startCreatingNewItem = function(itemKind: number) {
     if (editingId != ID.none) return;
-    if (activePageRef.current == Page.weeks)
-      objectiveType = ObjectiveType.none;
-    if (objectiveType == ObjectiveType.none && activePageRef.current == Page.objectives)
-      objectiveType = ObjectiveType.yearly;
-
-    if (objectiveType != ObjectiveType.none && (dataRef.current.year === undefined || dataRef.current.year === null))
-      return;
-
     setSelectedId(ID.none);
     setEditingId(ID.new_item);
+    setNewItemKind(itemKind);
     Keyboard.set_insert_mode(true);
-    let item = item_init;
-    item.id = ID.new_item;
-    item.kind = itemKind;
-    if (objectiveType == ObjectiveType.none) item.year = null;
-    else item.year = dataRef.current.year;
-    if (objectiveType == ObjectiveType.monthly) item.month = 1;
-    else item.month = null;
-    if (objectiveType == ObjectiveType.seasonal) item.season = 1;
-    else item.season = null;
-    console.log("the newItem template: ", item);
-    setNewItem(item);
   }
 
   const displayPage = function(page: number) {
@@ -551,47 +512,28 @@ function App() {
             />
             <div className="main" >
               <SidebarNav onClick={displayPage} activePage={activePage} />
-              {(activePage == Page.weeks) &&
-                <Week
-                  data={data}
-                  newItem={newItem}
-                  today={today}
-                  editingId={editingId}
-                  selectedId={selectedId}
-                  onNext={gotoNextTimePeriod}
-                  onPrevious={gotoPreviousTimePeriod}
-                  onSwitchObjectivesCalendar={switchObjectivesCalendar}
-                  onSubmit={handleOnSubmit}
-                  onEdit={handleOnEdit}
-                  onSelect={handleOnSelect}
-                  onDelete={handleOnDelete}
-                  onCancel={cancelEditingOrSelectionOrNewItem}
-                  onToggle={handleOnToggle}
-                  onCopyText={handleOnCopyText}
-                  onFocusLeave={handleOnFocusLeave}
-                  onObjectiveTypeChanged={handleOnObjectiveTypeChanged}
-                />}
-              {(activePage == Page.objectives) &&
-                <Objectives
-                  data={data}
-                  newItem={newItem}
-                  today={today}
-                  editingId={editingId}
-                  selectedId={selectedId}
-                  onNext={gotoNextTimePeriod}
-                  onPrevious={gotoPreviousTimePeriod}
-                  onSwitchObjectivesCalendar={switchObjectivesCalendar}
-                  onSubmit={handleOnSubmit}
-                  onEdit={handleOnEdit}
-                  onSelect={handleOnSelect}
-                  onDelete={handleOnDelete}
-                  onCancel={cancelEditingOrSelectionOrNewItem}
-                  onToggle={handleOnToggle}
-                  onCopyText={handleOnCopyText}
-                  onFocusLeave={handleOnFocusLeave}
-                  onObjectiveTypeChanged={handleOnObjectiveTypeChanged}
-                />}
-              {editingId == ID.none && <BasicSpeedDial page={activePageRef.current} onNewAction={startCreatingNewItem} />}
+              <Content
+                page={activePage}
+                data={data}
+                today={today}
+                editingId={editingId}
+                selectedId={selectedId}
+                newItemKind={newItemKind}
+                onNext={gotoNextTimePeriod}
+                onPrevious={gotoPreviousTimePeriod}
+                onSwitchObjectivesCalendar={switchObjectivesCalendar}
+                onNewSubmit={handleOnNewSubmit}
+                onEditSubmit={handleOnEditSubmit}
+                onEdit={handleOnEdit}
+                onSelect={handleOnSelect}
+                onDelete={handleOnDelete}
+                onCancel={cancelEditingOrSelectionOrNewItem}
+                onToggle={handleOnToggle}
+                onCopyText={handleOnCopyText}
+                onFocusLeave={handleOnFocusLeave}
+                onObjectiveTypeChanged={handleOnObjectiveTypeChanged}
+                onNewAction={startCreatingNewItem}
+              />
             </div>
             <div className="app-info">{appName}&nbsp;{appVersion}</div>
           </div>
