@@ -51,7 +51,7 @@ export default function ObjectivesPopover(props: any) {
                 key={name}
                 className={classStyle}
                 onClick={() => { handleOnChange(year, season, month); }}>
-                <Typography variant="caption">{name}</Typography>
+                <Typography variant="caption" noWrap>{name}</Typography>
               </button>);
           })
         }
@@ -74,7 +74,7 @@ export default function ObjectivesPopover(props: any) {
             className={yearStyle}
             onClick={() => { handleOnChange(year, null, null); }}
           >
-            <Typography variant="caption">{year_string}</Typography>
+            <Typography variant="caption" noWrap>{year_string}</Typography>
           </button>
         </div>
         {createObjectiveTagsElement(seasons_names, "objective-season-tag", year, season_index, ObjectiveType.seasonal)}
@@ -101,12 +101,11 @@ export default function ObjectivesPopover(props: any) {
 
   const open = Boolean(anchorEl);
   const popoverId = open ? 'objective-time-period-selection-popover' : undefined;
-  const text2 = text.replace(/ /g, '\u00a0');;
 
   return (
     <div className="objective-time-period-selection">
       <button className={style} onClick={handleOpenPopover}>
-        <Typography variant="caption">{text2}</Typography>
+        <Typography variant="caption" noWrap>{text}</Typography>
       </button>
       <Popover
         id={popoverId}

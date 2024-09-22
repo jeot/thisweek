@@ -240,8 +240,8 @@ div {
 
 .week-header-main-date-day {
 	flex: 0 1 auto;
-	font-size: 1.4em;
-	line-height: 90%;
+	font-size: 1.1em;
+	line-height: 120%;
 	font-weight: 400;
 	color: rgba(0, 0, 0, 0.7);
 	/* color: black; */
@@ -399,7 +399,7 @@ div {
 	display: flex;
 	flex-direction: column;
 	/* border: 1px solid rgba(0, 0, 0, 0.2); */
-	width: 256px;
+	width: 300px;
 	padding: 5px;
 }
 
