@@ -25,6 +25,8 @@ export default function ObjectivesPopover(props: any) {
 
   const seasons_names = calInUse == CalendarPriorityType.main ? Globals.getMainCalendarView().seasons_names : Globals.getAuxCalendarView()?.seasons_names;
   const months_names = calInUse == CalendarPriorityType.main ? Globals.getMainCalendarView().months_names : Globals.getAuxCalendarView()?.months_names;
+  const direction = calInUse == CalendarPriorityType.main ? Globals.getMainCalendarView().direction : Globals.getAuxCalendarView()?.direction;
+  console.log(direction);
   // const lang = calInUse == CalendarPriorityType.main ? Globals.getMainCalendarView().language : Globals.getAuxCalendarView()?.language;
   // const direction = calInUse == CalendarPriorityType.main ? Globals.getMainCalendarView().direction : Globals.getAuxCalendarView()?.direction;
   // const main_cal_name = Globals.getMainCalendarView().calendar_name;
@@ -61,7 +63,7 @@ export default function ObjectivesPopover(props: any) {
 
   const PopoverContent = function(props: any) {
     const { calendar, text, type, calendar_name, language, year_string, year, season, month } = props.objective_tag;
-    const direction = language == "fa" ? "rtl" : "ltr";
+    // const direction = language ==  ? "rtl" : "ltr";
     // console.log(year, season, month, calendar, language, direction);
     let yearStyle = "objective-tag-btn objective-year-tag objective-popover-tag";
     const month_index = month ?? 0;
@@ -121,7 +123,7 @@ export default function ObjectivesPopover(props: any) {
           horizontal: 'left',
         }}
       >
-        <div className="objective-popover-calendar-title">
+        <div className="objective-popover-calendar-title" dir={direction}>
           <Typography variant="caption">{calendar_name}</Typography>
         </div>
         <PopoverContent objective_tag={objective_tag} />

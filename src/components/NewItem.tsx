@@ -20,7 +20,8 @@ export default function NewItem(props: any) {
     _event: React.MouseEvent<HTMLElement>,
     newKind: number,
   ) => {
-    setKind(newKind);
+    if (newKind != null)
+      setKind(newKind);
   };
 
   let dir = getDirection(editingText);
@@ -54,6 +55,12 @@ export default function NewItem(props: any) {
     } else { }
   };
 
+  const onFocus = () => { }
+
+  const onBlur = () => {
+    // if (editingText == "") onCancel();
+  }
+
   return (
     <div className="new-item" dir="rtl">
       <ToggleButtonGroup
@@ -80,8 +87,8 @@ export default function NewItem(props: any) {
         maxRows={(kind == ItemKind.note) ? 40 : 1}
         fullWidth
         autoFocus
-        // onFocus={onFocus}
-        // onBlur={onBlur}
+        onFocus={onFocus}
+        onBlur={onBlur}
         value={editingText}
         onKeyDown={handleKeyDown}
         onChange={(e) => setEditingText(e.currentTarget.value)}
