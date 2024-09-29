@@ -434,7 +434,6 @@ function App() {
       setActivePage(Page.objectives);
       invoke_tauri_command_and_refresh_data("current_time_period", { page: activePageRef.current });
     } else if (page == Page.settings) {
-      console.log("displaying settings page...");
       setActivePage(Page.settings);
     } else {
       console.log("other click. ignored.");

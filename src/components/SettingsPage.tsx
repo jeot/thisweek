@@ -5,14 +5,25 @@ import { SettingSection } from '../constants';
 import SettingGeneral from './SettingGeneral';
 import SettingAbout from './SettingAbout';
 import { getWeekAppVersion } from '../Globals';
+import { invoke } from "@tauri-apps/api/tauri";
+import { ConfigView } from '../my_types';
 
-export default function SettingsPage(props) {
+export default function SettingsPage(props: any) {
 
   const [section, setSettingSection] = useState<number>(SettingSection.General);
   const [version, setVersion] = useState<string>("");
+  const [config, setConfig] = useState<ConfigView>();
+
+  const reloadConfig = () => {
+    invoke("get_config").then((result: any) => {
+      console.log("get config: ", result);
+      setConfig(result);
+    });
+  }
 
   useEffect(() => {
     setVersion(getWeekAppVersion());
+    reloadConfig();
   }, []);
 
   return (
@@ -25,7 +36,7 @@ export default function SettingsPage(props) {
         <Typography variant="caption" align="center">WeeksApp v{version}</Typography>
       </div>
       <div className="settings-content">
-        {section == SettingSection.General && <SettingGeneral />}
+        {section == SettingSection.General && <SettingGeneral config={config} reloadConfig={reloadConfig} />}
         {section == SettingSection.About && <SettingAbout {...props} />}
       </div>
     </div>

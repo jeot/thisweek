@@ -1,11 +1,15 @@
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
 import { useState, useEffect } from "react";
+import { ConfigView } from '../my_types';
+import { invoke } from "@tauri-apps/api/tauri";
+// import { open } from '@tauri-apps/api/dialog';
+import { save } from '@tauri-apps/api/dialog';
 import './styles.css'
-import React from 'react';
 
-export default function SettingGeneral(props) {
-  // todo:
-  const db_location: string = "Location filepath...";
+export default function SettingGeneral(props: any) {
+  const config: ConfigView = props.config;
+  if (config === undefined) return;
+
   const [mainCal, setMainCal] = useState('');
   const [mainCalLang, setMainCalLang] = useState('');
 
@@ -18,13 +22,32 @@ export default function SettingGeneral(props) {
     setMainCalLang(event.target.value);
   };
 
+  const handleChangeDatabaseLocation = () => {
+    save({
+      defaultPath: config.database,
+      title: "File for WeeksApp Database",
+      filters: [{
+        name: 'WeeksApp Database',
+        extensions: ['db']
+      }]
+    }).then((filepath) => {
+      if (filepath !== null) {
+        console.log("chosen database filepath", filepath);
+        invoke("set_database_file", { filepath: filepath }).then((result: any) => {
+          console.log("set_database_filepath ", result);
+        });
+      }
+      props.reloadConfig();
+    });
+  }
+
   return (
     <div className="setting-content-general">
       <Typography variant="h5">General Settings</Typography>
       <Typography variant="h5">&nbsp;</Typography>
       <Typography variant="h5">Database Location</Typography>
-      <Typography variant="body2" color="textSecondary">{db_location}</Typography>
-      <button>Change Database Location</button>
+      <Typography variant="body2" color="textSecondary">{config.database}</Typography>
+      <button onClick={handleChangeDatabaseLocation}>Change Database Location</button>
 
       <Typography variant="h5">&nbsp;</Typography>
       <Typography variant="h5">Main Calendar</Typography>

@@ -94,6 +94,16 @@ fn get_calendar_views() -> (CalendarView, Option<CalendarView>) {
 }
 
 #[tauri::command]
+fn get_config() -> config::Config {
+    config::get_config()
+}
+
+#[tauri::command]
+fn set_database_file(filepath: String) -> bool {
+    config::set_database_file(filepath).is_ok()
+}
+
+#[tauri::command]
 fn previous_time_period(page: i32, state: State<MyAppState>) -> bool {
     if page == LIST_TYPE_WEEKS {
         let mut week = state.week.lock().unwrap();
@@ -292,6 +302,8 @@ fn main() {
             get_week,
             get_year,
             get_calendar_views,
+            get_config,
+            set_database_file,
             // common stuff
             move_up_selected_item,
             move_down_selected_item,

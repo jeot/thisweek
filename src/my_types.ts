@@ -68,3 +68,12 @@ export interface ItemsData {
   year: string;
   items: Array<ItemView>;
 };
+
+export interface ConfigView {
+  database: string;
+  main_calendar_type: string;
+  main_calendar_language: string;
+  main_calendar_start_weekday: string;
+  secondary_calendar_type: string | null;
+  secondary_calendar_language: string | null;
+}
