@@ -348,11 +348,8 @@ function App() {
   }
 
   const handleOnCopyText = function(id: number) {
-    const item = dataRef.current.items.find((item) => { return (item.id == id); });
-    if (item.kind === ItemKind.goal)
-      navigator.clipboard.writeText(item.title);
-    if (item.kind === ItemKind.note)
-      navigator.clipboard.writeText(item.note);
+    const item: ItemView | undefined = dataRef.current.items.find((item) => { return (item.id == id); });
+    item && navigator.clipboard.writeText(item.text);
   }
 
   const moveUpSelectedItem = function() {
