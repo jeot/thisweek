@@ -1,9 +1,14 @@
 import { CalendarView } from "./my_types";
 import { invoke } from "@tauri-apps/api/tauri";
+import { getName, getVersion } from '@tauri-apps/api/app';
 
 let mainCalendarView: CalendarView;
 let auxCalendarView: CalendarView | null;
 let calendarViewsInitialized: boolean = false;
+
+let weekAppVersion: string = "";
+// let weekCoreVersion: string = "";
+
 
 function init() {
   // console.log("fetching the calendar views...");
@@ -16,6 +21,10 @@ function init() {
     auxCalendarView.seasons_names.splice(0, 0, "");
     auxCalendarView.months_names.splice(0, 0, "");
   });
+
+  getVersion().then((result: string) => {
+    weekAppVersion = result;
+  });
 }
 
 function getMainCalendarView() {
@@ -26,4 +35,12 @@ function getAuxCalendarView() {
   return auxCalendarView;
 }
 
-export { init, getMainCalendarView, getAuxCalendarView };
+function getWeekAppVersion() {
+  return weekAppVersion;
+}
+
+// function getWeekCoreVersion() {
+//   return weekCoreVersion;
+// }
+
+export { init, getMainCalendarView, getAuxCalendarView, getWeekAppVersion };

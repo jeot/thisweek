@@ -38,6 +38,10 @@ export enum Calendar {
   Persian = 1,
 };
 
+export enum SettingSection {
+  General = 0,
+  About,
+}
 
 export enum Action {
   toggleMaximizeWindow = 1,

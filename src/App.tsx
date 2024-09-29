@@ -434,8 +434,8 @@ function App() {
       setActivePage(Page.objectives);
       invoke_tauri_command_and_refresh_data("current_time_period", { page: activePageRef.current });
     } else if (page == Page.settings) {
-      // setActivePage(Page.settings);
-      console.log("todo: displaying settings page...");
+      console.log("displaying settings page...");
+      setActivePage(Page.settings);
     } else {
       console.log("other click. ignored.");
     }
@@ -535,7 +535,7 @@ function App() {
                 onNewAction={startCreatingNewItem}
               />
             </div>
-            <div className="app-info">{appName}&nbsp;{appVersion}</div>
+            {/* <div className="app-info">{appName}&nbsp;{appVersion}</div> */}
           </div>
         </CssBaseline>
       </ThemeProvider>

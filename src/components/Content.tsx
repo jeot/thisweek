@@ -3,6 +3,7 @@ import ObjectivesHeader from "./ObjectivesHeader.tsx";
 import NewItem from "./NewItem.tsx";
 import BasicSpeedDial from "./BasicSpeedDial.tsx";
 import ItemsList from "./ItemsList.tsx";
+import SettingsPage from "./SettingsPage.tsx";
 
 import "../prototypes.ts";
 import { ID, Page } from "../constants.ts";
@@ -27,12 +28,17 @@ export default function Content(props: any) {
           {...props}
         />
       }
-      <ItemsList
-        items={props.data.items}
-        {...props}
-      />
-      {editingId == ID.none && <BasicSpeedDial page={page} onNewAction={onNewAction} />}
-      {editingId == ID.new_item && <NewItem initKind={newItemKind} onSubmit={onNewSubmit} onCancel={onCancel} />}
+      {(page == Page.weeks || page == Page.objectives) &&
+        <ItemsList
+          items={props.data.items}
+          {...props}
+        />
+      }
+      {(page == Page.weeks || page == Page.objectives) && editingId == ID.none && <BasicSpeedDial page={page} onNewAction={onNewAction} />}
+      {(page == Page.weeks || page == Page.objectives) && editingId == ID.new_item && <NewItem initKind={newItemKind} onSubmit={onNewSubmit} onCancel={onCancel} />}
+
+      {page == Page.settings && <SettingsPage />}
+
     </div>
   );
 }

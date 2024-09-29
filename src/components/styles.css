@@ -69,6 +69,13 @@ div {
 	flex-direction: column;
 	align-items: center;
 	justify-content: flex-start;
+	padding: 8px 0px;
+}
+
+.settings-navbar-spacer,
+.sidebar-spacer {
+	flex: 1 0 auto;
+	/* border: 1px dashed red; */
 }
 
 .sidebar-btn:hover {
@@ -82,12 +89,11 @@ div {
 }
 
 .sidebar-btn {
-	width: 64px;
+	flex: 0 1 auto;
+	min-width: 64px;
 	border: none;
 	border-radius: 0px;
-	margin: 4px;
-	margin-top: 16px;
-	margin-bottom: 16px;
+	margin: 8px 4px;
 	padding: 0px;
 	background-color: inherit;
 	opacity: 0.5;
@@ -144,15 +150,14 @@ div {
 	margin: 0px 8px;
 }
 
-.week-section,
-.objectives-section,
 .content-section {
-	flex: 1 1 auto;
+	flex: 1 0 auto;
 	overflow-y: auto;
 	overflow-anchor: none;
 	/* inside items arrangement */
 	display: flex;
 	flex-direction: column;
+	/* border: 1px solid green; */
 }
 
 .week-header,
@@ -212,7 +217,6 @@ div {
 	color: rgb(26, 115, 232) !important;
 	transition: all 0.3s;
 }
-
 
 .week-header-date-day {
 	display: flex;
@@ -423,6 +427,7 @@ div {
 	background-color: rgb(128, 0, 128, 0.2);
 }
 
+/* .settings-navbar-title, */
 .objective-popover-calendar-title {
 	font-family: Roboto, Arial;
 	font-size: 0.8em;
@@ -433,6 +438,59 @@ div {
 	/* border: 1px solid red; */
 }
 
+/* .settings-navbar-title { */
+/* 	color: lightslategray; */
+/* 	background-color: #e5e7e9; */
+/* 	; */
+/* } */
+
 .flex-break-three-element {
 	flex: 1 0 30% !important;
+}
+
+.settings-section {
+	flex: 1 0 auto;
+	width: 100%;
+	/* border: 2px solid black; */
+
+	display: grid;
+	grid-template-columns: 25% 1fr;
+}
+
+.settings-navbar {
+	/* flex: 1 0 auto; */
+	background-color: #e5e7e9;
+	/* border: 1px dashed blue; */
+	padding: 8px 0px;
+	min-width: 100px;
+	display: flex;
+	flex-direction: column;
+}
+
+.settings-content {
+	/* flex: 4 0 auto; */
+	background-color: whitesmoke;
+	/* border: 1px dashed red; */
+	padding: 1em;
+}
+
+.settings-content .story {
+	max-width: 300px;
+}
+
+.settings-navbar-btn {
+	font-size: 1em;
+	border: none;
+	margin: 4px 8px;
+	border-radius: 4px;
+	padding: 4px 8px;
+	background-color: rgba(0, 0, 0, 0.1);
+}
+
+.settings-navbar-btn:hover {
+	background-color: rgba(0, 0, 0, 0.2);
+}
+
+.settings-navbar-btn:active {
+	background-color: rgba(0, 0, 0, 0.1);
 }
