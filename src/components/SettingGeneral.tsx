@@ -1,8 +1,7 @@
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ConfigView } from '../my_types';
 import { invoke } from "@tauri-apps/api/tauri";
-// import { open } from '@tauri-apps/api/dialog';
 import { save } from '@tauri-apps/api/dialog';
 import './styles.css'
 

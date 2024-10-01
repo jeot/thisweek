@@ -3,7 +3,7 @@ import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import SpeedDialAction from '@mui/material/SpeedDialAction';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import AddTaskIcon from '@mui/icons-material/AddTask';
-import { ObjectiveType, Page, ItemKind } from '../constants';
+import { ItemKind } from '../constants';
 
 const actions = [
   { icon: <AddTaskIcon />, name: 'New\xa0Goal', itemKind: ItemKind.goal },
@@ -13,6 +13,7 @@ const actions = [
 type CallbackFunction = (itemKind: number) => void;
 
 export default function BasicSpeedDial({ page, onNewAction }: { page: number, onNewAction: CallbackFunction }) {
+  page;
   return (
     <SpeedDial
       ariaLabel="SpeedDial basic example"

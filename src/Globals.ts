@@ -1,10 +1,9 @@
 import { CalendarView } from "./my_types";
 import { invoke } from "@tauri-apps/api/tauri";
-import { getName, getVersion } from '@tauri-apps/api/app';
+import { getVersion } from '@tauri-apps/api/app';
 
 let mainCalendarView: CalendarView;
 let auxCalendarView: CalendarView | null;
-let calendarViewsInitialized: boolean = false;
 
 let weekAppVersion: string = "";
 // let weekCoreVersion: string = "";
@@ -38,9 +37,5 @@ function getAuxCalendarView() {
 function getWeekAppVersion() {
   return weekAppVersion;
 }
-
-// function getWeekCoreVersion() {
-//   return weekCoreVersion;
-// }
 
 export { init, getMainCalendarView, getAuxCalendarView, getWeekAppVersion };

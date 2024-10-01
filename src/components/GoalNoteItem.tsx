@@ -15,9 +15,8 @@ import ChatIcon from '@mui/icons-material/Chat';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 import { getDirection } from "../utilities.ts"
-import { ItemKind, ItemStatus } from "../constants.ts";
+import { ItemKind } from "../constants.ts";
 
-import type { ItemView } from "../my_types.ts";
 import ObjectivesPopover from "./ObjectivesPopover.tsx";
 
 /**
@@ -36,8 +35,8 @@ const scrollIntoViewIfNeeded = (target: HTMLElement) => {
   // console.log("doc height", document.documentElement.clientHeight);
   // console.log("doc width", document.documentElement.clientWidth);
   // Target is outside the viewport from the bottom
-  const itemsBoxTop = document.getElementById("items-list-id")?.getBoundingClientRect().top;
-  const itemsBoxBot = document.getElementById("items-list-id")?.getBoundingClientRect().bottom;
+  const itemsBoxTop = document.getElementById("items-list-id")?.getBoundingClientRect().top ?? 0;
+  const itemsBoxBot = document.getElementById("items-list-id")?.getBoundingClientRect().bottom ?? 0;
   // console.log(itemsBoxTop, itemsBoxBot);
   if (itemBot > itemsBoxBot) {
     //  The bottom of the target will be aligned to the bottom of the visible area of the scrollable ancestor.
@@ -63,7 +62,7 @@ function GoalNoteItem(props: any) {
     return;
   }
 
-  const itemRef = useRef<null | React.RefObject<unknown>>(null);
+  const itemRef = useRef<null | React.RefObject<HTMLElement>>(null);
 
   const [editingText, setEditingText] = useState<string>(props.item.text);
 
@@ -82,7 +81,7 @@ function GoalNoteItem(props: any) {
   useEffect(() => {
     if (selected) {
       // console.log(itemRef.current);
-      scrollIntoViewIfNeeded(itemRef.current);
+      itemRef.current && scrollIntoViewIfNeeded(itemRef.current as unknown as HTMLElement);
     }
   }, [selected]);
 
@@ -95,7 +94,7 @@ function GoalNoteItem(props: any) {
   const onFocus = () => { }
 
   const onBlur = () => {
-    // onFocusLeave({ id: id, text: editingText });
+    onFocusLeave({ id: id, text: editingText });
   }
 
   const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (event: any) => {

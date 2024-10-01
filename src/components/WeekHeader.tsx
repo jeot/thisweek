@@ -5,7 +5,7 @@ import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import WeekDates from './WeekDates.tsx';
 
 export default function WeekHeader(props: any) {
-  const { title, textNext, textPrevious, onNext, onPrevious } = props;
+  const { textNext, textPrevious, onNext, onPrevious } = props;
   return (
     <div className="week-header">
       <Tooltip title={textPrevious}>

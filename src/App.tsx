@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState, useEffect, useRef, createRef } from "react";
+import { useState, useEffect } from "react";
 import useStateRef from 'react-usestateref'
 import { invoke } from "@tauri-apps/api/tauri";
 import { appWindow } from '@tauri-apps/api/window'
@@ -22,13 +22,14 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+import './components/styles.css';
 
-import { Action, ID, ItemKind, ObjectiveType, Page, ItemStatus } from './constants.ts';
 import * as Keyboard from "./Keyboard.ts"
 import * as Globals from "./Globals.ts"
-import './components/styles.css';
+
+import { Action, ID, ItemKind, Page } from './constants.ts';
 import type { Today, ItemView, ItemsData } from "./my_types.ts"
-import { getName, getVersion } from '@tauri-apps/api/app';
+import { items_data_init, today_init } from './my_types_init.ts';
 
 // same type as payload
 type EventPayload = {
@@ -38,42 +39,22 @@ type EventPayload = {
 
 function App() {
 
-  const today_init: Today = undefined;
-
-  const item_init: ItemView = {
-    id: ID.none,
-    calendar: 0,
-    kind: ItemKind.goal,
-    text: "",
-    status: false,
-    fixed_day_tag: null,
-    objective_tag: null,
-    uuid: null,
-  }
-
-  const items_data_init: ItemsData = {
-    title: "",
-    info: "",
-    year: "",
-    items: [],
-  };
-
   const [activePage, setActivePage, activePageRef] = useStateRef<number>(Page.weeks);
   const [editingId, setEditingId] = useState<number>(ID.none);
   const [selectedId, setSelectedId, selectedIdRef] = useStateRef<number>(ID.none);
   const [today, setToday, _todayRef] = useStateRef<Today>(today_init);
   const [data, setData, dataRef] = useStateRef<ItemsData>(items_data_init);
-  const [appName, setAppName] = useState<string>("");
-  const [appVersion, setAppVersion] = useState<string>("");
+  // const [appName, setAppName] = useState<string>("");
+  // const [appVersion, setAppVersion] = useState<string>("");
   const [newItemKind, setNewItemKind] = useState<number>(ItemKind.goal);
 
-  getName().then((result: string) => {
-    setAppName(result);
-  });
-
-  getVersion().then((result: string) => {
-    setAppVersion(result);
-  });
+  // getName().then((result: string) => {
+  //   setAppName(result);
+  // });
+  //
+  // getVersion().then((result: string) => {
+  //   setAppVersion(result);
+  // });
 
   // const itemsCount = (data?.items.length) ?? 0;
   // const itemsRefs = useRef<Array<undefined | React.RefObject<unknown>>>(Array(0));
@@ -86,7 +67,7 @@ function App() {
   // }
 
   async function startBackendEventListenning() {
-    const unlisten = await listen<EventPayload>('ConfigChanged', (event) => {
+    const unlisten = await listen<EventPayload>('ConfigChanged', (_event) => {
       // console.log("config file changed.");
       // console.log(event.payload);
       refreshData();
@@ -184,9 +165,9 @@ function App() {
   }
 
   const getItemIdFromItemIndex = function(index: number) {
-    if (index == null) return null;
+    if (index == null) return ID.none;
     const length = dataRef.current.items.length;
-    if (index < 0 || index >= length) return null
+    if (index < 0 || index >= length) return ID.none;
     const id = dataRef.current.items[index].id;
     return id;
   }
@@ -218,8 +199,8 @@ function App() {
   }
 
   const invoke_tauri_command_and_refresh_data = function(command: string, object: any) {
-    invoke(command, object).then((result) => {
-      const log = `command: ${command} -> ${result ? "success" : "failed"}`;
+    invoke(command, object).then((_result) => {
+      // const log = `command: ${command} -> ${result ? "success" : "failed"}`;
       // console.log(log);
       refreshData();
     });
@@ -231,6 +212,8 @@ function App() {
   }
 
   const handleOnFocusLeave = function({ id, text }: { id: number, text: string }) {
+    // todo: don't cancel if the user clicks on note/goal buttons to change kind and text is still empty!
+    return;
     // disable text field if it's for new goal/note input and is empty
     if (text != "") return;
     if (id == ID.new_item) {
@@ -326,10 +309,7 @@ function App() {
     text = currentData.title;
     text = text + "\n\n";
     currentData.items.forEach((item) => {
-      if (item.kind === ItemKind.goal)
-        text = text + item.title + "\n";
-      if (item.kind === ItemKind.note)
-        text = text + item.note + "\n";
+      text = text + item.text + "\n";
     });
     console.log("Copied all items in the week into clipboard:");
     console.log(text);

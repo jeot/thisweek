@@ -10,7 +10,7 @@ import { ID, Page } from "../constants.ts";
 import './styles.css'
 
 export default function Content(props: any) {
-  const { page, editingId, newItemKind, onNewAction, onNewSubmit, onEditSubmit, onCancel } = props;
+  const { page, editingId, newItemKind, onNewAction, onNewSubmit, onCancel } = props;
   return (
     <div className="content-section">
       {page == Page.weeks &&

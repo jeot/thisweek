@@ -1,5 +1,4 @@
 import { ObjectiveType } from "./constants";
-import type { Item } from "./my_types";
 
 export function getDirection(text: string) {
   let direction = 'auto';
@@ -27,12 +26,5 @@ export function getObjectiveTypeFromFields(year: number | null, season: number |
   const ot = month ? ObjectiveType.monthly
     : season ? ObjectiveType.seasonal
       : year ? ObjectiveType.yearly : ObjectiveType.none;
-  return ot;
-}
-
-export function getItemObjectiveType(item: Item) {
-  const ot = item.month ? ObjectiveType.monthly
-    : item.season ? ObjectiveType.seasonal
-      : item.year ? ObjectiveType.yearly : ObjectiveType.none;
   return ot;
 }

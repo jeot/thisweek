@@ -2,7 +2,7 @@ import { ItemView } from "../my_types";
 import GoalNoteItem from "./GoalNoteItem";
 
 export default function ItemsList(props: any) {
-  const item_elements = props.items.map((item: ItemView, i: number) => {
+  const item_elements = props.items.map((item: ItemView, _i: number) => {
     const editing = (item.id == props.editingId);
     const selected = (item.id == props.selectedId);
 

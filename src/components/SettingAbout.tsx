@@ -1,9 +1,8 @@
 import { Typography } from '@mui/material';
-import { useState, useEffect } from "react";
 import { getWeekAppVersion } from '../Globals';
 import './styles.css'
 
-export default function SettingAbout(props) {
+export default function SettingAbout() {
   const appVersion = getWeekAppVersion();
 
   return (
