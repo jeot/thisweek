@@ -24,7 +24,7 @@ export default function SettingGeneral(props: any) {
   const handleChangeDatabaseLocation = () => {
     save({
       defaultPath: config.database,
-      title: "File for WeeksApp Database",
+      title: "Choose a WeeksApp Database or a new Location...",
       filters: [{
         name: 'WeeksApp Database',
         extensions: ['db']
