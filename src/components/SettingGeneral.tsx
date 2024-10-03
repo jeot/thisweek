@@ -9,16 +9,19 @@ export default function SettingGeneral(props: any) {
   const config: ConfigView = props.config;
   if (config === undefined) return;
 
-  const [mainCal, setMainCal] = useState('');
-  const [mainCalLang, setMainCalLang] = useState('');
+  // const [mainCal, setMainCal] = useState(config.main_calendar_type);
+  // const [mainCalLang, setMainCalLang] = useState(config.main_calendar_language);
 
   const handleMainCalendarChange = (event: SelectChangeEvent) => {
     // setMainCal(event.target.value as string);
-    setMainCal(event.target.value);
+    // setMainCal(event.target.value);
   };
 
   const handleMainCalendarLanguageChange = (event: SelectChangeEvent) => {
-    setMainCalLang(event.target.value);
+    // setMainCalLang(event.target.value);
+  };
+
+  const handleMainCalendarStartWeekdayChange = (event: SelectChangeEvent) => {
   };
 
   const handleChangeDatabaseLocation = () => {
@@ -55,30 +58,47 @@ export default function SettingGeneral(props: any) {
         <Select
           labelId="main-cal-select-label"
           id="main-cal-select"
-          value={mainCal}
+          value={config.main_calendar_type}
           label="Main Calendar"
           onChange={handleMainCalendarChange}
         >
-          <MenuItem value={0}>Gregorian</MenuItem>
-          <MenuItem value={1}>Persian</MenuItem>
-          <MenuItem value={2}>Chinese</MenuItem>
-          <MenuItem value={3}>Arabic</MenuItem>
+          <MenuItem value="Gregorian">Gregorian</MenuItem>
+          <MenuItem value="Persian">Persian</MenuItem>
+          <MenuItem value="Chinese">Chinese</MenuItem>
+          <MenuItem value="Arabic">Arabic</MenuItem>
         </Select>
       </FormControl>
 
       <FormControl sx={{ m: 1, minWidth: 180 }} size="small">
         <InputLabel id="main-cal-lang-select-label">Calendar Language</InputLabel>
         <Select
-          labelId="main-cal-lang-select-label"
-          id="main-cal-lang-select"
-          value={mainCalLang}
+          labelId="main-cal-lang-select-label" id="main-cal-lang-select"
+          value={config.main_calendar_language}
           label="Calendar Language"
           onChange={handleMainCalendarLanguageChange}
         >
-          <MenuItem value={0}>English</MenuItem>
-          <MenuItem value={1}>Farsi</MenuItem>
-          <MenuItem value={2}>Chinese</MenuItem>
-          <MenuItem value={3}>Arabic</MenuItem>
+          <MenuItem value="en">English</MenuItem>
+          <MenuItem value="fa">Farsi</MenuItem>
+          <MenuItem value="cn">Chinese</MenuItem>
+          <MenuItem value="ar">Arabic</MenuItem>
+        </Select>
+      </FormControl>
+
+      <FormControl sx={{ m: 1, minWidth: 180 }} size="small">
+        <InputLabel id="main-cal-start-weekday-select-label">Start Weekday</InputLabel>
+        <Select
+          labelId="main-cal-start-weekday-select-label" id="main-cal-start-weekday-select"
+          value={config.main_calendar_start_weekday}
+          label="Start Weekday"
+          onChange={handleMainCalendarStartWeekdayChange}
+        >
+          <MenuItem value="SAT">SAT</MenuItem>
+          <MenuItem value="SUN">SUN</MenuItem>
+          <MenuItem value="MON">MON</MenuItem>
+          <MenuItem value="TUE">TUE</MenuItem>
+          <MenuItem value="WED">WED</MenuItem>
+          <MenuItem value="THU">THU</MenuItem>
+          <MenuItem value="FRI">FRI</MenuItem>
         </Select>
       </FormControl>
     </div>

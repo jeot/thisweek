@@ -10,20 +10,12 @@ import { ConfigView } from '../my_types';
 
 export default function SettingsPage(props: any) {
 
+  console.log(props);
   const [section, setSettingSection] = useState<number>(SettingSection.General);
   const [version, setVersion] = useState<string>("");
-  const [config, setConfig] = useState<ConfigView>();
-
-  const reloadConfig = () => {
-    invoke("get_config").then((result: any) => {
-      console.log("get config: ", result);
-      setConfig(result);
-    });
-  }
 
   useEffect(() => {
     setVersion(getWeekAppVersion());
-    reloadConfig();
   }, []);
 
   return (
@@ -36,7 +28,7 @@ export default function SettingsPage(props: any) {
         <Typography variant="caption" align="center">WeeksApp v{version}</Typography>
       </div>
       <div className="settings-content">
-        {section == SettingSection.General && <SettingGeneral config={config} reloadConfig={reloadConfig} />}
+        {section == SettingSection.General && <SettingGeneral {...props} />}
         {section == SettingSection.About && <SettingAbout {...props} />}
       </div>
     </div>

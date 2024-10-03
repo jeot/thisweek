@@ -28,7 +28,7 @@ import * as Keyboard from "./Keyboard.ts"
 import * as Globals from "./Globals.ts"
 
 import { Action, ID, ItemKind, Page } from './constants.ts';
-import type { Today, ItemView, ItemsData } from "./my_types.ts"
+import type { Today, ItemView, ItemsData, ConfigView } from "./my_types.ts"
 import { items_data_init, today_init } from './my_types_init.ts';
 
 // same type as payload
@@ -47,6 +47,7 @@ function App() {
   // const [appName, setAppName] = useState<string>("");
   // const [appVersion, setAppVersion] = useState<string>("");
   const [newItemKind, setNewItemKind] = useState<number>(ItemKind.goal);
+  const [config, setConfig] = useState<ConfigView>();
 
   // getName().then((result: string) => {
   //   setAppName(result);
@@ -55,6 +56,13 @@ function App() {
   // getVersion().then((result: string) => {
   //   setAppVersion(result);
   // });
+
+  const reloadConfig = () => {
+    invoke("get_config").then((result: any) => {
+      // console.log("get config: ", result);
+      setConfig(result);
+    });
+  }
 
   // const itemsCount = (data?.items.length) ?? 0;
   // const itemsRefs = useRef<Array<undefined | React.RefObject<unknown>>>(Array(0));
@@ -71,6 +79,7 @@ function App() {
       // console.log("config file changed.");
       // console.log(event.payload);
       refreshData();
+      reloadConfig();
     });
     return unlisten;
   }
@@ -86,6 +95,7 @@ function App() {
     const unlisten_promiss = startBackendEventListenning();
 
     refreshData();
+    reloadConfig();
 
     // clean up
     return () => {
@@ -495,6 +505,8 @@ function App() {
                 editingId={editingId}
                 selectedId={selectedId}
                 newItemKind={newItemKind}
+                config={config}
+                reloadConfig={reloadConfig}
                 onNext={gotoNextTimePeriod}
                 onPrevious={gotoPreviousTimePeriod}
                 onSwitchObjectivesCalendar={switchObjectivesCalendar}
