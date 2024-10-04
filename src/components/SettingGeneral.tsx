@@ -9,19 +9,19 @@ export default function SettingGeneral(props: any) {
   const config: ConfigView = props.config;
   if (config === undefined) return;
 
-  // const [mainCal, setMainCal] = useState(config.main_calendar_type);
-  // const [mainCalLang, setMainCalLang] = useState(config.main_calendar_language);
-
   const handleMainCalendarChange = (event: SelectChangeEvent) => {
-    // setMainCal(event.target.value as string);
-    // setMainCal(event.target.value);
+    const mainCal = event.target.value;
+    props.setMainCalConfig(mainCal, config.main_calendar_language, config.main_calendar_start_weekday);
   };
 
   const handleMainCalendarLanguageChange = (event: SelectChangeEvent) => {
-    // setMainCalLang(event.target.value);
+    const mainCalLang = event.target.value;
+    props.setMainCalConfig(config.main_calendar_type, mainCalLang, config.main_calendar_start_weekday);
   };
 
   const handleMainCalendarStartWeekdayChange = (event: SelectChangeEvent) => {
+    const mainCalStartWeekDay = event.target.value;
+    props.setMainCalConfig(config.main_calendar_type, config.main_calendar_language, mainCalStartWeekDay);
   };
 
   const handleChangeDatabaseLocation = () => {

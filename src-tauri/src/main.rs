@@ -99,6 +99,19 @@ fn get_config() -> config::Config {
 }
 
 #[tauri::command]
+fn set_main_cal_config(
+    main_calendar_type: String,
+    main_calendar_language: String,
+    main_calendar_start_weekday: String,
+) -> bool {
+    config::set_main_cal_config(
+        main_calendar_type,
+        main_calendar_language,
+        main_calendar_start_weekday,
+    ).is_ok()
+}
+
+#[tauri::command]
 fn set_database_file(filepath: String) -> bool {
     config::set_database_file(filepath).is_ok()
 }
@@ -304,6 +317,7 @@ fn main() {
             get_calendar_views,
             get_config,
             set_database_file,
+            set_main_cal_config,
             // common stuff
             move_up_selected_item,
             move_down_selected_item,

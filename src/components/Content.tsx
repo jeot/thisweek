@@ -10,7 +10,7 @@ import { ID, Page } from "../constants.ts";
 import './styles.css'
 
 export default function Content(props: any) {
-  const { page, editingId, newItemKind, config, reloadConfig, onNewAction, onNewSubmit, onCancel } = props;
+  const { page, editingId, newItemKind, config, reloadConfig, setMainCalConfig, onNewAction, onNewSubmit, onCancel } = props;
   return (
     <div className="content-section">
       {page == Page.weeks &&
@@ -37,7 +37,7 @@ export default function Content(props: any) {
       {(page == Page.weeks || page == Page.objectives) && editingId == ID.none && <BasicSpeedDial page={page} onNewAction={onNewAction} />}
       {(page == Page.weeks || page == Page.objectives) && editingId == ID.new_item && <NewItem initKind={newItemKind} onSubmit={onNewSubmit} onCancel={onCancel} />}
 
-      {page == Page.settings && <SettingsPage config={config} reloadConfig={reloadConfig} />}
+      {page == Page.settings && <SettingsPage config={config} reloadConfig={reloadConfig} setMainCalConfig={setMainCalConfig} />}
 
     </div>
   );
