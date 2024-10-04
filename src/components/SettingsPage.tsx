@@ -5,12 +5,9 @@ import { SettingSection } from '../constants';
 import SettingGeneral from './SettingGeneral';
 import SettingAbout from './SettingAbout';
 import { getWeekAppVersion } from '../Globals';
-import { invoke } from "@tauri-apps/api/tauri";
-import { ConfigView } from '../my_types';
 
 export default function SettingsPage(props: any) {
 
-  console.log(props);
   const [section, setSettingSection] = useState<number>(SettingSection.General);
   const [version, setVersion] = useState<string>("");
 

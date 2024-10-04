@@ -108,7 +108,16 @@ fn set_main_cal_config(
         main_calendar_type,
         main_calendar_language,
         main_calendar_start_weekday,
-    ).is_ok()
+    )
+    .is_ok()
+}
+
+#[tauri::command]
+fn set_secondary_cal_config(
+    secondary_calendar_type: Option<String>,
+    secondary_calendar_language: Option<String>,
+) -> bool {
+    config::set_secondary_cal_config(secondary_calendar_type, secondary_calendar_language).is_ok()
 }
 
 #[tauri::command]
@@ -318,6 +327,7 @@ fn main() {
             get_config,
             set_database_file,
             set_main_cal_config,
+            set_secondary_cal_config,
             // common stuff
             move_up_selected_item,
             move_down_selected_item,

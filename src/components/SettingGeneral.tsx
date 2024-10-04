@@ -1,5 +1,4 @@
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
-import { useState } from "react";
 import { ConfigView } from '../my_types';
 import { invoke } from "@tauri-apps/api/tauri";
 import { save } from '@tauri-apps/api/dialog';
@@ -8,21 +7,6 @@ import './styles.css'
 export default function SettingGeneral(props: any) {
   const config: ConfigView = props.config;
   if (config === undefined) return;
-
-  const handleMainCalendarChange = (event: SelectChangeEvent) => {
-    const mainCal = event.target.value;
-    props.setMainCalConfig(mainCal, config.main_calendar_language, config.main_calendar_start_weekday);
-  };
-
-  const handleMainCalendarLanguageChange = (event: SelectChangeEvent) => {
-    const mainCalLang = event.target.value;
-    props.setMainCalConfig(config.main_calendar_type, mainCalLang, config.main_calendar_start_weekday);
-  };
-
-  const handleMainCalendarStartWeekdayChange = (event: SelectChangeEvent) => {
-    const mainCalStartWeekDay = event.target.value;
-    props.setMainCalConfig(config.main_calendar_type, config.main_calendar_language, mainCalStartWeekDay);
-  };
 
   const handleChangeDatabaseLocation = () => {
     save({
@@ -43,6 +27,32 @@ export default function SettingGeneral(props: any) {
     });
   }
 
+  const handleMainCalendarChange = (event: SelectChangeEvent) => {
+    const mainCal = event.target.value;
+    props.setMainCalConfig(mainCal, config.main_calendar_language, config.main_calendar_start_weekday);
+  };
+
+  const handleMainCalendarLanguageChange = (event: SelectChangeEvent) => {
+    const mainCalLang = event.target.value;
+    props.setMainCalConfig(config.main_calendar_type, mainCalLang, config.main_calendar_start_weekday);
+  };
+
+  const handleMainCalendarStartWeekdayChange = (event: SelectChangeEvent) => {
+    const mainCalStartWeekDay = event.target.value;
+    props.setMainCalConfig(config.main_calendar_type, config.main_calendar_language, mainCalStartWeekDay);
+  };
+
+  const handleSecondaryCalendarChange = (event: SelectChangeEvent) => {
+    const secondaryCal = event.target.value == "OFF" ? null : event.target.value;
+    const secondaryCalLang = secondaryCal == null ? null : config.secondary_calendar_language;
+    props.setSecondaryCalConfig(secondaryCal, secondaryCalLang);
+  }
+
+  const handleSecondaryCalendarLanguageChange = (event: SelectChangeEvent) => {
+    const secondaryCalLang = event.target.value;
+    props.setSecondaryCalConfig(config.secondary_calendar_type, secondaryCalLang);
+  }
+
   return (
     <div className="setting-content-general">
       <Typography variant="h5">General Settings</Typography>
@@ -54,12 +64,12 @@ export default function SettingGeneral(props: any) {
       <Typography variant="h5">&nbsp;</Typography>
       <Typography variant="h5">Main Calendar</Typography>
       <FormControl sx={{ m: 1, minWidth: 180 }} size="small">
-        <InputLabel id="main-cal-select-label">Main Calendar</InputLabel>
+        <InputLabel id="main-cal-select-label">Calendar</InputLabel>
         <Select
           labelId="main-cal-select-label"
           id="main-cal-select"
           value={config.main_calendar_type}
-          label="Main Calendar"
+          label="Calendar"
           onChange={handleMainCalendarChange}
         >
           <MenuItem value="Gregorian">Gregorian</MenuItem>
@@ -101,6 +111,42 @@ export default function SettingGeneral(props: any) {
           <MenuItem value="FRI">FRI</MenuItem>
         </Select>
       </FormControl>
+
+      <Typography variant="h5">&nbsp;</Typography>
+      <Typography variant="h5">Secondary Calendar</Typography>
+      <FormControl sx={{ m: 1, minWidth: 180 }} size="small">
+        <InputLabel id="secondary-cal-select-label">Calendar</InputLabel>
+        <Select
+          labelId="secondary-cal-select-label"
+          id="secondary-cal-select"
+          value={config.secondary_calendar_type ?? "OFF"}
+          label="Calendar"
+          onChange={handleSecondaryCalendarChange}
+        >
+          <MenuItem value="OFF">OFF</MenuItem>
+          <MenuItem value="Gregorian">Gregorian</MenuItem>
+          <MenuItem value="Persian">Persian</MenuItem>
+          <MenuItem value="Chinese">Chinese</MenuItem>
+          <MenuItem value="Arabic">Arabic</MenuItem>
+        </Select>
+      </FormControl>
+
+      {config.secondary_calendar_type &&
+        <FormControl sx={{ m: 1, minWidth: 180 }} size="small">
+          <InputLabel id="secondary-cal-lang-select-label">Calendar Language</InputLabel>
+          <Select
+            labelId="secondary-cal-lang-select-label" id="secondary-cal-lang-select"
+            value={config.secondary_calendar_language ?? "en"}
+            label="Calendar Language"
+            onChange={handleSecondaryCalendarLanguageChange}
+          >
+            <MenuItem value="en">English</MenuItem>
+            <MenuItem value="fa">Farsi</MenuItem>
+            <MenuItem value="cn">Chinese</MenuItem>
+            <MenuItem value="ar">Arabic</MenuItem>
+          </Select>
+        </FormControl>
+      }
     </div>
   );
 }

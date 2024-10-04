@@ -65,13 +65,18 @@ function App() {
   }
 
   const setMainCalConfig = (main_calendar_type: string, main_calendar_language: string, main_calendar_start_weekday: string) => {
-    invoke("set_main_cal_config", { mainCalendarType: main_calendar_type, mainCalendarLanguage: main_calendar_language, mainCalendarStartWeekday: main_calendar_start_weekday }).then((result: any) => {
-      console.log("set_main_cal_config: ", result);
-      setConfig(result);
+    invoke("set_main_cal_config", { mainCalendarType: main_calendar_type, mainCalendarLanguage: main_calendar_language, mainCalendarStartWeekday: main_calendar_start_weekday }).then((_result: any) => {
+      // console.log("set_main_cal_config: ", result);
+      reloadConfig();
     });
-
   }
 
+  const setSecondaryCalConfig = (secondary_calendar_type: string, secondary_calendar_language: string) => {
+    invoke("set_secondary_cal_config", { secondaryCalendarType: secondary_calendar_type, secondaryCalendarLanguage: secondary_calendar_language }).then((_result: any) => {
+      // console.log("set_secondary_cal_config: ", result);
+      reloadConfig();
+    });
+  }
 
   // const itemsCount = (data?.items.length) ?? 0;
   // const itemsRefs = useRef<Array<undefined | React.RefObject<unknown>>>(Array(0));
@@ -517,7 +522,7 @@ function App() {
                 config={config}
                 reloadConfig={reloadConfig}
                 setMainCalConfig={setMainCalConfig}
-                /* setSecondaryCalConfig={setSecondaryCalConfig} */
+                setSecondaryCalConfig={setSecondaryCalConfig}
                 onNext={gotoNextTimePeriod}
                 onPrevious={gotoPreviousTimePeriod}
                 onSwitchObjectivesCalendar={switchObjectivesCalendar}
