@@ -1,8 +1,9 @@
-import { Typography } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import { useState, useEffect } from "react";
 import './styles.css'
 import { SettingSection } from '../constants';
 import SettingGeneral from './SettingGeneral';
+import SettingKeymaps from './SettingKeymaps';
 import SettingAbout from './SettingAbout';
 import { getWeekAppVersion } from '../Globals';
 
@@ -19,15 +20,33 @@ export default function SettingsPage(props: any) {
     <div className="settings-section">
       <div className="settings-navbar">
         <Typography variant="caption" align="center">SETTINGS</Typography>
-        <button className="settings-navbar-btn" onClick={() => setSettingSection(SettingSection.General)}>General</button>
-        <button className="settings-navbar-btn" onClick={() => setSettingSection(SettingSection.About)}>About</button>
+        <Button
+          variant={section === SettingSection.General ? "contained" : "text"}
+          className="settings-navbar-btn"
+          onClick={() => setSettingSection(SettingSection.General)}>
+          General
+        </Button>
+        <Button
+          variant={section === SettingSection.Keymaps ? "contained" : "text"}
+          className="settings-navbar-btn"
+          onClick={() => setSettingSection(SettingSection.Keymaps)}>
+          Keymaps
+        </Button>
+        <Button
+          variant={section === SettingSection.About ? "contained" : "text"}
+          className="settings-navbar-btn"
+          onClick={() => setSettingSection(SettingSection.About)}>
+          About
+        </Button>
+
         <div className="settings-navbar-spacer"></div>
         <Typography variant="caption" align="center">WeeksApp v{version}</Typography>
       </div>
       <div className="settings-content">
         {section == SettingSection.General && <SettingGeneral {...props} />}
+        {section == SettingSection.Keymaps && <SettingKeymaps {...props} />}
         {section == SettingSection.About && <SettingAbout {...props} />}
       </div>
-    </div>
+    </div >
   );
 }

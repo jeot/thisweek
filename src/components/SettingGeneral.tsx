@@ -1,12 +1,30 @@
-import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
+import { Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
 import { ConfigView } from '../my_types';
 import { invoke } from "@tauri-apps/api/tauri";
 import { save } from '@tauri-apps/api/dialog';
 import './styles.css'
 
+
+// https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes
+const languages = {
+  en: { code: 'en', name: 'English', abbr: 'en' },
+  fa: { code: 'fa', name: 'Farsi (فارسی)', abbr: 'fa' },
+  zh: { code: 'zh', name: 'Chinese (中文)', abbr: 'zh' },
+  ar: { code: 'ar', name: 'Arabic (العربية)', abbr: 'ar' },
+};
+
+const calendars = [
+  { id: 'Gregorian', name: 'Gregorian', defaultLang: languages.en, allowedLang: [languages.en, languages.fa, languages.zh, languages.ar] },
+  { id: 'Persian', name: 'Persian (هجری شمسی)', defaultLang: languages.fa, allowedLang: [languages.en, languages.fa] },
+  { id: 'Chinese', name: 'Chinese (中国农历)', defaultLang: languages.zh, allowedLang: [languages.en, languages.zh] },
+  { id: 'Arabic', name: 'Arabic (الهجري القمري)', defaultLang: languages.ar, allowedLang: [languages.en, languages.ar] },
+];
+
+
 export default function SettingGeneral(props: any) {
   const config: ConfigView = props.config;
   if (config === undefined) return;
+
 
   const handleChangeDatabaseLocation = () => {
     save({
@@ -29,7 +47,8 @@ export default function SettingGeneral(props: any) {
 
   const handleMainCalendarChange = (event: SelectChangeEvent) => {
     const mainCal = event.target.value;
-    props.setMainCalConfig(mainCal, config.main_calendar_language, config.main_calendar_start_weekday);
+    const mainCalLang = calendars.find((cal) => { return (cal.id === mainCal); })?.defaultLang.code;
+    props.setMainCalConfig(mainCal, mainCalLang, config.main_calendar_start_weekday);
   };
 
   const handleMainCalendarLanguageChange = (event: SelectChangeEvent) => {
@@ -44,7 +63,7 @@ export default function SettingGeneral(props: any) {
 
   const handleSecondaryCalendarChange = (event: SelectChangeEvent) => {
     const secondaryCal = event.target.value == "OFF" ? null : event.target.value;
-    const secondaryCalLang = secondaryCal == null ? null : config.secondary_calendar_language;
+    const secondaryCalLang = calendars.find((cal) => { return (cal.id === secondaryCal); })?.defaultLang.code;
     props.setSecondaryCalConfig(secondaryCal, secondaryCalLang);
   }
 
@@ -59,94 +78,100 @@ export default function SettingGeneral(props: any) {
       <Typography variant="h5">&nbsp;</Typography>
       <Typography variant="h5">Database Location</Typography>
       <Typography variant="body2" color="textSecondary">{config.database}</Typography>
-      <button onClick={handleChangeDatabaseLocation}>Change Database Location</button>
+      <Button variant="outlined" onClick={handleChangeDatabaseLocation}>Switch Database or Change Location</Button>
 
       <Typography variant="h5">&nbsp;</Typography>
       <Typography variant="h5">Main Calendar</Typography>
-      <FormControl sx={{ m: 1, minWidth: 180 }} size="small">
-        <InputLabel id="main-cal-select-label">Calendar</InputLabel>
-        <Select
-          labelId="main-cal-select-label"
-          id="main-cal-select"
-          value={config.main_calendar_type}
-          label="Calendar"
-          onChange={handleMainCalendarChange}
-        >
-          <MenuItem value="Gregorian">Gregorian</MenuItem>
-          <MenuItem value="Persian">Persian</MenuItem>
-          <MenuItem value="Chinese">Chinese</MenuItem>
-          <MenuItem value="Arabic">Arabic</MenuItem>
-        </Select>
-      </FormControl>
 
-      <FormControl sx={{ m: 1, minWidth: 180 }} size="small">
-        <InputLabel id="main-cal-lang-select-label">Calendar Language</InputLabel>
-        <Select
-          labelId="main-cal-lang-select-label" id="main-cal-lang-select"
-          value={config.main_calendar_language}
-          label="Calendar Language"
-          onChange={handleMainCalendarLanguageChange}
-        >
-          <MenuItem value="en">English</MenuItem>
-          <MenuItem value="fa">Farsi</MenuItem>
-          <MenuItem value="cn">Chinese</MenuItem>
-          <MenuItem value="ar">Arabic</MenuItem>
-        </Select>
-      </FormControl>
+      <div className="form-control-group">
+        <FormControl size="small" sx={{ m: 1, minWidth: 180 }}>
+          <InputLabel id="main-cal-select-label">Calendar</InputLabel>
+          <Select
+            labelId="main-cal-select-label"
+            id="main-cal-select"
+            value={config.main_calendar_type}
+            label="Calendar"
+            onChange={handleMainCalendarChange}
+          >
+            {calendars.map((value, i) => {
+              return (<MenuItem key={value.id} value={value.id}>{value.name}</MenuItem>);
+            })}
+          </Select>
+        </FormControl>
 
-      <FormControl sx={{ m: 1, minWidth: 180 }} size="small">
-        <InputLabel id="main-cal-start-weekday-select-label">Start Weekday</InputLabel>
-        <Select
-          labelId="main-cal-start-weekday-select-label" id="main-cal-start-weekday-select"
-          value={config.main_calendar_start_weekday}
-          label="Start Weekday"
-          onChange={handleMainCalendarStartWeekdayChange}
-        >
-          <MenuItem value="SAT">SAT</MenuItem>
-          <MenuItem value="SUN">SUN</MenuItem>
-          <MenuItem value="MON">MON</MenuItem>
-          <MenuItem value="TUE">TUE</MenuItem>
-          <MenuItem value="WED">WED</MenuItem>
-          <MenuItem value="THU">THU</MenuItem>
-          <MenuItem value="FRI">FRI</MenuItem>
-        </Select>
-      </FormControl>
+        <FormControl size="small" sx={{ m: 1, minWidth: 180 }}>
+          <InputLabel id="main-cal-lang-select-label">Calendar Language</InputLabel>
+          <Select
+            labelId="main-cal-lang-select-label" id="main-cal-lang-select"
+            value={config.main_calendar_language}
+            label="Calendar Language"
+            onChange={handleMainCalendarLanguageChange}
+          >
+            {
+              calendars.find((cal) => { return (cal.id == config.main_calendar_type); })?.allowedLang.map((value, _i) => {
+                return (<MenuItem key={value.code} value={value.code}>{value.name}</MenuItem>);
+              })
+            }
+          </Select>
+        </FormControl>
+
+        <FormControl size="small" sx={{ m: 1, minWidth: 180 }}>
+          <InputLabel id="main-cal-start-weekday-select-label">Start Weekday</InputLabel>
+          <Select
+            labelId="main-cal-start-weekday-select-label" id="main-cal-start-weekday-select"
+            value={config.main_calendar_start_weekday}
+            label="Start Weekday"
+            onChange={handleMainCalendarStartWeekdayChange}
+          >
+            <MenuItem value="SAT">Saturday</MenuItem>
+            <MenuItem value="SUN">Sunday</MenuItem>
+            <MenuItem value="MON">Monday</MenuItem>
+            <MenuItem value="TUE">Tuesday</MenuItem>
+            <MenuItem value="WED">Wednesday</MenuItem>
+            <MenuItem value="THU">Thursday</MenuItem>
+            <MenuItem value="FRI">Friday</MenuItem>
+          </Select>
+        </FormControl>
+      </div>
 
       <Typography variant="h5">&nbsp;</Typography>
       <Typography variant="h5">Secondary Calendar</Typography>
-      <FormControl sx={{ m: 1, minWidth: 180 }} size="small">
-        <InputLabel id="secondary-cal-select-label">Calendar</InputLabel>
-        <Select
-          labelId="secondary-cal-select-label"
-          id="secondary-cal-select"
-          value={config.secondary_calendar_type ?? "OFF"}
-          label="Calendar"
-          onChange={handleSecondaryCalendarChange}
-        >
-          <MenuItem value="OFF">OFF</MenuItem>
-          <MenuItem value="Gregorian">Gregorian</MenuItem>
-          <MenuItem value="Persian">Persian</MenuItem>
-          <MenuItem value="Chinese">Chinese</MenuItem>
-          <MenuItem value="Arabic">Arabic</MenuItem>
-        </Select>
-      </FormControl>
 
-      {config.secondary_calendar_type &&
-        <FormControl sx={{ m: 1, minWidth: 180 }} size="small">
-          <InputLabel id="secondary-cal-lang-select-label">Calendar Language</InputLabel>
+      <div className="form-control-group">
+        <FormControl size="small" sx={{ m: 1, minWidth: 180 }}>
+          <InputLabel id="secondary-cal-select-label">Calendar</InputLabel>
           <Select
-            labelId="secondary-cal-lang-select-label" id="secondary-cal-lang-select"
-            value={config.secondary_calendar_language ?? "en"}
-            label="Calendar Language"
-            onChange={handleSecondaryCalendarLanguageChange}
+            labelId="secondary-cal-select-label"
+            id="secondary-cal-select"
+            value={config.secondary_calendar_type ?? "OFF"}
+            label="Calendar"
+            onChange={handleSecondaryCalendarChange}
           >
-            <MenuItem value="en">English</MenuItem>
-            <MenuItem value="fa">Farsi</MenuItem>
-            <MenuItem value="cn">Chinese</MenuItem>
-            <MenuItem value="ar">Arabic</MenuItem>
+            <MenuItem key="OFF" value="OFF">OFF</MenuItem>
+            {calendars.map((value, i) => {
+              return (<MenuItem key={value.id} value={value.id}>{value.name}</MenuItem>);
+            })}
           </Select>
         </FormControl>
-      }
+
+        {config.secondary_calendar_type &&
+          <FormControl size="small" sx={{ m: 1, minWidth: 180 }}>
+            <InputLabel id="secondary-cal-lang-select-label">Calendar Language</InputLabel>
+            <Select
+              labelId="secondary-cal-lang-select-label" id="secondary-cal-lang-select"
+              value={config.secondary_calendar_language ?? "en"}
+              label="Calendar Language"
+              onChange={handleSecondaryCalendarLanguageChange}
+            >
+              {
+                calendars.find((cal) => { return (cal.id == config.secondary_calendar_type); })?.allowedLang.map((value, _i) => {
+                  return (<MenuItem key={value.code} value={value.code}>{value.name}</MenuItem>);
+                })
+              }
+            </Select>
+          </FormControl>
+        }
+      </div>
     </div>
   );
 }

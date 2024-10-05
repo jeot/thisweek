@@ -451,10 +451,10 @@ div {
 .settings-section {
 	flex: 1 0 auto;
 	width: 100%;
-	/* border: 2px solid black; */
+	border: 2px solid black;
 
 	display: grid;
-	grid-template-columns: 25% 1fr;
+	grid-template-columns: 169px 1fr;
 }
 
 .settings-navbar {
@@ -462,7 +462,6 @@ div {
 	background-color: #e5e7e9;
 	/* border: 1px dashed blue; */
 	padding: 8px 0px;
-	min-width: 100px;
 	display: flex;
 	flex-direction: column;
 }
@@ -472,6 +471,17 @@ div {
 	background-color: whitesmoke;
 	/* border: 1px dashed red; */
 	padding: 1em;
+}
+
+.form-control-group {
+	display: block;
+	max-width: 350px;
+}
+
+.form-control {
+	display: block !important;
+	margin: 1 !important;
+	min-width: 200px !important;
 }
 
 .settings-content .story {
