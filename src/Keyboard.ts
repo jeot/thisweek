@@ -1,6 +1,7 @@
 // import { useState, useEffect } from "react";
 // import React from "react";
 // import ReactDOM from "react-dom/client";
+import { KEYMAPS } from "./Keymaps";
 import { Action } from "./constants";
 
 let listeners: Array<(action: Action) => void> = [];
@@ -22,7 +23,92 @@ function broadcastAction(action: Action) {
   listeners.forEach((c) => c(action));
 }
 
+function init() {
+  // console.log(KEYMAPS);
+  // console.log("adding new keydown event listener");
+  window.addEventListener("keydown", handleUserKeyPress);
+  listeners = [];
+  insert_mode = false;
+  newKeyFlag = false;
+  copyKeyFlag = false;
+}
+
+let sequence_number: number = 0;
+let current_sequence_keymap_array_index: number = 0;
+
+const isModeMatch = (mode: string) => {
+  if (mode.includes("I") && insert_mode) return true;
+  if (mode.includes("N") && !insert_mode) return true;
+  return false;
+}
+
+const checkKeyWithKeymapIndex = (i: number, event: KeyboardEvent) => {
+  if (!isModeMatch(KEYMAPS[i].mode)) {
+    return false;
+  }
+  const modmach = eventKeyModifierMatch(KEYMAPS[i].mod, event);
+  const { codematch, newseqnum } = eventKeyCodeMatch(KEYMAPS[i].keys, sequence_number, event)
+  if (!modmach || !codematch) { // not matched or failed sequence
+    if (sequence_number != 0) console.log("sequence canceled");
+    sequence_number = 0;
+    return false;
+  }
+  if (modmach && codematch && newseqnum != 0) { // sequence started or is not finished yet
+    console.log('sequence');
+    sequence_number = newseqnum;
+    current_sequence_keymap_array_index = i;
+    return true;
+  }
+  if (modmach && codematch && newseqnum == 0) { // all sequence is done
+    sequence_number = 0;
+    console.log(KEYMAPS[i].desc);
+    broadcastAction(KEYMAPS[i].action);
+    return true;
+  }
+  return false;
+}
+
 const handleUserKeyPress = (event: KeyboardEvent) => {
+  // console.log("keyboard keydown event: ", event);
+
+  if (sequence_number != 0) { // we are in a sequence key
+    event.preventDefault();
+    checkKeyWithKeymapIndex(current_sequence_keymap_array_index, event);
+  } else {
+    for (let i = 0; i < KEYMAPS.length; i++) {
+      if (checkKeyWithKeymapIndex(i, event)) {
+        event.preventDefault();
+        break; // break on valid sequence or match
+      }
+    }
+  }
+}
+
+const eventKeyModifierMatch = (modString: string, event: KeyboardEvent) => {
+  if (modString.includes("Shift") != event.shiftKey) return false;
+  if (modString.includes("Ctrl") != event.ctrlKey) return false;
+  if (modString.includes("Alt") != event.altKey) return false;
+  if (modString.includes("Meta") != event.metaKey) return false;
+  return true;
+}
+
+const eventKeyCodeMatch = (keys: string | Array<string>, sequence: number, event: KeyboardEvent) => {
+  const code = event.code.replace("Key", "");
+  if (typeof keys === 'string') {
+    return { codematch: (code === keys), newseqnum: 0 };
+  }
+
+  if (Array.isArray(keys)) {
+    console.log(keys, sequence, code);
+    if ((sequence == (keys.length - 1)) && keys[sequence] === code) return { codematch: true, newseqnum: 0 };
+    if ((sequence < (keys.length - 1)) && keys[sequence] === code) return { codematch: true, newseqnum: (sequence + 1) };
+    return { codematch: false, newseqnum: 0 };
+  }
+
+  return { codematch: false, newseqnum: 0 };
+}
+
+const handleUserKeyPress_original = (event: KeyboardEvent) => {
   // console.log("keyboard keydown event: ", event);
 
   const noModifiers: boolean = (!event.shiftKey && !event.ctrlKey && !event.altKey && !event.metaKey);
@@ -206,15 +292,6 @@ const handleUserKeyPress = (event: KeyboardEvent) => {
       copyKeyFlag = false;
     } else { }
   }
-}
-
-function init() {
-  // console.log("adding new keydown event listener");
-  window.addEventListener("keydown", handleUserKeyPress);
-  listeners = [];
-  insert_mode = false;
-  newKeyFlag = false;
-  copyKeyFlag = false;
 }
 
 function set_insert_mode(mode: boolean) {
