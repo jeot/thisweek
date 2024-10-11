@@ -45,7 +45,8 @@ export enum SettingSection {
 }
 
 export enum Action {
-  toggleMaximizeWindow = 1,
+  dummy = 0,
+  toggleMaximizeWindow,
   closeWindow,
   escapePressed,
   gotoNextTimePeriod,

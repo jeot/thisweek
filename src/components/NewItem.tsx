@@ -35,7 +35,12 @@ export default function NewItem(props: any) {
     }
   }
 
-  const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (event: any) => {
+  const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (event: KeyboardEvent) => {
+    // only allow Enter or Shift-Enter
+    if (event.key === 'Enter' && (event.ctrlKey || event.altKey || event.metaKey)) {
+      event.preventDefault();
+      return;
+    }
     if (event.key === 'Enter' && event.shiftKey && kind == ItemKind.note) {
       if (editingText == "") onCancel();
       else {

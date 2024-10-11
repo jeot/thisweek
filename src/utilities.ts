@@ -28,3 +28,35 @@ export function getObjectiveTypeFromFields(year: number | null, season: number |
       : year ? ObjectiveType.yearly : ObjectiveType.none;
   return ot;
 }
+
+export function arraysAreEquals(array: Array<any>, array2: Array<any>) {
+  if (!array || !array2)
+    return false;
+  if (array === array2)
+    return true;
+  if (array.length != array2.length)
+    return false;
+  for (var i = 0, l = array.length; i < l; i++) {
+    if (array[i] !== array2[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+export function arrayStartsWithSecondArray(array: Array<any>, array2: Array<any>) {
+  if (!array || !array2)
+    return false;
+  if (array === array2)
+    return true;
+  if (array2.length == 0)
+    return true;
+  if (array.length < array2.length)
+    return false;
+  for (var i = 0, l = array2.length; i < l; i++) {
+    if (array[i] !== array2[i]) {
+      return false;
+    }
+  }
+  return true;
+}

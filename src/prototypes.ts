@@ -6,3 +6,4 @@ String.prototype.toPersianDigits = function() {
     return id[+w]
   });
 }
+
