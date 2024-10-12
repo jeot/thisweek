@@ -93,7 +93,7 @@ export default function SettingGeneral(props: any) {
             label="Calendar"
             onChange={handleMainCalendarChange}
           >
-            {calendars.map((value, i) => {
+            {calendars.map((value) => {
               return (<MenuItem key={value.id} value={value.id}>{value.name}</MenuItem>);
             })}
           </Select>
@@ -148,7 +148,7 @@ export default function SettingGeneral(props: any) {
             onChange={handleSecondaryCalendarChange}
           >
             <MenuItem key="OFF" value="OFF">OFF</MenuItem>
-            {calendars.map((value, i) => {
+            {calendars.map((value) => {
               return (<MenuItem key={value.id} value={value.id}>{value.name}</MenuItem>);
             })}
           </Select>
