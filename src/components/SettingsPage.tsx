@@ -16,24 +16,29 @@ export default function SettingsPage(props: any) {
     setVersion(getWeekAppVersion());
   }, []);
 
+  const btnSx = { m: '4px' };
+
   return (
     <div className="settings-section">
       <div className="settings-navbar">
         <Typography variant="caption" align="center">SETTINGS</Typography>
         <Button
-          variant={section === SettingSection.General ? "contained" : "text"}
+          sx={btnSx}
+          variant={section === SettingSection.General ? "contained" : "outlined"}
           className="settings-navbar-btn"
           onClick={() => setSettingSection(SettingSection.General)}>
           General
         </Button>
         <Button
-          variant={section === SettingSection.Keymaps ? "contained" : "text"}
+          sx={btnSx}
+          variant={section === SettingSection.Keymaps ? "contained" : "outlined"}
           className="settings-navbar-btn"
           onClick={() => setSettingSection(SettingSection.Keymaps)}>
           Keymaps
         </Button>
         <Button
-          variant={section === SettingSection.About ? "contained" : "text"}
+          sx={btnSx}
+          variant={section === SettingSection.About ? "contained" : "outlined"}
           className="settings-navbar-btn"
           onClick={() => setSettingSection(SettingSection.About)}>
           About

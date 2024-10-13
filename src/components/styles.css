@@ -16,6 +16,7 @@ div {
 .application {
 	display: flex;
 	flex-flow: column;
+	width: 100%;
 	height: 100%;
 	align-items: stretch;
 }
@@ -51,8 +52,7 @@ div {
 
 .main {
 	flex: 1 1 auto;
-	overflow-y: auto;
-	overflow-anchor: none;
+	overflow: auto;
 
 	display: flex;
 	flex-direction: row;
@@ -151,9 +151,8 @@ div {
 }
 
 .content-section {
-	flex: 1 0 auto;
-	overflow-y: auto;
-	overflow-anchor: none;
+	flex: 1 1 auto;
+	overflow: auto;
 	/* inside items arrangement */
 	display: flex;
 	flex-direction: column;
@@ -293,8 +292,7 @@ div {
 .items-list {
 	direction: rtl;
 	flex: 1 1 auto;
-	overflow-y: auto;
-	overflow-anchor: none;
+	overflow: auto;
 	padding: 0px;
 	padding-top: 8px;
 	padding-bottom: 128px;
@@ -449,26 +447,32 @@ div {
 }
 
 .settings-section {
-	flex: 1 0 auto;
-	width: 100%;
+	flex: 1 1 auto;
+	overflow: auto;
 
 	display: grid;
-	grid-template-columns: 169px 1fr;
+	grid-template-columns: 150px 1fr;
 }
 
 .settings-navbar {
 	/* flex: 1 0 auto; */
 	background-color: #e5e7e9;
 	/* border: 1px dashed blue; */
-	padding: 8px 0px;
+	padding: 8px 8px;
 	display: flex;
 	flex-direction: column;
 }
 
 .settings-content {
 	/* flex: 4 0 auto; */
+	min-width: 350px;
 	background-color: whitesmoke;
+	overflow: auto;
 	/* border: 1px dashed red; */
+	padding: 1em;
+}
+
+.settings-content-about {
 	padding: 1em;
 }
 
@@ -486,7 +490,7 @@ div {
 .settings-navbar-btn {
 	font-size: 1em;
 	border: none;
-	margin: 4px 8px;
+	margin: 8px;
 	border-radius: 4px;
 	padding: 4px 8px;
 	background-color: rgba(0, 0, 0, 0.1);

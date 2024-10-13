@@ -74,11 +74,9 @@ export default function SettingGeneral(props: any) {
 
   return (
     <div className="setting-content-general">
-      <Typography variant="h5">General Settings</Typography>
-      <Typography variant="h5">&nbsp;</Typography>
       <Typography variant="h5">Database Location</Typography>
       <Typography variant="body2" color="textSecondary">{config.database}</Typography>
-      <Button variant="outlined" onClick={handleChangeDatabaseLocation}>Switch Database or Change Location</Button>
+      <Button variant="outlined" size='small' onClick={handleChangeDatabaseLocation}>Switch Database or Change Location</Button>
 
       <Typography variant="h5">&nbsp;</Typography>
       <Typography variant="h5">Main Calendar</Typography>
