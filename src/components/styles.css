@@ -451,7 +451,6 @@ div {
 .settings-section {
 	flex: 1 0 auto;
 	width: 100%;
-	border: 2px solid black;
 
 	display: grid;
 	grid-template-columns: 169px 1fr;
@@ -482,10 +481,6 @@ div {
 	display: block !important;
 	margin: 1 !important;
 	min-width: 200px !important;
-}
-
-.settings-content .story {
-	max-width: 300px;
 }
 
 .settings-navbar-btn {
