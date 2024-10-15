@@ -45,7 +45,8 @@ export enum SettingSection {
 }
 
 export enum Action {
-  dummy = 0,
+  none = 0,
+  dummy,
   toggleMaximizeWindow,
   closeWindow,
   escapePressed,

@@ -13,11 +13,13 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import ChatIcon from '@mui/icons-material/Chat';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 import { getDirection } from "../utilities.ts"
-import { ItemKind } from "../constants.ts";
+import { Action, ItemKind } from "../constants.ts";
 
 import ObjectivesPopover from "./ObjectivesPopover.tsx";
+import GoalNoteItemMenu from "./GoalNoteItemMenu.tsx";
 
 /**
  * Method to scroll into view port, if it's outside the viewport
@@ -62,14 +64,10 @@ function GoalNoteItem(props: any) {
     return;
   }
 
-  const itemRef = useRef<null | React.RefObject<HTMLElement>>(null);
-
   const [editingText, setEditingText] = useState<string>(props.item.text);
-
-  useEffect(() => {
-    // console.log("item did mount");
-    return () => { /* console.log("item unmounted"); */ };
-  }, []);
+  const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const itemRef = useRef<null | React.RefObject<HTMLElement>>(null);
+  const inputRef = useRef<null | React.RefObject<HTMLElement>>(null);
 
   const fixedText = props.item.text ?? "ERROR! INVALID TEXT";
   const status = props.item.status ?? false;
@@ -79,8 +77,29 @@ function GoalNoteItem(props: any) {
   const objective_tag = props.item.objective_tag;
 
   useEffect(() => {
+    // console.log("item did mount");
+    return () => { /* console.log("item unmounted"); */ };
+  }, []);
+
+  const handleOpenItemMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseItemMenu = (select: number) => {
+    setMenuAnchorEl(null);
+    // console.log("closing menu, select: ", select);
+    switch (select) {
+      case Action.none: break; // menu closed by clicking outside
+      case Action.editSelectedItem: onEdit(id); break;
+      case Action.deleteSelectedItem: onDelete(id); break;
+      case Action.copySelectedItemText: onCopyText(id); break;
+      default:
+        console.log("Warning! invalid context menu item select callback: ", select);
+    }
+  };
+
+  useEffect(() => {
     if (selected) {
-      // console.log(itemRef.current);
       itemRef.current && scrollIntoViewIfNeeded(itemRef.current as unknown as HTMLElement);
     }
   }, [selected]);
@@ -88,6 +107,7 @@ function GoalNoteItem(props: any) {
   useEffect(() => {
     if (editing) {
       setEditingText(props.item.text);
+      inputRef.current && (inputRef.current as unknown as HTMLElement).focus();
     }
   }, [editing]);
 
@@ -151,13 +171,13 @@ function GoalNoteItem(props: any) {
           </IconButton>
         }
 
-        {editing && <>
+        {editing &&
           <TextField
             dir={dir}
             variant="outlined"
             size="small"
             className={style_input}
-            inputProps={{ style: inputPropsStyle(kind) }}
+            inputProps={{ style: inputPropsStyle(kind), ref: inputRef }}
             multiline={(kind == ItemKind.note)}
             maxRows={(kind == ItemKind.note) ? 40 : 1}
             fullWidth
@@ -168,13 +188,7 @@ function GoalNoteItem(props: any) {
             onKeyDown={handleKeyDown}
             onChange={(e) => setEditingText(e.currentTarget.value)}
           />
-          {/*
-          <ObjectivesPopover
-            objective_tag={objective_tag}
-            onChange={onObjectiveTypeChanged}
-          />
-          */}
-        </>}
+        }
 
         {!editing && <>
           <InputBase
@@ -221,6 +235,18 @@ function GoalNoteItem(props: any) {
 
         {!editing && <>
           <IconButton
+            id="item-context-menu-button"
+            // aria-label="menu"
+            // aria-controls={Boolean(menuAnchorEl) ? 'item-context-menu' : undefined}
+            // aria-haspopup="true"
+            // aria-expanded={Boolean(menuAnchorEl) ? 'true' : undefined}
+            size="small"
+            color="info"
+            onClick={handleOpenItemMenu}
+          >
+            <MoreHorizIcon fontSize="small" />
+          </IconButton>
+          <IconButton
             aria-label="copy"
             size="small"
             color="secondary"
@@ -249,6 +275,11 @@ function GoalNoteItem(props: any) {
         </>}
 
       </Stack>
+      {/* Menu */}
+      <GoalNoteItemMenu
+        anchorEl={menuAnchorEl}
+        handleClose={handleCloseItemMenu}
+      />
     </Box >
   );
 }
