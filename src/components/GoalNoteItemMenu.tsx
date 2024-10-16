@@ -1,6 +1,10 @@
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { Action } from './../constants.ts';
+import { ListItemIcon, ListItemText, MenuList, Typography } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 export default function GoalNoteItemMenu(props: any) {
   const { anchorEl, handleClose } = props;
@@ -9,6 +13,7 @@ export default function GoalNoteItemMenu(props: any) {
   return (
     <Menu
       id="item-context-menu"
+      sx={{ width: '320px', maxWidth: '100%' }}
       aria-hidden={false}
       anchorEl={anchorEl}
       open={open}
@@ -17,9 +22,26 @@ export default function GoalNoteItemMenu(props: any) {
         'aria-labelledby': 'item-context-menu-button',
       }}
     >
-      <MenuItem onClick={() => handleClose(Action.editSelectedItem)}>Edit</MenuItem>
-      <MenuItem onClick={() => handleClose(Action.copySelectedItemText)}>Copy Text</MenuItem>
-      <MenuItem onClick={() => handleClose(Action.deleteSelectedItem)}>Delete</MenuItem>
+      <MenuList>
+        <MenuItem onClick={() => handleClose(Action.editSelectedItem)}>
+          <ListItemIcon>
+            <EditIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Edit</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={() => handleClose(Action.copySelectedItemText)}>
+          <ListItemIcon>
+            <ContentCopyIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Copy Text</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={() => handleClose(Action.deleteSelectedItem)}>
+          <ListItemIcon>
+            <DeleteIcon color="error" fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Delete</ListItemText>
+        </MenuItem>
+      </MenuList>
     </Menu>
   );
 }

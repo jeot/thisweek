@@ -13,6 +13,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import ChatIcon from '@mui/icons-material/Chat';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 import { getDirection } from "../utilities.ts"
@@ -82,6 +83,7 @@ function GoalNoteItem(props: any) {
   }, []);
 
   const handleOpenItemMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+    onSelect(id);
     setMenuAnchorEl(event.currentTarget);
   };
 
@@ -236,41 +238,16 @@ function GoalNoteItem(props: any) {
         {!editing && <>
           <IconButton
             id="item-context-menu-button"
-            // aria-label="menu"
-            // aria-controls={Boolean(menuAnchorEl) ? 'item-context-menu' : undefined}
-            // aria-haspopup="true"
-            // aria-expanded={Boolean(menuAnchorEl) ? 'true' : undefined}
+            aria-label="menu"
+            aria-controls={Boolean(menuAnchorEl) ? 'item-context-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={Boolean(menuAnchorEl) ? 'true' : undefined}
             size="small"
             color="info"
+            sx={{ backgroundColor: 'rgba(0, 0, 255, 0.03)', margin: '0px 2px' }}
             onClick={handleOpenItemMenu}
           >
-            <MoreHorizIcon fontSize="small" />
-          </IconButton>
-          <IconButton
-            aria-label="copy"
-            size="small"
-            color="secondary"
-            onClick={() => { onCopyText(id) }}
-          >
-            <ContentCopyIcon fontSize="small" />
-          </IconButton>
-          <IconButton
-            aria-label="edit"
-            size="small"
-            color="primary"
-            onClick={() => {
-              onEdit(id);
-            }}
-          >
-            <EditIcon fontSize="small" />
-          </IconButton>
-          <IconButton
-            aria-label="delete"
-            size="small"
-            color="error"
-            onClick={() => { onDelete(id) }}
-          >
-            <DeleteIcon fontSize="small" />
+            <MoreVertIcon fontSize="small" />
           </IconButton>
         </>}
 
