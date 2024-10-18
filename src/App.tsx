@@ -222,6 +222,15 @@ function App() {
     setSelectedId(id);
   }
 
+  const handleOnToggleSelect = function(id: number) {
+    if (id < 0) return;
+    if (id === selectedIdRef.current) {
+      setSelectedId(ID.none);
+    } else {
+      setSelectedId(id);
+    }
+  }
+
   const invoke_tauri_command_and_refresh_data = function(command: string, object: any) {
     invoke(command, object).then((_result) => {
       // const log = `command: ${command} -> ${result ? "success" : "failed"}`;
@@ -530,6 +539,7 @@ function App() {
                 onEditSubmit={handleOnEditSubmit}
                 onEdit={handleOnEdit}
                 onSelect={handleOnSelect}
+                onToggleSelect={handleOnToggleSelect}
                 onDelete={handleOnDelete}
                 onCancel={cancelEditingOrSelectionOrNewItem}
                 onToggle={handleOnToggle}

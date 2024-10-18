@@ -58,7 +58,7 @@ const scrollIntoViewIfNeeded = (target: HTMLElement) => {
 };
 
 function GoalNoteItem(props: any) {
-  const { editing, selected, onEditSubmit, onEdit, onSelect, onDelete, onCancel, onToggle, onCopyText, onFocusLeave, onObjectiveTypeChanged } = props;
+  const { editing, selected, onEditSubmit, onEdit, onSelect, onToggleSelect, onDelete, onCancel, onToggle, onCopyText, onFocusLeave, onObjectiveTypeChanged } = props;
 
   if (props.item === null || props.item === undefined) {
     console.log("item null");
@@ -202,7 +202,7 @@ function GoalNoteItem(props: any) {
             maxRows={(kind == ItemKind.note) ? 40 : 1}
             fullWidth
             value={fixedText}
-            onMouseDown={() => { onSelect(id); }}
+            onMouseDown={() => { onToggleSelect(id); }}
           />
           <ObjectivesPopover
             objective_tag={objective_tag}
