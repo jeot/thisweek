@@ -10,7 +10,7 @@ import AddIcon from '@mui/icons-material/Add';
 import "../prototypes.ts";
 import { ID, ItemKind, Page } from "../constants.ts";
 import './styles.css'
-import { Button } from "@mui/material";
+import { Button, Fab } from "@mui/material";
 
 export default function Content(props: any) {
   const { page, editingId, newItemKind, config, reloadConfig, setMainCalConfig, setSecondaryCalConfig, onNewAction, onNewSubmit, onCancel } = props;
@@ -38,13 +38,12 @@ export default function Content(props: any) {
         />
       }
       {(page == Page.weeks || page == Page.objectives) && editingId == ID.none &&
-        <button
-          className='add-new-btn'
-          aria-label='new'
-          onClick={() => { onNewAction(ItemKind.goal); }}
-        >
+        <Fab
+          sx={{ position: 'fixed', bottom: 16, right: 16 }}
+          size="medium" color="primary" aria-label="add"
+          onClick={() => { onNewAction(ItemKind.goal); }} >
           <AddIcon />
-        </button>
+        </Fab>
       }
       {(page == Page.weeks || page == Page.objectives) && editingId == ID.new_item && <NewItem initKind={newItemKind} onSubmit={onNewSubmit} onCancel={onCancel} />}
 

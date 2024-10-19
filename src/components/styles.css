@@ -47,7 +47,11 @@ div {
 	font-weight: 400;
 	color: white;
 	background-color: darkslateblue;
-	padding: 2px 8px 2px 8px;
+	padding: 2px;
+}
+
+.header div {
+	margin: 2px 4px;
 }
 
 .main {
@@ -63,7 +67,7 @@ div {
 
 .sidebar {
 	flex: 0 1 auto;
-	background-color: #cec5d9;
+	background-color: #d6d3e0;
 
 	display: flex;
 	flex-direction: column;
@@ -90,11 +94,12 @@ div {
 
 .sidebar-btn {
 	flex: 0 1 auto;
-	min-width: 64px;
+	min-width: 48px;
 	border: none;
 	border-radius: 0px;
 	margin: 8px 4px;
-	padding: 0px;
+	padding: 2px 0px;
+	/* box-sizing: border-box; */
 	background-color: inherit;
 	opacity: 0.5;
 	outline: none;
@@ -106,7 +111,19 @@ div {
 
 .sidebar-btn.active {
 	opacity: 1;
+	border-radius: 4px;
+	/* box-sizing: border-box; */
+	/* border: 1px solid navy; */
 	/* box-shadow: inset 2px 0px 4px 0px gray; */
+}
+
+.sidebar-btn.active .sidebar-btn-icon {
+	color: rgb(26, 115, 232) !important;
+	color: darkslateblue !important;
+}
+
+.sidebar-btn.active .sidebar-btn-text {
+	color: darkslateblue !important;
 }
 
 .sidebar-btn-icon {
@@ -115,12 +132,12 @@ div {
 	height: 32px;
 	object-fit: cover;
 	margin-bottom: 4px;
+	/* border: 1px solid green; */
 }
 
-.week-icon {
-	width: 24px;
-	height: 24px;
-	margin-bottom: 8px;
+.weeks-icon {
+	width: 28px;
+	height: 28px;
 }
 
 .sidebar-btn-text {

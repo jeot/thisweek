@@ -518,6 +518,7 @@ function App() {
           <div className="application" >
             <Header
               today={today}
+              gotoToday={gotoCurrentTimePeriod}
             />
             <div className="main" >
               <SidebarNav onClick={displayPage} activePage={activePage} />

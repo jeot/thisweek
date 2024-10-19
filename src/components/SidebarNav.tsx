@@ -1,6 +1,9 @@
+// https://styled-icons.dev/
 import styled from 'styled-components'
-import { Calendar2Week as WeekIcon } from '@styled-icons/bootstrap/Calendar2Week'
-import { Target as TargetsIcon } from '@styled-icons/fluentui-system-regular/Target'
+// import { Calendar2Week as WeekIcon } from '@styled-icons/bootstrap/Calendar2Week'
+import { CalendarWeek as WeekIcon } from '@styled-icons/fa-solid/CalendarWeek'
+// import { Target as TargetsIcon } from '@styled-icons/fluentui-system-regular/Target'
+import { CalendarStar as TargetsIcon } from '@styled-icons/fluentui-system-filled/CalendarStar'
 import { Settings as SettingsIcon } from '@styled-icons/fluentui-system-regular/Settings'
 
 import './styles.css'
@@ -31,8 +34,8 @@ export default function SidebarNav(props: HalfProps) {
 
   return (
     <div className="sidebar">
-      <SidebarButton text="Weeks" buttonId={Page.weeks} {...props} ><WeekIconStyled className="sidebar-btn-icon week-icon" /></SidebarButton>
-      <SidebarButton text="Objectives" buttonId={Page.objectives} {...props} ><TargetsIconStyled className="sidebar-btn-icon" /></SidebarButton>
+      <SidebarButton text="Weeks" buttonId={Page.weeks} {...props} ><WeekIconStyled className="sidebar-btn-icon weeks-icon" /></SidebarButton>
+      <SidebarButton text="Years" buttonId={Page.objectives} {...props} ><TargetsIconStyled className="sidebar-btn-icon years-icon" /></SidebarButton>
       <div className="sidebar-spacer">&nbsp;</div>
       <SidebarButton text="Settings" buttonId={Page.settings} {...props} ><SettingsIconStyled className="sidebar-btn-icon" /></SidebarButton>
     </div >

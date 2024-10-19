@@ -224,6 +224,20 @@ function GoalNoteItem(props: any) {
             onMouseDown={() => { onToggleSelect(id); }}
             onContextMenu={handleOpenItemContextMenu}
           />
+          <IconButton
+            id="item-context-menu-button"
+            className="item-menu-btn"
+            aria-label="menu"
+            aria-controls={Boolean(menuAnchorEl) ? 'item-context-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={Boolean(menuAnchorEl) ? 'true' : undefined}
+            size="small"
+            color="info"
+            sx={{ backgroundColor: 'rgba(0, 0, 255, 0.03)', margin: '0px 2px' }}
+            onClick={handleOpenItemMenu}
+          >
+            <MoreVertIcon fontSize="small" />
+          </IconButton>
           <ObjectivesPopover
             objective_tag={objective_tag}
             onChange={(y: number, s: number, m: number) => onObjectiveTypeChanged(id, y, s, m)}
@@ -254,24 +268,6 @@ function GoalNoteItem(props: any) {
             <CancelIcon fontSize="small" />
           </IconButton>
         </>}
-
-        {!editing && <>
-          <IconButton
-            id="item-context-menu-button"
-            className="item-menu-btn"
-            aria-label="menu"
-            aria-controls={Boolean(menuAnchorEl) ? 'item-context-menu' : undefined}
-            aria-haspopup="true"
-            aria-expanded={Boolean(menuAnchorEl) ? 'true' : undefined}
-            size="small"
-            color="info"
-            sx={{ backgroundColor: 'rgba(0, 0, 255, 0.03)', margin: '0px 2px' }}
-            onClick={handleOpenItemMenu}
-          >
-            <MoreVertIcon fontSize="small" />
-          </IconButton>
-        </>}
-
       </Stack>
       {/* Menu */}
       <GoalNoteItemMenu
