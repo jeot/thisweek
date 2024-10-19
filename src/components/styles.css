@@ -354,9 +354,10 @@ div {
 	opacity: 1;
 }
 
-.item-input {
+.item-input input {
+	overflow: hidden;
+	text-overflow: ellipsis;
 	box-sizing: content-box;
-	/* background: red; */
 }
 
 .objective-tag {
