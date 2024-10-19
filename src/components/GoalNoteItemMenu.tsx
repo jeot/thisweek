@@ -7,20 +7,26 @@ import EditIcon from '@mui/icons-material/Edit';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 export default function GoalNoteItemMenu(props: any) {
-  const { anchorEl, handleClose } = props;
-  const open = Boolean(anchorEl);
+  const { anchorEl, anchorPosition, handleClose } = props;
+  const openByAE = Boolean(anchorEl);
+  const openByCM = Boolean(anchorPosition);
+  const open: boolean = openByAE || openByCM;
+  // anchorReference = 'anchorEl' | 'anchorPosition' | 'none'
+  const anchorReference = openByAE ? 'anchorEl' : openByCM ? 'anchorPosition' : 'none';
 
   return (
     <Menu
       id="item-context-menu"
       sx={{ width: '320px', maxWidth: '100%' }}
       aria-hidden={false}
-      anchorEl={anchorEl}
       open={open}
       onClose={() => handleClose(Action.none)}
       MenuListProps={{
         'aria-labelledby': 'item-context-menu-button',
       }}
+      anchorReference={anchorReference}
+      anchorEl={anchorEl}
+      anchorPosition={anchorPosition}
     >
       <MenuList>
         <MenuItem onClick={() => handleClose(Action.editSelectedItem)}>

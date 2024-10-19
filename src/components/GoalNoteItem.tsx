@@ -67,8 +67,9 @@ function GoalNoteItem(props: any) {
 
   const [editingText, setEditingText] = useState<string>(props.item.text);
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
-  const itemRef = useRef<null | React.RefObject<HTMLElement>>(null);
-  const inputRef = useRef<null | React.RefObject<HTMLElement>>(null);
+  const [menuAnchorPosition, setMenuAnchorPosition] = useState<{ top: number; left: number; } | null>(null);
+  const itemRef = useRef<null | RefObject<HTMLElement>>(null);
+  const inputRef = useRef<null | RefObject<HTMLElement>>(null);
 
   const fixedText = props.item.text ?? "ERROR! INVALID TEXT";
   const status = props.item.status ?? false;
@@ -82,13 +83,31 @@ function GoalNoteItem(props: any) {
     return () => { /* console.log("item unmounted"); */ };
   }, []);
 
-  const handleOpenItemMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleOpenItemMenu = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
     onSelect(id);
     setMenuAnchorEl(event.currentTarget);
   };
 
+  const handleOpenItemContextMenu = (event: MouseEvent) => {
+    event.preventDefault();
+    onSelect(id);
+    setMenuAnchorPosition(
+      menuAnchorPosition === null
+        ? {
+            top: event.clientY - 6,
+            left: event.clientX + 2,
+          }
+        : // repeated contextmenu when it is already open closes it with Chrome 84 on Ubuntu
+          // Other native context menus might behave different.
+          // With this behavior we prevent contextmenu from the backdrop to re-locale existing context menus.
+          null,
+    );
+  };
+
   const handleCloseItemMenu = (select: number) => {
     setMenuAnchorEl(null);
+    setMenuAnchorPosition(null);
     // console.log("closing menu, select: ", select);
     switch (select) {
       case Action.none: break; // menu closed by clicking outside
@@ -119,7 +138,7 @@ function GoalNoteItem(props: any) {
     onFocusLeave({ id: id, text: editingText });
   }
 
-  const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (event: any) => {
+  const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (event: any) => {
     if (editing && event.key === 'Enter' && event.shiftKey && kind == ItemKind.note) {
       if (editingText == "") onCancel();
       else {
@@ -203,6 +222,7 @@ function GoalNoteItem(props: any) {
             fullWidth
             value={fixedText}
             onMouseDown={() => { onToggleSelect(id); }}
+            onContextMenu={handleOpenItemContextMenu}
           />
           <ObjectivesPopover
             objective_tag={objective_tag}
@@ -255,6 +275,7 @@ function GoalNoteItem(props: any) {
       {/* Menu */}
       <GoalNoteItemMenu
         anchorEl={menuAnchorEl}
+        anchorPosition={menuAnchorPosition}
         handleClose={handleCloseItemMenu}
       />
     </Box >
