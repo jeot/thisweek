@@ -62,7 +62,9 @@ struct MyAppState {
 
 #[tauri::command]
 fn get_today(state: State<MyAppState>) -> Today {
-    state.today.lock().unwrap().clone()
+    let mut today = state.today.lock().unwrap();
+    today.update();
+    today.clone()
 }
 
 #[tauri::command]
