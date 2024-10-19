@@ -13,7 +13,7 @@ export default function ObjectivesPopover(props: any) {
   // if (currentObjectiveType == ObjectiveType.none) {
   //   return (<></>);
   // }
-  const { onChange, objective_tag } = props;
+  const { onChange, objective_tag, onPopoverOpened } = props;
   const { calendar, text, type, calendar_name } = objective_tag;
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
@@ -86,6 +86,7 @@ export default function ObjectivesPopover(props: any) {
     if (calInUse === null)
       return;
     setAnchorEl(event.currentTarget);
+    onPopoverOpened();
   };
 
   const handleClosePopover = () => {

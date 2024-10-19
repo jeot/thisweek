@@ -7,14 +7,10 @@ import Checkbox from '@mui/material/Checkbox';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import ChatIcon from '@mui/icons-material/Chat';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 import { getDirection } from "../utilities.ts"
 import { Action, ItemKind } from "../constants.ts";
@@ -95,13 +91,13 @@ function GoalNoteItem(props: any) {
     setMenuAnchorPosition(
       menuAnchorPosition === null
         ? {
-            top: event.clientY - 6,
-            left: event.clientX + 2,
-          }
+          top: event.clientY - 6,
+          left: event.clientX + 2,
+        }
         : // repeated contextmenu when it is already open closes it with Chrome 84 on Ubuntu
-          // Other native context menus might behave different.
-          // With this behavior we prevent contextmenu from the backdrop to re-locale existing context menus.
-          null,
+        // Other native context menus might behave different.
+        // With this behavior we prevent contextmenu from the backdrop to re-locale existing context menus.
+        null,
     );
   };
 
@@ -241,6 +237,7 @@ function GoalNoteItem(props: any) {
           <ObjectivesPopover
             objective_tag={objective_tag}
             onChange={(y: number, s: number, m: number) => onObjectiveTypeChanged(id, y, s, m)}
+            onPopoverOpened={() => onSelect(id)}
           />
         </>}
 
