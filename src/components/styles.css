@@ -46,7 +46,9 @@ div {
 	font-size: 16px;
 	font-weight: 400;
 	color: white;
-	background-color: darkslateblue;
+	/* background-color: darkslateblue; */
+	background: linear-gradient(90deg, rgba(64, 37, 173, 1) 0%, rgba(168, 41, 245, 1) 35%, rgba(132, 0, 255, 1) 100%);
+	background: linear-gradient(90deg, rgba(64, 37, 173, 1) 0%, rgba(168, 41, 245, 1) 35%, rgba(235, 182, 252, 1) 100%);
 	padding: 2px;
 }
 
@@ -67,7 +69,9 @@ div {
 
 .sidebar {
 	flex: 0 1 auto;
-	background-color: #d6d3e0;
+	/* background-color: #d6d3e0; */
+	background: rgb(218, 228, 234);
+	background: linear-gradient(180deg, rgba(218, 228, 234, 1) 0%, rgba(242, 234, 249, 1) 100%);
 
 	display: flex;
 	flex-direction: column;
