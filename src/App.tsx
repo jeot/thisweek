@@ -61,6 +61,8 @@ function App() {
     invoke("get_config").then((result: any) => {
       // console.log("get config: ", result);
       setConfig(result);
+      // construct the calendar views
+      Globals.init();
     });
   }
 

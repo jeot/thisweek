@@ -24,6 +24,8 @@ export default function SettingsPage(props: any) {
         <Typography variant="caption" align="center">SETTINGS</Typography>
         <Button
           sx={btnSx}
+          disableElevation
+          disableRipple
           variant={section === SettingSection.General ? "contained" : "outlined"}
           className="settings-navbar-btn"
           onClick={() => setSettingSection(SettingSection.General)}>
@@ -31,6 +33,8 @@ export default function SettingsPage(props: any) {
         </Button>
         <Button
           sx={btnSx}
+          disableElevation
+          disableRipple
           variant={section === SettingSection.Keymaps ? "contained" : "outlined"}
           className="settings-navbar-btn"
           onClick={() => setSettingSection(SettingSection.Keymaps)}>
@@ -38,6 +42,8 @@ export default function SettingsPage(props: any) {
         </Button>
         <Button
           sx={btnSx}
+          disableElevation
+          disableRipple
           variant={section === SettingSection.About ? "contained" : "outlined"}
           className="settings-navbar-btn"
           onClick={() => setSettingSection(SettingSection.About)}>

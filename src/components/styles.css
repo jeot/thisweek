@@ -212,12 +212,7 @@ div {
 	z-index: 4;
 }
 
-.items-list-header {
-	padding: 8px 1em;
-}
-
 .week-header-middle-section {
-	/* border: 1px solid green; */
 	margin: 0px;
 	padding: 0px;
 	cursor: default;
@@ -227,7 +222,6 @@ div {
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
-	/* border: 1px solid blue; */
 	direction: ltr;
 }
 
@@ -263,7 +257,8 @@ div {
 	height: 48px;
 	margin: 0px 4px;
 	padding-top: 5px;
-	border: 1px solid rgba(0, 0, 0, 0.1);
+	/* border: 1px solid rgba(0, 0, 0, 0.1); */
+	box-shadow: inset 0px 0px 3px 0px rgba(0, 0, 0, 0.2);
 	/* background-color: rgba(0, 0, 0, 0.02); */
 	border-radius: 24px;
 	box-sizing: border-box;
@@ -538,21 +533,4 @@ div {
 	display: block !important;
 	margin: 1 !important;
 	min-width: 200px !important;
-}
-
-.settings-navbar-btn {
-	font-size: 1em;
-	border: none;
-	margin: 8px;
-	border-radius: 4px;
-	padding: 4px 8px;
-	background-color: rgba(0, 0, 0, 0.1);
-}
-
-.settings-navbar-btn:hover {
-	background-color: rgba(0, 0, 0, 0.2);
-}
-
-.settings-navbar-btn:active {
-	background-color: rgba(0, 0, 0, 0.1);
 }
