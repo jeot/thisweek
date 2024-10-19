@@ -258,6 +258,7 @@ function GoalNoteItem(props: any) {
         {!editing && <>
           <IconButton
             id="item-context-menu-button"
+            className="item-menu-btn"
             aria-label="menu"
             aria-controls={Boolean(menuAnchorEl) ? 'item-context-menu' : undefined}
             aria-haspopup="true"
