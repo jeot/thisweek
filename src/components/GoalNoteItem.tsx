@@ -58,7 +58,7 @@ const scrollIntoViewIfNeeded = (target: HTMLElement) => {
 };
 
 function GoalNoteItem(props: any) {
-  const { editing, selected, onEditSubmit, onEdit, onSelect, onToggleSelect, onDelete, onCancel, onToggle, onCopyText, onFocusLeave, onObjectiveTypeChanged } = props;
+  const { editing, selected, index, onEditSubmit, onEdit, onSelect, onToggleSelect, onDelete, onCancel, onToggle, onCopyText, onFocusLeave, onObjectiveTypeChanged } = props;
 
   if (props.item === null || props.item === undefined) {
     console.log("item null");
@@ -123,7 +123,7 @@ function GoalNoteItem(props: any) {
     if (selected) {
       itemRef.current && scrollIntoViewIfNeeded(itemRef.current as unknown as HTMLElement);
     }
-  }, [selected]);
+  }, [selected, index]);
 
   useEffect(() => {
     if (editing) {
