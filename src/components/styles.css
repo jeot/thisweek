@@ -370,6 +370,10 @@ div {
 	opacity: 1;
 }
 
+.item-input {
+	padding: 0px !important;
+}
+
 .item-input input {
 	overflow: hidden;
 	text-overflow: ellipsis;

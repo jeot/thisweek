@@ -88,8 +88,8 @@ export default function NewItem(props: any) {
         size="small"
         className={style_input}
         inputProps={{ style: inputPropsStyle(kind) }}
-        multiline={(kind == ItemKind.note)}
-        maxRows={(kind == ItemKind.note) ? 40 : 1}
+        multiline={true}
+        maxRows={(kind == ItemKind.note) ? 15 : 5}
         fullWidth
         autoFocus
         onFocus={onFocus}

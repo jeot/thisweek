@@ -159,6 +159,7 @@ function GoalNoteItem(props: any) {
       fontSize: (itemkind == ItemKind.note) ? "0.85em" : "1em",
       fontWeight: (itemkind == ItemKind.note) ? 300 : 400,
       caretColor: editing ? "visible" : "transparent",
+      padding: "4px 0px 4px 0px",
     }
   }
 
@@ -195,8 +196,8 @@ function GoalNoteItem(props: any) {
             size="small"
             className={style_input}
             inputProps={{ style: inputPropsStyle(kind), ref: inputRef }}
-            multiline={(kind == ItemKind.note)}
-            maxRows={(kind == ItemKind.note) ? 40 : 1}
+            multiline={true}
+            maxRows={(kind == ItemKind.note) ? 15 : 5}
             fullWidth
             autoFocus
             onFocus={onFocus}
@@ -213,8 +214,8 @@ function GoalNoteItem(props: any) {
             size="small"
             className={style_input}
             inputProps={{ style: inputPropsStyle(kind) }}
-            multiline={(kind == ItemKind.note)}
-            maxRows={(kind == ItemKind.note) ? 40 : 1}
+            multiline={true}
+            maxRows={(kind == ItemKind.note) ? 15 : 5}
             fullWidth
             value={fixedText}
             onMouseDown={() => { onToggleSelect(id); }}
