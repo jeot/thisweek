@@ -454,12 +454,9 @@ function App() {
 
   const theme = createTheme({
     typography: {
-      fontSize: 14,
+      fontSize: 12,
       fontFamily: [
         'Shabnam',
-        // 'B Nazanin',
-        // 'Rubik',
-        // 'B Koodak',
         'Roboto',
         'Times',
       ].join(','),
@@ -467,7 +464,6 @@ function App() {
     components: {
       MuiCssBaseline: {
         styleOverrides: `
-
           @font-face {
             font-family: 'Shabnam';
             src: url(${ShabnamThin}) format('woff');
@@ -507,7 +503,6 @@ function App() {
             font-weight: 700; /*bold;*/
             font-style: normal;
           }
-
         `,
       },
     },
@@ -516,45 +511,44 @@ function App() {
   return (
     <React.Fragment>
       <ThemeProvider theme={theme}>
-        <CssBaseline>
-          <div className="application" >
-            <Header
+        <CssBaseline />
+        <div className="application" >
+          <Header
+            today={today}
+            gotoToday={gotoCurrentTimePeriod}
+          />
+          <div className="main" >
+            <SidebarNav onClick={displayPage} activePage={activePage} />
+            <Content
+              page={activePage}
+              data={data}
               today={today}
-              gotoToday={gotoCurrentTimePeriod}
+              editingId={editingId}
+              selectedId={selectedId}
+              newItemKind={newItemKind}
+              config={config}
+              reloadConfig={reloadConfig}
+              setMainCalConfig={setMainCalConfig}
+              setSecondaryCalConfig={setSecondaryCalConfig}
+              onNext={gotoNextTimePeriod}
+              onPrevious={gotoPreviousTimePeriod}
+              onSwitchObjectivesCalendar={switchObjectivesCalendar}
+              onNewSubmit={handleOnNewSubmit}
+              onEditSubmit={handleOnEditSubmit}
+              onEdit={handleOnEdit}
+              onSelect={handleOnSelect}
+              onToggleSelect={handleOnToggleSelect}
+              onDelete={handleOnDelete}
+              onCancel={cancelEditingOrSelectionOrNewItem}
+              onToggle={handleOnToggle}
+              onCopyText={handleOnCopyText}
+              onFocusLeave={handleOnFocusLeave}
+              onObjectiveTypeChanged={handleOnObjectiveTypeChanged}
+              onNewAction={startCreatingNewItem}
             />
-            <div className="main" >
-              <SidebarNav onClick={displayPage} activePage={activePage} />
-              <Content
-                page={activePage}
-                data={data}
-                today={today}
-                editingId={editingId}
-                selectedId={selectedId}
-                newItemKind={newItemKind}
-                config={config}
-                reloadConfig={reloadConfig}
-                setMainCalConfig={setMainCalConfig}
-                setSecondaryCalConfig={setSecondaryCalConfig}
-                onNext={gotoNextTimePeriod}
-                onPrevious={gotoPreviousTimePeriod}
-                onSwitchObjectivesCalendar={switchObjectivesCalendar}
-                onNewSubmit={handleOnNewSubmit}
-                onEditSubmit={handleOnEditSubmit}
-                onEdit={handleOnEdit}
-                onSelect={handleOnSelect}
-                onToggleSelect={handleOnToggleSelect}
-                onDelete={handleOnDelete}
-                onCancel={cancelEditingOrSelectionOrNewItem}
-                onToggle={handleOnToggle}
-                onCopyText={handleOnCopyText}
-                onFocusLeave={handleOnFocusLeave}
-                onObjectiveTypeChanged={handleOnObjectiveTypeChanged}
-                onNewAction={startCreatingNewItem}
-              />
-            </div>
-            {/* <div className="app-info">{appName}&nbsp;{appVersion}</div> */}
           </div>
-        </CssBaseline>
+          {/* <div className="app-info">{appName}&nbsp;{appVersion}</div> */}
+        </div>
       </ThemeProvider>
     </React.Fragment >
 
