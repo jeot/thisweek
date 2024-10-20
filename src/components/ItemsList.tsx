@@ -1,3 +1,4 @@
+import { Page } from "../constants";
 import { ItemView } from "../my_types";
 import GoalNoteItem from "./GoalNoteItem";
 
@@ -17,10 +18,16 @@ export default function ItemsList(props: any) {
       />);
   });
 
+  const empty: boolean = item_elements.length == 0;
+  let style: string = !empty ? "items-list" : "items-list items-list-empty";
+  style = style + (props.page == Page.weeks ? " items-list-week" :
+    props.page == Page.objectives ? " items-list-year" : "");
+  console.log(style);
+
   return (
-    <div id="items-list-id" className="items-list">
-      {item_elements}
-    </div>
+    <>
+      <div id="items-list-id" className={style}> {item_elements} </div>
+    </>
   );
 
 }

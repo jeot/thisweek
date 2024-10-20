@@ -335,6 +335,25 @@ div {
 	/* background-color: red; */
 	/* display: flex; */
 	/* flex-direction: column; */
+	background-image: none;
+	background-size: 60% 60%;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.items-list-empty {
+	background-size: 70% 70%;
+	background-repeat: no-repeat;
+	background-position: center;
+	transition: background-size 0.1s ease-out;
+}
+
+.items-list-empty.items-list-year {
+	background-image: url('../assets/images/12704338_5064482.svg');
+}
+
+.items-list-empty.items-list-week {
+	background-image: url('../assets/images/360535889_11461946.svg');
 }
 
 .item {
