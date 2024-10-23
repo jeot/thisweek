@@ -4,13 +4,12 @@ import NewItem from "./NewItem.tsx";
 // import BasicSpeedDial from "./BasicSpeedDial.tsx";
 import ItemsList from "./ItemsList.tsx";
 import SettingsPage from "./SettingsPage.tsx";
-import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add';
 
 import "../prototypes.ts";
 import { ID, ItemKind, Page } from "../constants.ts";
 import './styles.css'
-import { Button, Fab } from "@mui/material";
+import { Fab } from "@mui/material";
 
 export default function Content(props: any) {
   const { page, editingId, newItemKind, config, reloadConfig, setMainCalConfig, setSecondaryCalConfig, onNewAction, onNewSubmit, onCancel } = props;

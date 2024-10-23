@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, KeyboardEventHandler } from "react";
 
 import IconButton from '@mui/material/IconButton';
 import InputBase from '@mui/material/InputBase';
@@ -64,8 +64,8 @@ function GoalNoteItem(props: any) {
   const [editingText, setEditingText] = useState<string>(props.item.text);
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [menuAnchorPosition, setMenuAnchorPosition] = useState<{ top: number; left: number; } | null>(null);
-  const itemRef = useRef<null | RefObject<HTMLElement>>(null);
-  const inputRef = useRef<null | RefObject<HTMLElement>>(null);
+  const itemRef = useRef<null | React.RefObject<HTMLElement>>(null);
+  const inputRef = useRef<null | React.RefObject<HTMLElement>>(null);
 
   const fixedText = props.item.text ?? "ERROR! INVALID TEXT";
   const status = props.item.status ?? false;
@@ -79,13 +79,13 @@ function GoalNoteItem(props: any) {
     return () => { /* console.log("item unmounted"); */ };
   }, []);
 
-  const handleOpenItemMenu = (event: MouseEvent<HTMLButtonElement>) => {
+  const handleOpenItemMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     onSelect(id);
     setMenuAnchorEl(event.currentTarget);
   };
 
-  const handleOpenItemContextMenu = (event: MouseEvent) => {
+  const handleOpenItemContextMenu = (event: React.MouseEvent) => {
     event.preventDefault();
     onSelect(id);
     setMenuAnchorPosition(

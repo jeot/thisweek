@@ -1,7 +1,7 @@
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { Action } from './../constants.ts';
-import { ListItemIcon, ListItemText, MenuList, Typography } from '@mui/material';
+import { ListItemIcon, ListItemText, MenuList } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
