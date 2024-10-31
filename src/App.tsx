@@ -66,9 +66,9 @@ function App() {
     });
   }
 
-  const setMainCalConfig = (main_calendar_type: string, main_calendar_language: string, main_calendar_start_weekday: string) => {
-    invoke("set_main_cal_config", { mainCalendarType: main_calendar_type, mainCalendarLanguage: main_calendar_language, mainCalendarStartWeekday: main_calendar_start_weekday }).then((_result: any) => {
-      // console.log("set_main_cal_config: ", result);
+  const setMainCalConfig = (main_calendar_type: string, main_calendar_language: string, main_calendar_start_weekday: string, weekdates_display_direction: string) => {
+    invoke("set_main_cal_config", { mainCalendarType: main_calendar_type, mainCalendarLanguage: main_calendar_language, mainCalendarStartWeekday: main_calendar_start_weekday, weekdatesDisplayDirection: weekdates_display_direction }).then((_result: any) => {
+      console.log("set_main_cal_config: ", _result);
       reloadConfig();
     });
   }
@@ -277,7 +277,7 @@ function App() {
     invoke_tauri_command_and_refresh_data("current_time_period", { page: activePageRef.current });
   }
 
-  const switchObjectivesCalendar = function() {
+  const handleOnSwitchYearCalendar = function() {
     if (activePageRef.current != Page.objectives) return;
     setSelectedId(ID.none);
     invoke_tauri_command_and_refresh_data("switch_objectives_calendar", { page: activePageRef.current });
@@ -532,7 +532,7 @@ function App() {
               setSecondaryCalConfig={setSecondaryCalConfig}
               onNext={gotoNextTimePeriod}
               onPrevious={gotoPreviousTimePeriod}
-              onSwitchObjectivesCalendar={switchObjectivesCalendar}
+              onSwitchYearCalendar={handleOnSwitchYearCalendar}
               onNewSubmit={handleOnNewSubmit}
               onEditSubmit={handleOnEditSubmit}
               onEdit={handleOnEdit}

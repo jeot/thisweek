@@ -1,4 +1,4 @@
-import { Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
+import { Button, FormControl, FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, Stack, Typography } from '@mui/material';
 import { ConfigView } from '../my_types';
 import { invoke } from "@tauri-apps/api/tauri";
 import { save } from '@tauri-apps/api/dialog';
@@ -14,10 +14,10 @@ const languages = {
 };
 
 const calendars = [
-  { id: 'Gregorian', name: 'Gregorian', defaultLang: languages.en, allowedLang: [languages.en, languages.fa, languages.zh, languages.ar] },
-  { id: 'Persian', name: 'Persian (هجری شمسی)', defaultLang: languages.fa, allowedLang: [languages.en, languages.fa] },
-  { id: 'Chinese', name: 'Chinese (中国农历)', defaultLang: languages.zh, allowedLang: [languages.en, languages.zh] },
-  { id: 'Arabic', name: 'Arabic (الهجري القمري)', defaultLang: languages.ar, allowedLang: [languages.en, languages.ar] },
+  { id: 'Gregorian', name: 'Gregorian', defaultDir: 'ltr', defaultLang: languages.en, allowedLang: [languages.en, languages.fa, languages.zh, languages.ar] },
+  { id: 'Persian', name: 'Persian (هجری شمسی)', defaultDir: 'rtl', defaultLang: languages.fa, allowedLang: [languages.en, languages.fa] },
+  { id: 'Chinese', name: 'Chinese (中国农历)', defaultDir: 'ltr', defaultLang: languages.zh, allowedLang: [languages.en, languages.zh] },
+  { id: 'Arabic', name: 'Arabic (الهجري القمري)', defaultDir: 'rtl', defaultLang: languages.ar, allowedLang: [languages.en, languages.ar] },
 ];
 
 
@@ -48,18 +48,25 @@ export default function SettingGeneral(props: any) {
   const handleMainCalendarChange = (event: SelectChangeEvent) => {
     const mainCal = event.target.value;
     const mainCalLang = calendars.find((cal) => { return (cal.id === mainCal); })?.defaultLang.code;
-    props.setMainCalConfig(mainCal, mainCalLang, config.main_calendar_start_weekday);
+    const weekdatesDisplayDir = calendars.find((cal) => { return (cal.id === mainCal); })?.defaultDir;
+    props.setMainCalConfig(mainCal, mainCalLang, config.main_calendar_start_weekday, weekdatesDisplayDir);
   };
 
   const handleMainCalendarLanguageChange = (event: SelectChangeEvent) => {
     const mainCalLang = event.target.value;
-    props.setMainCalConfig(config.main_calendar_type, mainCalLang, config.main_calendar_start_weekday);
+    props.setMainCalConfig(config.main_calendar_type, mainCalLang, config.main_calendar_start_weekday, config.weekdates_display_direction);
   };
 
   const handleMainCalendarStartWeekdayChange = (event: SelectChangeEvent) => {
     const mainCalStartWeekDay = event.target.value;
-    props.setMainCalConfig(config.main_calendar_type, config.main_calendar_language, mainCalStartWeekDay);
+    props.setMainCalConfig(config.main_calendar_type, config.main_calendar_language, mainCalStartWeekDay, config.weekdates_display_direction);
   };
+
+  const handleWeekdateDisplayDirectionChange = (_event: React.ChangeEvent, value: string) => {
+    // console.log(event, value);
+    const weekdatesDisplayDir = value;
+    props.setMainCalConfig(config.main_calendar_type, config.main_calendar_language, config.main_calendar_start_weekday, weekdatesDisplayDir);
+  }
 
   const handleSecondaryCalendarChange = (event: SelectChangeEvent) => {
     const secondaryCal = event.target.value == "OFF" ? null : event.target.value;
@@ -82,54 +89,71 @@ export default function SettingGeneral(props: any) {
       <Typography variant="h5">Main Calendar</Typography>
 
       <div className="form-control-group">
-        <FormControl size="small" sx={{ m: 1, minWidth: 180 }}>
-          <InputLabel id="main-cal-select-label">Calendar</InputLabel>
-          <Select
-            labelId="main-cal-select-label"
-            id="main-cal-select"
-            value={config.main_calendar_type}
-            label="Calendar"
-            onChange={handleMainCalendarChange}
-          >
-            {calendars.map((value) => {
-              return (<MenuItem key={value.id} value={value.id}>{value.name}</MenuItem>);
-            })}
-          </Select>
-        </FormControl>
+        <Stack>
+          <FormControl size="small" sx={{ m: 1, minWidth: 180 }}>
+            <InputLabel id="main-cal-select-label">Calendar</InputLabel>
+            <Select
+              labelId="main-cal-select-label"
+              id="main-cal-select"
+              value={config.main_calendar_type}
+              label="Calendar"
+              onChange={handleMainCalendarChange}
+            >
+              {calendars.map((value) => {
+                return (<MenuItem key={value.id} value={value.id}>{value.name}</MenuItem>);
+              })}
+            </Select>
+          </FormControl>
 
-        <FormControl size="small" sx={{ m: 1, minWidth: 180 }}>
-          <InputLabel id="main-cal-lang-select-label">Calendar Language</InputLabel>
-          <Select
-            labelId="main-cal-lang-select-label" id="main-cal-lang-select"
-            value={config.main_calendar_language}
-            label="Calendar Language"
-            onChange={handleMainCalendarLanguageChange}
-          >
-            {
-              calendars.find((cal) => { return (cal.id == config.main_calendar_type); })?.allowedLang.map((value, _i) => {
-                return (<MenuItem key={value.code} value={value.code}>{value.name}</MenuItem>);
-              })
-            }
-          </Select>
-        </FormControl>
+          <FormControl size="small" sx={{ m: 1, minWidth: 180 }}>
+            <InputLabel id="main-cal-lang-select-label">Calendar Language</InputLabel>
+            <Select
+              labelId="main-cal-lang-select-label" id="main-cal-lang-select"
+              value={config.main_calendar_language}
+              label="Calendar Language"
+              onChange={handleMainCalendarLanguageChange}
+            >
+              {
+                calendars.find((cal) => { return (cal.id == config.main_calendar_type); })?.allowedLang.map((value, _i) => {
+                  return (<MenuItem key={value.code} value={value.code}>{value.name}</MenuItem>);
+                })
+              }
+            </Select>
+          </FormControl>
 
-        <FormControl size="small" sx={{ m: 1, minWidth: 180 }}>
-          <InputLabel id="main-cal-start-weekday-select-label">Start Weekday</InputLabel>
-          <Select
-            labelId="main-cal-start-weekday-select-label" id="main-cal-start-weekday-select"
-            value={config.main_calendar_start_weekday}
-            label="Start Weekday"
-            onChange={handleMainCalendarStartWeekdayChange}
-          >
-            <MenuItem value="SAT">Saturday</MenuItem>
-            <MenuItem value="SUN">Sunday</MenuItem>
-            <MenuItem value="MON">Monday</MenuItem>
-            <MenuItem value="TUE">Tuesday</MenuItem>
-            <MenuItem value="WED">Wednesday</MenuItem>
-            <MenuItem value="THU">Thursday</MenuItem>
-            <MenuItem value="FRI">Friday</MenuItem>
-          </Select>
-        </FormControl>
+          <FormControl size="small" sx={{ m: 1, minWidth: 180 }}>
+            <InputLabel id="main-cal-start-weekday-select-label">Start Weekday</InputLabel>
+            <Select
+              labelId="main-cal-start-weekday-select-label" id="main-cal-start-weekday-select"
+              value={config.main_calendar_start_weekday}
+              label="Start Weekday"
+              onChange={handleMainCalendarStartWeekdayChange}
+            >
+              <MenuItem value="SAT">Saturday</MenuItem>
+              <MenuItem value="SUN">Sunday</MenuItem>
+              <MenuItem value="MON">Monday</MenuItem>
+              <MenuItem value="TUE">Tuesday</MenuItem>
+              <MenuItem value="WED">Wednesday</MenuItem>
+              <MenuItem value="THU">Thursday</MenuItem>
+              <MenuItem value="FRI">Friday</MenuItem>
+            </Select>
+          </FormControl>
+
+          <FormControl>
+            <FormLabel id="weekdatesdirection-radio-buttons-group-label">Week Dates Display Direction</FormLabel>
+            <RadioGroup
+              row
+              aria-labelledby="weekdatesdirection-radio-buttons-group-label"
+              defaultValue="ltr"
+              value={config.weekdates_display_direction}
+              name="weekdatesdirection-radio-buttons-group"
+              onChange={handleWeekdateDisplayDirectionChange}
+            >
+              <FormControlLabel value="ltr" control={<Radio />} label="Left to Right" />
+              <FormControlLabel value="rtl" control={<Radio />} label="Right to Left" />
+            </RadioGroup>
+          </FormControl>
+        </Stack>
       </div>
 
       <Typography variant="h5">&nbsp;</Typography>

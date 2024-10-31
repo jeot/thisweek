@@ -2,10 +2,12 @@
 import { DateView, WeekInfo } from '../my_types';
 
 export default function WeekDates(props: any) {
-  if (props.data.week_info_main === undefined || props.today === undefined) return;
+  if (props.data.week_info_main === undefined || props.today === undefined || props.config === undefined) return;
   const week_info: WeekInfo = props.data.week_info_main;
   const today: DateView = props.today.main_date_view;
   const aux_week_info: WeekInfo = props.data.week_info_aux;
+  const direction = props.config.weekdates_display_direction;
+  console.log(direction);
   const date_view_elements = week_info.dates.map((dw: DateView, i: number) => {
     const dayClass = dw.unix_day == today.unix_day ? "week-header-date-day week-header-date-day-today" : "week-header-date-day";
     const weekdayClass = dw.unix_day == today.unix_day ? "week-header-date-weekday week-header-date-weekday-today" : "week-header-date-weekday";
@@ -27,10 +29,10 @@ export default function WeekDates(props: any) {
     <div className="week-header-middle-section">
       <div className="week-header-main-info-top">
       </div>
-      <div className="week-header-dates">
+      <div className="week-header-dates" dir={direction}>
         {date_view_elements}
       </div>
-      <div className="week-header-info-bottom">
+      <div className="week-header-info-bottom" dir={direction}>
         <div className="week-header-main-info">
           {week_info.month_year_info}
         </div>

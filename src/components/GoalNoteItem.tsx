@@ -166,7 +166,7 @@ function GoalNoteItem(props: any) {
   return (
     <Box
       ref={itemRef}
-      dir="rtl"
+      dir={dir}
       id={id}
       className={style_item}
     >

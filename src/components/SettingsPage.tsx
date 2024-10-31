@@ -31,6 +31,17 @@ export default function SettingsPage(props: any) {
           onClick={() => setSettingSection(SettingSection.General)}>
           General
         </Button>
+        {/*
+          <Button
+            sx={btnSx}
+            disableElevation
+            disableRipple
+            variant={section === SettingSection.Display ? "contained" : "outlined"}
+            className="settings-navbar-btn"
+            onClick={() => setSettingSection(SettingSection.Display)}>
+            Keymaps
+          </Button>
+        */}
         <Button
           sx={btnSx}
           disableElevation
@@ -55,6 +66,7 @@ export default function SettingsPage(props: any) {
       </div>
       <div className="settings-content">
         {section == SettingSection.General && <SettingGeneral {...props} />}
+        {/*section == SettingSection.Display && <SettingDisplay {...props} />*/}
         {section == SettingSection.Keymaps && <SettingKeymaps {...props} />}
         {section == SettingSection.About && <SettingAbout {...props} />}
       </div>

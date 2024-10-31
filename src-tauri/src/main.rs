@@ -105,11 +105,13 @@ fn set_main_cal_config(
     main_calendar_type: String,
     main_calendar_language: String,
     main_calendar_start_weekday: String,
+    weekdates_display_direction: String,
 ) -> bool {
     config::set_main_cal_config(
         main_calendar_type,
         main_calendar_language,
         main_calendar_start_weekday,
+        weekdates_display_direction,
     )
     .is_ok()
 }

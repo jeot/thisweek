@@ -10,25 +10,33 @@ import "../prototypes.ts";
 import { ID, ItemKind, Page } from "../constants.ts";
 import './styles.css'
 import { Fab } from "@mui/material";
+import WeekYearHeader from "./WeekYearHeader.tsx";
+import WeekDates from "./WeekDates.tsx";
+import YearsHeaderContent from "./YearsHeaderContent.tsx";
 
 export default function Content(props: any) {
   const { page, editingId, newItemKind, config, reloadConfig, setMainCalConfig, setSecondaryCalConfig, onNewAction, onNewSubmit, onCancel } = props;
   return (
     <div className="content-section">
       {page == Page.weeks &&
-        <WeekHeader
+        <WeekYearHeader
           textNext="Next Week"
           textPrevious="Previous Week"
-          {...props}
-        />
+          onNext={props.onNext}
+          onPrevious={props.onPrevious}
+        >
+          <WeekDates {...props} />
+        </WeekYearHeader>
       }
       {page == Page.objectives &&
-        <ObjectivesHeader
-          title={props.data.title}
+        <WeekYearHeader
           textNext="Next Year"
           textPrevious="Previous Year"
-          {...props}
-        />
+          onNext={props.onNext}
+          onPrevious={props.onPrevious}
+        >
+          <YearsHeaderContent title={props.data.title} onSwitchYearCalendar={props.onSwitchYearCalendar} />
+        </WeekYearHeader>
       }
       {(page == Page.weeks || page == Page.objectives) &&
         <ItemsList

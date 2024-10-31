@@ -6,13 +6,19 @@ import CachedIcon from '@mui/icons-material/Cached';
 import { getAuxCalendarView } from '../Globals';
 
 export default function ObjectivesHeader(props: any) {
-  const { title, textNext, textPrevious, onNext, onPrevious, onSwitchObjectivesCalendar } = props;
+  if (props.config === undefined) return;
+  const { title, textNext, textPrevious, onNext, onPrevious, onSwitchObjectivesCalendar, config } = props;
+  const onLeft = config.weekdates_display_direction === "ltr" ? onPrevious : onNext;
+  const onRight = config.weekdates_display_direction === "ltr" ? onNext : onPrevious;
+  const leftText = config.weekdates_display_direction === "ltr" ? textPrevious : textNext;
+  const rightText = config.weekdates_display_direction === "ltr" ? textNext : textPrevious;
   const aux_cal = getAuxCalendarView();
+
   return (
     <div className="items-list-header">
-      <Tooltip title={textPrevious}>
-        <IconButton aria-label="previous" size="small" color="primary"
-          onClick={() => { onPrevious(); }}
+      <Tooltip title={leftText}>
+        <IconButton aria-label={leftText} size="small" color="primary"
+          onClick={() => { onLeft(); }}
         >
           <NavigateBeforeIcon fontSize="small" />
         </IconButton>
@@ -32,9 +38,9 @@ export default function ObjectivesHeader(props: any) {
         {title}
       </div>
 
-      <Tooltip title={textNext}>
-        <IconButton aria-label="next" size="small" color="primary"
-          onClick={() => { onNext(); }}
+      <Tooltip title={rightText}>
+        <IconButton aria-label={rightText} size="small" color="primary"
+          onClick={() => { onRight(); }}
         >
           <NavigateNextIcon fontSize="small" />
         </IconButton>

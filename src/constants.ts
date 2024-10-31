@@ -40,6 +40,7 @@ export enum Calendar {
 
 export enum SettingSection {
   General = 0,
+  Display,
   Keymaps,
   About,
 }

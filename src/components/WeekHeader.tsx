@@ -5,12 +5,18 @@ import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import WeekDates from './WeekDates.tsx';
 
 export default function WeekHeader(props: any) {
-  const { textNext, textPrevious, onNext, onPrevious } = props;
+  if (props.config === undefined) return;
+  const { textNext, textPrevious, onNext, onPrevious, config } = props;
+  const onLeft = config.weekdates_display_direction === "ltr" ? onPrevious : onNext;
+  const onRight = config.weekdates_display_direction === "ltr" ? onNext : onPrevious;
+  const leftText = config.weekdates_display_direction === "ltr" ? textPrevious : textNext;
+  const rightText = config.weekdates_display_direction === "ltr" ? textNext : textPrevious;
+
   return (
     <div className="week-header">
-      <Tooltip title={textPrevious}>
-        <IconButton aria-label="previous" size="small" color="primary"
-          onClick={() => { onPrevious(); }}
+      <Tooltip title={leftText}>
+        <IconButton aria-label={leftText} size="small" color="primary"
+          onClick={() => { onLeft(); }}
         >
           <NavigateBeforeIcon fontSize="small" />
         </IconButton>
@@ -19,9 +25,9 @@ export default function WeekHeader(props: any) {
       <WeekDates {...props} />
 
 
-      <Tooltip title={textNext}>
-        <IconButton aria-label="next" size="small" color="primary"
-          onClick={() => { onNext(); }}
+      <Tooltip title={rightText}>
+        <IconButton aria-label={rightText} size="small" color="primary"
+          onClick={() => { onRight(); }}
         >
           <NavigateNextIcon fontSize="small" />
         </IconButton>
