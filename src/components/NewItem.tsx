@@ -24,7 +24,12 @@ export default function NewItem(props: any) {
       setKind(newKind);
   };
 
-  let dir = getDirection(editingText);
+  let direction_setting = props.config.items_display_direction;
+  let dir_auto = getDirection(editingText);
+  let dir = "ltr";
+  if (direction_setting === "rtl") dir = "rtl";
+  if (direction_setting === "ltr") dir = "ltr";
+  if (direction_setting === "auto") dir = dir_auto;
 
   const style_input = `item-input ${kind == ItemKind.goal ? "item-input-goal" : "item-input-note"}`;
   const inputPropsStyle = function(itemkind: number) {
@@ -67,7 +72,7 @@ export default function NewItem(props: any) {
   }
 
   return (
-    <div className="new-item" dir="rtl">
+    <div className="new-item" dir={dir}>
       <ToggleButtonGroup
         className="new-item-kind-button-group"
         dir="ltr"

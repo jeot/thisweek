@@ -1,8 +1,9 @@
 import { ObjectiveType } from "./constants";
 
 export function getDirection(text: string) {
-  let direction = 'auto';
-  if (text === undefined) return direction;
+  let direction = 'ltr';
+  if (text === undefined || text === null) return direction;
+  if (text.length == 0) return direction;
   // var x = new RegExp("[\x00-\x80]+"); // is ascii
   // var isAscii = x.test(text);
   var c = text.charCodeAt(0);

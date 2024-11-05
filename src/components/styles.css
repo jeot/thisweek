@@ -360,22 +360,7 @@ div {
 	display: block;
 	box-sizing: border-box;
 	border: 1px solid rgba(0, 0, 0, 0);
-	/* direction: rtl; */
-	/* direction: ltr; */
-	/* border: 1px solid red; */
 	padding: 0px;
-	/* use this later for rtl */
-	border-radius: 8px;
-	border-top-left-radius: 20px;
-	border-bottom-left-radius: 20px;
-	border-right: 8px solid rgba(0, 0, 0, 0);
-	border-left: 1px solid rgba(0, 0, 0, 0);
-	/* use this later for ltr */
-	border-radius: 8px;
-	border-top-right-radius: 20px;
-	border-bottom-right-radius: 20px;
-	border-right: 1px solid rgba(0, 0, 0, 0);
-	border-left: 8px solid rgba(0, 0, 0, 0);
 }
 
 /* :dir() css pseudo-class */
@@ -386,13 +371,26 @@ div {
 /* 	background-color: red; */
 /* } */
 
-/* [dir="rtl"].item { */
-/* 	background-color: green; */
-/* } */
-/* [dir="ltr"].item { */
-/* 	background-color: red; */
-/* } */
-/**/
+[dir="rtl"].item {
+	/* background-color: green; */
+	/* use this later for rtl */
+	border-radius: 8px;
+	border-top-left-radius: 20px;
+	border-bottom-left-radius: 20px;
+	border-right: 8px solid rgba(0, 0, 0, 0);
+	border-left: 1px solid rgba(0, 0, 0, 0);
+}
+
+[dir="ltr"].item {
+	/* background-color: red; */
+	/* use this later for ltr */
+	border-radius: 8px;
+	border-top-right-radius: 20px;
+	border-bottom-right-radius: 20px;
+	border-right: 1px solid rgba(0, 0, 0, 0);
+	border-left: 8px solid rgba(0, 0, 0, 0);
+}
+
 
 .item:hover {
 	background-color: whitesmoke;
@@ -400,16 +398,20 @@ div {
 }
 
 .item-selected {
-	box-sizing: border-box;
+	background-color: whitesmoke;
+	box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.2);
+}
+
+[dir="rtl"].item-selected {
 	/* use this later for rtl */
 	border: 1px solid darkorchid;
 	border-right: 8px solid darkorchid;
+}
+
+[dir="ltr"].item-selected {
 	/* use this later for ltr */
 	border: 1px solid darkorchid;
 	border-left: 8px solid darkorchid;
-
-	background-color: whitesmoke;
-	box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.2);
 }
 
 .item .item-menu-btn {

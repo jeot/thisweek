@@ -52,7 +52,9 @@ export default function Content(props: any) {
           <AddIcon />
         </Fab>
       }
-      {(page == Page.weeks || page == Page.objectives) && editingId == ID.new_item && <NewItem initKind={newItemKind} onSubmit={onNewSubmit} onCancel={onCancel} />}
+      {(page == Page.weeks || page == Page.objectives) && editingId == ID.new_item &&
+        <NewItem initKind={newItemKind} onSubmit={onNewSubmit} onCancel={onCancel} config={config} />
+      }
 
       {page == Page.settings &&
         <SettingsPage
