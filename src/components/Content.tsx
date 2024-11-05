@@ -15,7 +15,7 @@ import WeekDates from "./WeekDates.tsx";
 import YearsHeaderContent from "./YearsHeaderContent.tsx";
 
 export default function Content(props: any) {
-  const { page, editingId, newItemKind, config, reloadConfig, setMainCalConfig, setSecondaryCalConfig, onNewAction, onNewSubmit, onCancel } = props;
+  const { page, editingId, newItemKind, config, reloadConfig, setMainCalConfig, setSecondaryCalConfig, setItemsDisplayDirectionConfig, onNewAction, onNewSubmit, onCancel } = props;
   return (
     <div className="content-section">
       {page == Page.weeks &&
@@ -54,7 +54,14 @@ export default function Content(props: any) {
       }
       {(page == Page.weeks || page == Page.objectives) && editingId == ID.new_item && <NewItem initKind={newItemKind} onSubmit={onNewSubmit} onCancel={onCancel} />}
 
-      {page == Page.settings && <SettingsPage config={config} reloadConfig={reloadConfig} setMainCalConfig={setMainCalConfig} setSecondaryCalConfig={setSecondaryCalConfig} />}
+      {page == Page.settings &&
+        <SettingsPage
+          config={config}
+          reloadConfig={reloadConfig}
+          setMainCalConfig={setMainCalConfig}
+          setSecondaryCalConfig={setSecondaryCalConfig}
+          setItemsDisplayDirectionConfig={setItemsDisplayDirectionConfig}
+        />}
 
     </div>
   );

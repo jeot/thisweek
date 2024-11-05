@@ -125,6 +125,11 @@ fn set_secondary_cal_config(
 }
 
 #[tauri::command]
+fn set_items_display_direction_config(items_direction: String) -> bool {
+    config::set_items_display_direction_config(items_direction).is_ok()
+}
+
+#[tauri::command]
 fn set_database_file(filepath: String) -> bool {
     config::set_database_file(filepath).is_ok()
 }
@@ -332,6 +337,7 @@ fn main() {
             set_database_file,
             set_main_cal_config,
             set_secondary_cal_config,
+            set_items_display_direction_config,
             // common stuff
             move_up_selected_item,
             move_down_selected_item,

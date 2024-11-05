@@ -76,5 +76,6 @@ export interface ConfigView {
   main_calendar_start_weekday: string;
   secondary_calendar_type: string | null;
   secondary_calendar_language: string | null;
-  weekdates_display_direction: string | null;
+  weekdates_display_direction: string;
+  items_display_direction: string;
 }

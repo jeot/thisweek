@@ -68,7 +68,7 @@ function App() {
 
   const setMainCalConfig = (main_calendar_type: string, main_calendar_language: string, main_calendar_start_weekday: string, weekdates_display_direction: string) => {
     invoke("set_main_cal_config", { mainCalendarType: main_calendar_type, mainCalendarLanguage: main_calendar_language, mainCalendarStartWeekday: main_calendar_start_weekday, weekdatesDisplayDirection: weekdates_display_direction }).then((_result: any) => {
-      console.log("set_main_cal_config: ", _result);
+      // console.log("set_main_cal_config: ", _result);
       reloadConfig();
     });
   }
@@ -80,15 +80,14 @@ function App() {
     });
   }
 
-  // const itemsCount = (data?.items.length) ?? 0;
-  // const itemsRefs = useRef<Array<undefined | React.RefObject<unknown>>>(Array(0));
-  // console.log(itemsCount);
-  // if (itemsRefs.current.length != itemsCount) {
-  //   // add or remove refs
-  //   itemsRefs.current = Array(itemsCount) // make an empty slot array with defined length
-  //     .fill(undefined) // fill them all with undefined
-  //     .map((_, i) => itemsRefs.current[i] || createRef());
-  // }
+
+  const setItemsDisplayDirectionConfig = (items_direction: string) => {
+    console.log("hi ", items_direction);
+    invoke("set_items_display_direction_config", { itemsDirection: items_direction }).then((_result: any) => {
+      console.log("set_items_display_direction_config: ", _result);
+      reloadConfig();
+    });
+  }
 
   async function startBackendEventListenning() {
     const unlisten = await listen<EventPayload>('ConfigChanged', (_event) => {
@@ -530,6 +529,7 @@ function App() {
               reloadConfig={reloadConfig}
               setMainCalConfig={setMainCalConfig}
               setSecondaryCalConfig={setSecondaryCalConfig}
+              setItemsDisplayDirectionConfig={setItemsDisplayDirectionConfig}
               onNext={gotoNextTimePeriod}
               onPrevious={gotoPreviousTimePeriod}
               onSwitchYearCalendar={handleOnSwitchYearCalendar}

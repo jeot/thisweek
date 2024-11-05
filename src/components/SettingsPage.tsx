@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import './styles.css'
 import { SettingSection } from '../constants';
 import SettingGeneral from './SettingGeneral';
+import SettingDisplay from './SettingDisplay';
 import SettingKeymaps from './SettingKeymaps';
 import SettingAbout from './SettingAbout';
 import { getWeekAppVersion } from '../Globals';
@@ -23,38 +24,28 @@ export default function SettingsPage(props: any) {
       <div className="settings-navbar">
         <Typography variant="caption" align="center">SETTINGS</Typography>
         <Button
-          sx={btnSx}
-          disableElevation
-          disableRipple
+          sx={btnSx} disableElevation disableRipple
           variant={section === SettingSection.General ? "contained" : "outlined"}
           className="settings-navbar-btn"
           onClick={() => setSettingSection(SettingSection.General)}>
           General
         </Button>
-        {/*
-          <Button
-            sx={btnSx}
-            disableElevation
-            disableRipple
-            variant={section === SettingSection.Display ? "contained" : "outlined"}
-            className="settings-navbar-btn"
-            onClick={() => setSettingSection(SettingSection.Display)}>
-            Keymaps
-          </Button>
-        */}
         <Button
-          sx={btnSx}
-          disableElevation
-          disableRipple
+          sx={btnSx} disableElevation disableRipple
+          variant={section === SettingSection.Display ? "contained" : "outlined"}
+          className="settings-navbar-btn"
+          onClick={() => setSettingSection(SettingSection.Display)}>
+          Display
+        </Button>
+        <Button
+          sx={btnSx} disableElevation disableRipple
           variant={section === SettingSection.Keymaps ? "contained" : "outlined"}
           className="settings-navbar-btn"
           onClick={() => setSettingSection(SettingSection.Keymaps)}>
           Keymaps
         </Button>
         <Button
-          sx={btnSx}
-          disableElevation
-          disableRipple
+          sx={btnSx} disableElevation disableRipple
           variant={section === SettingSection.About ? "contained" : "outlined"}
           className="settings-navbar-btn"
           onClick={() => setSettingSection(SettingSection.About)}>
@@ -66,7 +57,7 @@ export default function SettingsPage(props: any) {
       </div>
       <div className="settings-content">
         {section == SettingSection.General && <SettingGeneral {...props} />}
-        {/*section == SettingSection.Display && <SettingDisplay {...props} />*/}
+        {section == SettingSection.Display && <SettingDisplay {...props} />}
         {section == SettingSection.Keymaps && <SettingKeymaps {...props} />}
         {section == SettingSection.About && <SettingAbout {...props} />}
       </div>

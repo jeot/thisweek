@@ -61,6 +61,8 @@ function GoalNoteItem(props: any) {
     return;
   }
 
+  if (props.config === undefined) return;
+
   const [editingText, setEditingText] = useState<string>(props.item.text);
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [menuAnchorPosition, setMenuAnchorPosition] = useState<{ top: number; left: number; } | null>(null);
@@ -71,7 +73,12 @@ function GoalNoteItem(props: any) {
   const status = props.item.status ?? false;
   let id = props.item.id;
   let kind = props.item.kind;
-  let dir = editing ? getDirection(editingText) : getDirection(fixedText);
+  let direction_setting = props.config.items_display_direction;
+  let dir_auto = editing ? getDirection(editingText) : getDirection(fixedText);
+  let dir = "ltr";
+  if (direction_setting === "rtl") dir = "rtl";
+  if (direction_setting === "ltr") dir = "ltr";
+  if (direction_setting === "auto") dir = dir_auto;
   const objective_tag = props.item.objective_tag;
 
   useEffect(() => {
