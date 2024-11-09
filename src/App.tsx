@@ -181,7 +181,7 @@ function App() {
       case Action.moveSelectedItemToPreviousTimePeriod: moveSelectedItemToPreviousTimePeriod(); break;
       case Action.displayWeeksPage: displayPage(Page.weeks); break;
       case Action.displayObjectivesPage: displayPage(Page.objectives); break;
-      case Action.switchObjectivesCalendar: switchObjectivesCalendar(); break;
+      case Action.switchYearsCalendar: handleOnSwitchYearCalendar(); break;
       case Action.copyAllItems: copyAllWeekItemsToClipboard(); break;
       case Action.backupDbFile: backupDbFile(); break;
       default:

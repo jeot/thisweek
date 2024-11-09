@@ -1,7 +1,4 @@
-import WeekHeader from "./WeekHeader.tsx";
-import ObjectivesHeader from "./ObjectivesHeader.tsx";
 import NewItem from "./NewItem.tsx";
-// import BasicSpeedDial from "./BasicSpeedDial.tsx";
 import ItemsList from "./ItemsList.tsx";
 import SettingsPage from "./SettingsPage.tsx";
 import AddIcon from '@mui/icons-material/Add';

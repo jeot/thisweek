@@ -73,7 +73,7 @@ export enum Action {
   moveSelectedItemToPreviousTimePeriod,
   displayWeeksPage,
   displayObjectivesPage,
-  switchObjectivesCalendar,
+  switchYearsCalendar,
   backupDbFile,
 };
 
