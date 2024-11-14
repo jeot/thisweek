@@ -57,7 +57,7 @@ function GoalNoteItem(props: any) {
   const { editing, selected, index, onEditSubmit, onEdit, onSelect, onToggleSelect, onDelete, onCancel, onToggle, onCopyText, onFocusLeave, onObjectiveTypeChanged } = props;
 
   if (props.item === null || props.item === undefined) {
-    console.log("item null");
+    // console.log("item null");
     return;
   }
 
@@ -142,18 +142,14 @@ function GoalNoteItem(props: any) {
   }
 
   const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (event: any) => {
-    if (editing && event.key === 'Enter' && event.shiftKey && kind == ItemKind.note) {
-      if (editingText == "") onCancel();
-      else {
-        /* here input field will automatically insert a new line! */
-      }
+    if (editing && event.key === 'Enter' && event.shiftKey) {
+      /* here input field will automatically insert a new line! */
     } else if (editing && event.key === 'Enter') {
-      if (editingText == "") onCancel();
-      else {
-        onEditSubmit(id, editingText);
-        setEditingText("");
-      }
+      event.preventDefault();
+      onEditSubmit(id, editingText);
+      setEditingText("");
     } else if (editing && event.key === 'Escape') {
+      event.preventDefault();
       onCancel();
       setEditingText("");
     } else { }

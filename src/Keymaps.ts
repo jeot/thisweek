@@ -27,6 +27,7 @@ export const KEYMAPS = [
   { mode: "N", mod: "Ctrl", keys: "ArrowRight", action: Action.moveSelectedItemToNextTimePeriod, desc: "Move Selected Item to Next Week/Year" },
   { mode: "N", mod: "Ctrl", keys: "ArrowLeft", action: Action.moveSelectedItemToPreviousTimePeriod, desc: "Move Selected Item to Previous Week/Year" },
   { mode: "N", mod: "Ctrl", keys: "C", action: Action.copySelectedItemText, desc: "Copy Text of Selected Item" },
+  { mode: "N", mod: "Ctrl", keys: ["N"], action: Action.newGoal, desc: "Create New Goal" },
   { mode: "N", mod: "", keys: ["N", "G"], action: Action.newGoal, desc: "Create New Goal" },
   { mode: "N", mod: "", keys: ["N", "N"], action: Action.newNote, desc: "Create New Note" },
   { mode: "N", mod: "", keys: ["C", "A"], action: Action.copyAllItems, desc: "Copy Text of all Items" },

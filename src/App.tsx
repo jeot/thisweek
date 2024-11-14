@@ -40,7 +40,7 @@ type EventPayload = {
 function App() {
 
   const [activePage, setActivePage, activePageRef] = useStateRef<number>(Page.weeks);
-  const [editingId, setEditingId] = useState<number>(ID.none);
+  const [editingId, setEditingId, editingIdRef] = useStateRef<number>(ID.none);
   const [selectedId, setSelectedId, selectedIdRef] = useStateRef<number>(ID.none);
   const [today, setToday, _todayRef] = useStateRef<Today>(today_init);
   const [data, setData, dataRef] = useStateRef<ItemsData>(items_data_init);
@@ -82,9 +82,9 @@ function App() {
 
 
   const setItemsDisplayDirectionConfig = (items_direction: string) => {
-    console.log("hi ", items_direction);
+    // console.log("hi ", items_direction);
     invoke("set_items_display_direction_config", { itemsDirection: items_direction }).then((_result: any) => {
-      console.log("set_items_display_direction_config: ", _result);
+      // console.log("set_items_display_direction_config: ", _result);
       reloadConfig();
     });
   }
@@ -131,6 +131,7 @@ function App() {
       setToday(result as Today);
     });
 
+    // console.time("get_week");
     if (activePageRef.current == Page.weeks) {
       invoke("get_week").then((result) => {
         // console.log("week");
@@ -139,6 +140,7 @@ function App() {
         // console.log(result.aux_week_info);
         // console.log(result.items);
         setData(result as ItemsData);
+        // console.timeEnd("get_week");
       });
     }
     if (activePageRef.current == Page.objectives) {
@@ -162,7 +164,7 @@ function App() {
       case Action.gotoPreviousWeek: gotoPreviousWeek(); break;
       case Action.gotoNextYear: gotoNextYear(); break;
       case Action.gotoPreviousYear: gotoPreviousYear(); break;
-      case Action.escapePressed: cancelEditingOrSelectionOrNewItem(); break;
+      case Action.escapePressed: escapePressed(); break;
       case Action.selectNextItem: selectNextItem(); break;
       case Action.selectPreviousItem: selectPreviousItem(); break;
       case Action.newGoal:
@@ -202,10 +204,19 @@ function App() {
     return index;
   }
 
-  const cancelEditingOrSelectionOrNewItem = function() {
-    setEditingId(ID.none);
-    setSelectedId(ID.none);
+  const escapePressed = function() {
+    console.log("escapePressed...");
+    if (editingIdRef.current !== ID.none)
+      setEditingId(ID.none);
+    else
+      setSelectedId(ID.none);
     Keyboard.set_insert_mode(false);
+  }
+
+  const cancelEditingOrNewItem = function() {
+    // console.log("cancel editing...");
+    // setEditingId(ID.none);
+    // Keyboard.set_insert_mode(false);
   }
 
   const handleOnEdit = function(id: number) {
@@ -234,7 +245,7 @@ function App() {
 
   const invoke_tauri_command_and_refresh_data = function(command: string, object: any) {
     invoke(command, object).then((_result) => {
-      // const log = `command: ${command} -> ${result ? "success" : "failed"}`;
+      // const log = `command: ${command} -> ${_result ? "success" : "failed"}`;
       // console.log(log);
       refreshData();
     });
@@ -251,7 +262,7 @@ function App() {
     // disable text field if it's for new goal/note input and is empty
     if (text != "") return;
     if (id == ID.new_item) {
-      cancelEditingOrSelectionOrNewItem();
+      cancelEditingOrNewItem();
     }
   }
 
@@ -389,23 +400,27 @@ function App() {
   }
 
   const handleOnNewSubmit = function(kind: number, text: string, keyboard_submit: boolean) {
-    // console.log("handleOnNewSubmit: ", kind, text);
-    if (kind == ItemKind.goal) {
-      invoke_tauri_command_and_refresh_data("add_new_item", { page: activePageRef.current, kind: kind, text: text });
-      if (!keyboard_submit) {
-        cancelEditingOrSelectionOrNewItem();
+    invoke("add_new_item", { page: activePageRef.current, kind: kind, text: text }).then((new_id) => {
+      const log = `command: add_new_item -> ${new_id}`;
+      console.log(log);
+      refreshData();
+      if (kind == ItemKind.note) {
+        setEditingId(ID.none);
+        Keyboard.set_insert_mode(false);
       }
-    } else if (kind == ItemKind.note) {
-      invoke_tauri_command_and_refresh_data("add_new_item", { page: activePageRef.current, kind: kind, text: text });
-      cancelEditingOrSelectionOrNewItem();
-    } else { }
+      setSelectedId(new_id as number);
+    }).catch((result) => {
+      const log = `Error: command: add_new_item -> ${result}`;
+      console.log(log);
+    });
   }
 
   const handleOnEditSubmit = function(id: number, text: string) {
     // console.log("handleOnEditSubmit: ", id, text);
     if (editingId == id) {
       invoke_tauri_command_and_refresh_data("edit_item_text", { id: id, text: text });
-      cancelEditingOrSelectionOrNewItem();
+      setEditingId(ID.none);
+      Keyboard.set_insert_mode(false);
     } else { }
   }
 
@@ -539,7 +554,7 @@ function App() {
               onSelect={handleOnSelect}
               onToggleSelect={handleOnToggleSelect}
               onDelete={handleOnDelete}
-              onCancel={cancelEditingOrSelectionOrNewItem}
+              onCancel={cancelEditingOrNewItem}
               onToggle={handleOnToggle}
               onCopyText={handleOnCopyText}
               onFocusLeave={handleOnFocusLeave}

@@ -14,10 +14,10 @@ const languages = {
 };
 
 const calendars = [
-  { id: 'Gregorian', name: 'Gregorian', defaultDir: 'ltr', defaultLang: languages.en, allowedLang: [languages.en, languages.fa, languages.zh, languages.ar] },
-  { id: 'Persian', name: 'Persian (هجری شمسی)', defaultDir: 'rtl', defaultLang: languages.fa, allowedLang: [languages.en, languages.fa] },
-  { id: 'Chinese', name: 'Chinese (中国农历)', defaultDir: 'ltr', defaultLang: languages.zh, allowedLang: [languages.en, languages.zh] },
-  { id: 'Arabic', name: 'Arabic (الهجري القمري)', defaultDir: 'rtl', defaultLang: languages.ar, allowedLang: [languages.en, languages.ar] },
+  { id: 'Gregorian', name: 'Gregorian', defaultDir: 'ltr', defaultStartWeekDay: 'MON', defaultLang: languages.en, allowedLang: [languages.en, languages.fa, languages.zh, languages.ar] },
+  { id: 'Persian', name: 'Persian (هجری شمسی)', defaultDir: 'rtl', defaultStartWeekDay: 'SAT', defaultLang: languages.fa, allowedLang: [languages.en, languages.fa] },
+  { id: 'Chinese', name: 'Chinese (中国农历)', defaultDir: 'ltr', defaultStartWeekDay: 'MON', defaultLang: languages.zh, allowedLang: [languages.en, languages.zh] },
+  { id: 'Arabic', name: 'Arabic (الهجري القمري)', defaultDir: 'rtl', defaultStartWeekDay: 'SUN', defaultLang: languages.ar, allowedLang: [languages.en, languages.ar] },
 ];
 
 
@@ -48,8 +48,9 @@ export default function SettingGeneral(props: any) {
   const handleMainCalendarChange = (event: SelectChangeEvent) => {
     const mainCal = event.target.value;
     const mainCalLang = calendars.find((cal) => { return (cal.id === mainCal); })?.defaultLang.code;
+    const mainCalStartWeekDay = calendars.find((cal) => { return (cal.id === mainCal); })?.defaultStartWeekDay;
     const weekdatesDisplayDir = calendars.find((cal) => { return (cal.id === mainCal); })?.defaultDir;
-    props.setMainCalConfig(mainCal, mainCalLang, config.main_calendar_start_weekday, weekdatesDisplayDir);
+    props.setMainCalConfig(mainCal, mainCalLang, mainCalStartWeekDay, weekdatesDisplayDir);
   };
 
   const handleMainCalendarLanguageChange = (event: SelectChangeEvent) => {

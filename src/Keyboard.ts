@@ -47,7 +47,7 @@ const eventKeyCodeMatch = (keys: string | Array<string>, event: KeyboardEvent): 
     if (i >= keys.length)
       return { codematch: false, sequence_finished: true };
     if (arrayStartsWithSecondArray(keys, sequence_array) && keys[i] === code) {
-      console.log(keys, i, code);
+      // console.log(keys, i, code);
       if (i == (keys.length - 1))
         return { codematch: true, sequence_finished: true };
       if (i < (keys.length - 1))
@@ -67,11 +67,11 @@ const checkKeyWithKeymapIndex = (i: number, event: KeyboardEvent): { matched: bo
     return { matched: false, finished: true };
   }
   if (modmach && codematch && !sequence_finished) { // sequence started or is not finished yet
-    console.log('sequence');
+    // console.log('sequence');
     return { matched: true, finished: false };
   }
   if (modmach && codematch && sequence_finished) { // all sequence is done
-    console.log('done');
+    // console.log('done');
     // console.log(KEYMAPS[i].desc);
     // broadcastAction(KEYMAPS[i].action);
     return { matched: true, finished: true };
@@ -88,11 +88,11 @@ const handleUserKeyPress = (event: KeyboardEvent) => {
     const { matched, finished } = checkKeyWithKeymapIndex(i, event);
     if (matched && finished) {
       event.preventDefault();
-      console.log(KEYMAPS[i].desc);
+      // console.log(KEYMAPS[i].desc);
       broadcastAction(KEYMAPS[i].action);
       break; // break on valid sequence or match
     } else if (finished) { // this didn't match, go to next one.
-      console.log(".");
+      // console.log(".");
     } else if (matched) { // correct key in a sequence,
       reset = false;
       event.preventDefault();
@@ -105,7 +105,7 @@ const handleUserKeyPress = (event: KeyboardEvent) => {
   }
   if (reset && sequence_array.length != 0) {
     sequence_array.length = 0;
-    console.log("sequence reset");
+    // console.log("sequence reset");
   }
 }
 

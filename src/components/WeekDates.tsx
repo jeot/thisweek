@@ -7,7 +7,6 @@ export default function WeekDates(props: any) {
   const today: DateView = props.today.main_date_view;
   const aux_week_info: WeekInfo = props.data.week_info_aux;
   const direction = props.config.weekdates_display_direction;
-  console.log(direction);
   const date_view_elements = week_info.dates.map((dw: DateView, i: number) => {
     const dayClass = dw.unix_day == today.unix_day ? "week-header-date-day week-header-date-day-today" : "week-header-date-day";
     const weekdayClass = dw.unix_day == today.unix_day ? "week-header-date-weekday week-header-date-weekday-today" : "week-header-date-weekday";

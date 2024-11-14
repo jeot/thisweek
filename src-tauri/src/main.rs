@@ -2,6 +2,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 use once_cell::sync::OnceCell;
 use std::sync::Mutex;
+use std::time::Instant;
 use tauri::{AppHandle, Manager, State};
 use weeks_core::calendar::Calendar;
 use weeks_core::calendar::CalendarView;
@@ -18,7 +19,7 @@ struct EventPayload {
 static GLOBAL_APP_HANDLE: OnceCell<AppHandle> = OnceCell::new();
 
 // this execute on my other script
-pub fn send_event_to_frontend(name: &str, payload: &EventPayload) {
+fn send_event_to_frontend(name: &str, payload: &EventPayload) {
     if let Some(app_handle) = GLOBAL_APP_HANDLE.get() {
         app_handle.emit_all(name, payload.clone()).unwrap();
     }
@@ -27,7 +28,7 @@ pub fn send_event_to_frontend(name: &str, payload: &EventPayload) {
 fn config_changed_callback() {
     println!("config file changed!");
     // we need to triger the config to be reloaded
-    config::init_config();
+    let _ = config::init_config();
     // we need to reload the backend data
     refresh_data();
     // send command to front to be reloaded!
@@ -63,7 +64,7 @@ struct MyAppState {
 #[tauri::command]
 fn get_today(state: State<MyAppState>) -> Today {
     let mut today = state.today.lock().unwrap();
-    today.update();
+    let _ = today.update();
     today.clone()
 }
 
@@ -184,21 +185,24 @@ fn switch_objectives_calendar(page: i32, state: State<MyAppState>) -> bool {
 }
 
 // related to item manipulations
+
+// return the result with newly item's id
 #[tauri::command]
-fn add_new_item(page: i32, kind: i32, text: String, state: State<MyAppState>) -> bool {
+fn add_new_item(page: i32, kind: i32, text: String, state: State<MyAppState>) -> i32 {
     if page == LIST_TYPE_WEEKS {
         let mut week = state.week.lock().unwrap();
         let result = week.add_new_item(kind, text);
         let _ = week.update();
-        result.is_ok()
+        result.unwrap_or(-1)
     } else {
         let mut year = state.year.lock().unwrap();
         let result = year.add_new_item(kind, text);
         let _ = year.update();
-        result.is_ok()
+        result.unwrap_or(-1)
     }
 }
 
+// takes around 10-15ms in develpe mode!
 #[tauri::command]
 fn delete_item(id: i32, state: State<MyAppState>) -> bool {
     let result = db_sqlite::remove_item(id);

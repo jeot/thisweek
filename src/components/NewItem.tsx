@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import IconButton from '@mui/material/IconButton';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -16,12 +16,17 @@ export default function NewItem(props: any) {
   const [editingText, setEditingText] = useState<string>("");
   const [kind, setKind] = useState<number>(initKind);
 
+  const textFieldRef = useRef<any>(null);
+
   const handleChange = (
     _event: React.MouseEvent<HTMLElement>,
     newKind: number,
   ) => {
     if (newKind != null)
       setKind(newKind);
+    if (textFieldRef.current) {
+      textFieldRef.current.focus();
+    }
   };
 
   let direction_setting = props.config.items_display_direction;
@@ -41,27 +46,31 @@ export default function NewItem(props: any) {
   }
 
   const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (event: React.KeyboardEvent) => {
-    // only allow Enter or Shift-Enter
+    // ignore Enter with other mod-keys
     if (event.key === 'Enter' && (event.ctrlKey || event.altKey || event.metaKey)) {
       event.preventDefault();
       return;
     }
-    if (event.key === 'Enter' && event.shiftKey && kind == ItemKind.note) {
-      if (editingText == "") onCancel();
-      else {
-        /* here input field will automatically insert a new line! */
-      }
-    } else if (event.key === 'Enter') {
-      if (editingText == "") onCancel();
-      else {
-        console.log("text", editingText);
-        onSubmit(kind, editingText, true);
-        setEditingText("");
-        event.preventDefault();
-      }
-    } else if (event.key === 'Escape') {
+    let escape = false;
+    let enter = false;
+    let shift = false;
+    if (event.key === 'Escape') escape = true;
+    if (event.key === 'Enter') enter = true;
+    if (event.shiftKey) shift = true;
+
+    if ((enter) && editingText == "") {
+      event.preventDefault();
       onCancel();
+      return;
+    }
+    if (enter && !shift) {
+      // console.log("submitting text: ", editingText);
+      onSubmit(kind, editingText, true);
       setEditingText("");
+      event.preventDefault();
+    } else if (escape) {
+      event.preventDefault();
+      onCancel();
     } else { }
   }
 
@@ -90,6 +99,7 @@ export default function NewItem(props: any) {
       <TextField
         dir={dir}
         variant="outlined"
+        inputRef={textFieldRef}
         size="small"
         className={style_input}
         inputProps={{ style: inputPropsStyle(kind) }}
