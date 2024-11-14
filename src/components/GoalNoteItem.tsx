@@ -54,14 +54,14 @@ const scrollIntoViewIfNeeded = (target: HTMLElement) => {
 };
 
 function GoalNoteItem(props: any) {
-  const { editing, selected, index, onEditSubmit, onEdit, onSelect, onToggleSelect, onDelete, onCancel, onToggle, onCopyText, onFocusLeave, onObjectiveTypeChanged } = props;
+  const { editing, selected, index, onEditSubmit, onEdit, onSelect, onToggleSelect, onDelete, onCancel, onToggle, onCopyText, onFocusLeave, onObjectiveTypeChanged, config } = props;
 
   if (props.item === null || props.item === undefined) {
     // console.log("item null");
     return;
   }
 
-  if (props.config === undefined) return;
+  if (config === undefined) return;
 
   const [editingText, setEditingText] = useState<string>(props.item.text);
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
@@ -73,7 +73,7 @@ function GoalNoteItem(props: any) {
   const status = props.item.status ?? false;
   let id = props.item.id;
   let kind = props.item.kind;
-  let direction_setting = props.config.items_display_direction;
+  let direction_setting = config.items_display_direction;
   let dir_auto = editing ? getDirection(editingText) : getDirection(fixedText);
   let dir = "ltr";
   if (direction_setting === "rtl") dir = "rtl";
