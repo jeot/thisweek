@@ -69,6 +69,7 @@ export default function NewItem(props: any) {
       setEditingText("");
       event.preventDefault();
     } else if (escape) {
+      event.stopPropagation();
       event.preventDefault();
       onCancel();
     } else { }

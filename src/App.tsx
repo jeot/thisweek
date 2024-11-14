@@ -205,7 +205,6 @@ function App() {
   }
 
   const escapePressed = function() {
-    console.log("escapePressed...");
     if (editingIdRef.current !== ID.none)
       setEditingId(ID.none);
     else
@@ -214,9 +213,8 @@ function App() {
   }
 
   const cancelEditingOrNewItem = function() {
-    // console.log("cancel editing...");
-    // setEditingId(ID.none);
-    // Keyboard.set_insert_mode(false);
+    setEditingId(ID.none);
+    Keyboard.set_insert_mode(false);
   }
 
   const handleOnEdit = function(id: number) {

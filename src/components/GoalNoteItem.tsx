@@ -150,6 +150,7 @@ function GoalNoteItem(props: any) {
       setEditingText("");
     } else if (editing && event.key === 'Escape') {
       event.preventDefault();
+      event.stopPropagation();
       onCancel();
       setEditingText("");
     } else { }
