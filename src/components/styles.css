@@ -341,6 +341,16 @@ div {
 	background-position: center;
 }
 
+/* /* Style for react-beautiful-dnd dragging state */
+*/
+/* .items-list [data-rbd-dragging-state="true"] { */
+/* 	background-color: rgba(0, 0, 0, 0.1); */
+/* 	background-color: red; */
+/* 	border-radius: 4px; */
+/* 	opacity: 0.8; */
+/* 	box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); */
+/* } */
+
 .items-list-empty {
 	background-size: 70% 70%;
 	background-repeat: no-repeat;

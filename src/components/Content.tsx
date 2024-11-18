@@ -12,10 +12,9 @@ import WeekDates from "./WeekDates.tsx";
 import YearsHeaderContent from "./YearsHeaderContent.tsx";
 
 export default function Content(props: any) {
-  const { page, editingId, newItemKind, config, reloadConfig, setMainCalConfig, setSecondaryCalConfig, setItemsDisplayDirectionConfig, onNewAction, onNewSubmit, onCancel } = props;
   return (
     <div className="content-section">
-      {page == Page.weeks &&
+      {props.page == Page.weeks &&
         <WeekYearHeader
           textNext="Next Week"
           textPrevious="Previous Week"
@@ -25,7 +24,7 @@ export default function Content(props: any) {
           <WeekDates {...props} />
         </WeekYearHeader>
       }
-      {page == Page.objectives &&
+      {props.page == Page.objectives &&
         <WeekYearHeader
           textNext="Next Year"
           textPrevious="Previous Year"
@@ -35,31 +34,32 @@ export default function Content(props: any) {
           <YearsHeaderContent title={props.data.title} onSwitchYearCalendar={props.onSwitchYearCalendar} />
         </WeekYearHeader>
       }
-      {(page == Page.weeks || page == Page.objectives) &&
+      {(props.page == Page.weeks || props.page == Page.objectives) &&
         <ItemsList
           items={props.data.items}
+          onDragAndDropEnd={props.onDragAndDropEnd}
           {...props}
         />
       }
-      {(page == Page.weeks || page == Page.objectives) && editingId == ID.none &&
+      {(props.page == Page.weeks || props.page == Page.objectives) && props.editingId == ID.none &&
         <Fab
           sx={{ position: 'fixed', bottom: 16, right: 16 }}
           size="medium" color="primary" aria-label="add"
-          onClick={() => { onNewAction(ItemKind.goal); }} >
+          onClick={() => { props.onNewAction(ItemKind.goal); }} >
           <AddIcon />
         </Fab>
       }
-      {(page == Page.weeks || page == Page.objectives) && editingId == ID.new_item &&
-        <NewItem initKind={newItemKind} onSubmit={onNewSubmit} onCancel={onCancel} config={config} />
+      {(props.page == Page.weeks || props.page == Page.objectives) && props.editingId == ID.new_item &&
+        <NewItem initKind={props.newItemKind} onSubmit={props.onNewSubmit} onCancel={props.onCancel} config={props.config} />
       }
 
-      {page == Page.settings &&
+      {props.page == Page.settings &&
         <SettingsPage
-          config={config}
-          reloadConfig={reloadConfig}
-          setMainCalConfig={setMainCalConfig}
-          setSecondaryCalConfig={setSecondaryCalConfig}
-          setItemsDisplayDirectionConfig={setItemsDisplayDirectionConfig}
+          config={props.config}
+          reloadConfig={props.reloadConfig}
+          setMainCalConfig={props.setMainCalConfig}
+          setSecondaryCalConfig={props.setSecondaryCalConfig}
+          setItemsDisplayDirectionConfig={props.setItemsDisplayDirectionConfig}
         />}
 
     </div>

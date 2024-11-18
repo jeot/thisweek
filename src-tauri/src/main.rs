@@ -293,6 +293,31 @@ fn move_down_selected_item(page: i32, id: i32, state: State<MyAppState>) -> bool
 }
 
 #[tauri::command]
+fn reorder_item(page: i32, src_index: usize, dest_index: usize, state: State<MyAppState>) -> bool {
+    let mut result = false;
+    if page == LIST_TYPE_WEEKS {
+        let mut week = state.week.lock().unwrap();
+        if let Some(Item{id, ..}) = week.items.get(src_index).as_ref() {
+            if let Ok(key) = week.generate_key_for_reordering_item_index(src_index, dest_index) {
+                let id: i32 = id.clone();
+                result = db_sqlite::update_item_week_ordering_key(id, key).is_ok()
+            }
+        }
+        let _ = week.update();
+    } else if page == LIST_TYPE_OBJECTIVES {
+        let mut year = state.year.lock().unwrap();
+        if let Some(Item{id, ..}) = year.items.get(src_index).as_ref() {
+            if let Ok(key) = year.generate_key_for_reordering_item_index(src_index, dest_index) {
+                let id: i32 = id.clone();
+                result = db_sqlite::update_item_year_ordering_key(id, key).is_ok()
+            }
+        }
+        let _ = year.update();
+    }
+    result
+}
+
+#[tauri::command]
 fn move_item_to_other_time_period_offset(
     page: i32,
     id: i32,
@@ -352,6 +377,7 @@ fn main() {
             switch_objectives_calendar,
             add_new_item,
             delete_item,
+            reorder_item,
             edit_item_text,
             toggle_item_state,
             change_item_objective_period,

@@ -57,6 +57,21 @@ function App() {
   //   setAppVersion(result);
   // });
 
+  const onDragAndDropEnd = (srcIndex: number, destIndex: number) => {
+    console.log("drag-and-drop!");
+    console.log(srcIndex);
+    console.log(destIndex);
+    if (srcIndex == destIndex) return;
+
+    // to avoid glitching, temporary rearange the items
+    const items = Array.from(data.items);
+    const [reorderedItem] = items.splice(srcIndex, 1);
+    items.splice(destIndex, 0, reorderedItem);
+    setData({ ...dataRef.current, items }); // Update only items while preserving other properties
+    // actually apply the change in the databsae, then refresh data
+    invoke_tauri_command_and_refresh_data("reorder_item", { page: activePageRef.current, srcIndex: srcIndex, destIndex: destIndex });
+  };
+
   const reloadConfig = () => {
     invoke("get_config").then((result: any) => {
       // console.log("get config: ", result);
@@ -254,14 +269,8 @@ function App() {
     invoke_tauri_command_and_refresh_data("toggle_item_state", { id: id });
   }
 
-  const handleOnFocusLeave = function({ id, text }: { id: number, text: string }) {
+  const handleOnFocusLeave = function() {
     // todo: don't cancel if the user clicks on note/goal buttons to change kind and text is still empty!
-    return;
-    // disable text field if it's for new goal/note input and is empty
-    if (text != "") return;
-    if (id == ID.new_item) {
-      cancelEditingOrNewItem();
-    }
   }
 
   const handleOnObjectiveTypeChanged = function(id: number, year: number, season: number | null, month: number | null) {
@@ -402,7 +411,7 @@ function App() {
       const log = `command: add_new_item -> ${new_id}`;
       console.log(log);
       refreshData();
-      if (kind == ItemKind.note) {
+      if (kind == ItemKind.note || !keyboard_submit) {
         setEditingId(ID.none);
         Keyboard.set_insert_mode(false);
       }
@@ -558,6 +567,7 @@ function App() {
               onFocusLeave={handleOnFocusLeave}
               onObjectiveTypeChanged={handleOnObjectiveTypeChanged}
               onNewAction={startCreatingNewItem}
+              onDragAndDropEnd={onDragAndDropEnd}
             />
           </div>
           {/* <div className="app-info">{appName}&nbsp;{appVersion}</div> */}

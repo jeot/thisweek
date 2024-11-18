@@ -138,7 +138,7 @@ function GoalNoteItem(props: any) {
   const onFocus = () => { }
 
   const onBlur = () => {
-    onFocusLeave({ id: id, text: editingText });
+    onFocusLeave();
   }
 
   const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (event: any) => {
@@ -173,6 +173,10 @@ function GoalNoteItem(props: any) {
       dir={dir}
       id={id}
       className={style_item}
+      sx={{
+        cursor: 'grab',
+        '&:active': { cursor: 'grabbing' }
+      }}
     >
       <Stack
         direction="row"
@@ -217,7 +221,13 @@ function GoalNoteItem(props: any) {
             dir={dir}
             size="small"
             className={style_input}
-            inputProps={{ style: inputPropsStyle(kind) }}
+            inputProps={{
+              style: inputPropsStyle(kind),
+              draggable: false,
+              sx: {
+                pointerEvents: editing ? 'auto' : 'none'
+              }
+            }}
             multiline={true}
             maxRows={(kind == ItemKind.note) ? 15 : 5}
             fullWidth
