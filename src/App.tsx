@@ -407,7 +407,8 @@ function App() {
   }
 
   const handleOnNewSubmit = function(kind: number, text: string, keyboard_submit: boolean) {
-    invoke("add_new_item", { page: activePageRef.current, kind: kind, text: text }).then((new_id) => {
+    const afterId: number | null = selectedIdRef.current >= 0 ? selectedIdRef.current : null;
+    invoke("add_new_item", { page: activePageRef.current, kind: kind, text: text, afterId: afterId }).then((new_id) => {
       const log = `command: add_new_item -> ${new_id}`;
       console.log(log);
       refreshData();
@@ -453,7 +454,7 @@ function App() {
 
   const startCreatingNewItem = function(itemKind: number) {
     if (editingId != ID.none) return;
-    setSelectedId(ID.none);
+    // setSelectedId(ID.none); // later we want to add new items after selected item
     setEditingId(ID.new_item);
     setNewItemKind(itemKind);
     Keyboard.set_insert_mode(true);

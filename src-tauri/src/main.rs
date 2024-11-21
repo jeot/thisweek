@@ -188,15 +188,15 @@ fn switch_objectives_calendar(page: i32, state: State<MyAppState>) -> bool {
 
 // return the result with newly item's id
 #[tauri::command]
-fn add_new_item(page: i32, kind: i32, text: String, state: State<MyAppState>) -> i32 {
+fn add_new_item(page: i32, kind: i32, text: String, after_id: Option<i32>, state: State<MyAppState>) -> i32 {
     if page == LIST_TYPE_WEEKS {
         let mut week = state.week.lock().unwrap();
-        let result = week.add_new_item(kind, text);
+        let result = week.add_new_item(kind, text, after_id);
         let _ = week.update();
         result.unwrap_or(-1)
     } else {
         let mut year = state.year.lock().unwrap();
-        let result = year.add_new_item(kind, text);
+        let result = year.add_new_item(kind, text, after_id);
         let _ = year.update();
         result.unwrap_or(-1)
     }

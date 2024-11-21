@@ -73,6 +73,7 @@ export default function ItemsList(props: ItemsListProps) {
       <StrictModeDroppable droppableId="droppable-items">
         {(provided) => (
           <div
+            id="items-list-id"
             className={listStyle}
             {...provided.droppableProps}
             ref={provided.innerRef}

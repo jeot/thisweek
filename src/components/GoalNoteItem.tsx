@@ -26,9 +26,9 @@ import GoalNoteItemMenu from "./GoalNoteItemMenu.tsx";
  */
 const scrollIntoViewIfNeeded = (target: HTMLElement) => {
   const itemTop = target.getBoundingClientRect().top;
-  // console.log("top", itemTop);
   const itemBot = target.getBoundingClientRect().bottom;
-  // console.log("bot", itemBot);
+  console.log("top", itemTop);
+  console.log("bot", itemBot);
   // console.log("window inner height", window.innerHeight);
   // console.log("window inner width", window.innerWidth);
   // console.log("doc height", document.documentElement.clientHeight);
@@ -36,7 +36,7 @@ const scrollIntoViewIfNeeded = (target: HTMLElement) => {
   // Target is outside the viewport from the bottom
   const itemsBoxTop = document.getElementById("items-list-id")?.getBoundingClientRect().top ?? 0;
   const itemsBoxBot = document.getElementById("items-list-id")?.getBoundingClientRect().bottom ?? 0;
-  // console.log(itemsBoxTop, itemsBoxBot);
+  console.log(itemsBoxTop, itemsBoxBot);
   if (itemBot > itemsBoxBot) {
     //  The bottom of the target will be aligned to the bottom of the visible area of the scrollable ancestor.
     // target.scrollIntoView(false);
