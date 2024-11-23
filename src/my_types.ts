@@ -44,6 +44,7 @@ export interface DateView {
   month: string;
   weekday: string;
   year: string;
+  full_format: string;
 };
 
 export interface Today {

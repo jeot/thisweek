@@ -35,6 +35,7 @@ export const date_view_init: DateView = {
   month: "",
   weekday: "",
   year: "",
+  full_format: ""
 };
 
 export const today_init: Today = {
