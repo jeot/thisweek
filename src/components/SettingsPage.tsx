@@ -53,7 +53,7 @@ export default function SettingsPage(props: any) {
         </Button>
 
         <div className="settings-navbar-spacer"></div>
-        <Typography variant="caption" align="center">WeeksApp v{version}</Typography>
+        <Typography variant="caption" align="center">This Week v{version}</Typography>
       </div>
       <div className="settings-content">
         {section == SettingSection.General && <SettingGeneral {...props} />}

@@ -1,17 +1,11 @@
 import './styles.css';
 import '../prototypes.ts';
-import { DateView, Today } from '../my_types.ts';
+import { Today } from '../my_types.ts';
 import { Chip } from '@mui/material';
 import TodayIcon from '@mui/icons-material/Today';
 
 export default function Header({ today, gotoToday }: { today: Today, gotoToday: VoidFunction }) {
   if (today === undefined) return;
-  // function build_date_string(dw: DateView | null) {
-  //   if (dw === null) return null;
-  //   else return `${dw.weekday} ${dw.day} ${dw.month} ${dw.year}`;
-  // }
-  // const main_date = build_date_string(today.main_date_view);
-  // const aux_date = build_date_string(today.aux_date_view);
   const main_date = today.main_date_view.full_format;
   const aux_date = today.aux_date_view?.full_format;
   return (

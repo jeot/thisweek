@@ -3,6 +3,41 @@
 version = 3
 
 [[package]]
+name = "ThisWeek"
+version = "0.0.7"
+dependencies = [
+ "ThisWeek_core",
+ "once_cell",
+ "serde",
+ "serde_json",
+ "tauri",
+ "tauri-build",
+]
+
+[[package]]
+name = "ThisWeek_core"
+version = "0.0.1"
+dependencies = [
+ "arc-swap",
+ "chinese-lunisolar-calendar",
+ "chrono",
+ "cuid2",
+ "diesel",
+ "homedir",
+ "icu",
+ "midstring",
+ "notify-debouncer-mini",
+ "once_cell",
+ "ptime",
+ "redb",
+ "rusqlite",
+ "serde",
+ "thiserror",
+ "time 0.1.45",
+ "toml 0.8.19",
+]
+
+[[package]]
 name = "addr2line"
 version = "0.21.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -703,12 +738,6 @@ dependencies = [
  "quote",
  "syn 2.0.48",
 ]
-
-[[package]]
-name = "dotenvy"
-version = "0.15.7"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1aaf95b3e5c8f23aa320147307562d361db0ae0d51242340f558153b4eb2439b"
 
 [[package]]
 name = "dsl_auto_type"
@@ -4329,42 +4358,6 @@ dependencies = [
  "windows 0.39.0",
  "windows-bindgen",
  "windows-metadata",
-]
-
-[[package]]
-name = "weeks"
-version = "0.0.0"
-dependencies = [
- "once_cell",
- "serde",
- "serde_json",
- "tauri",
- "tauri-build",
- "weeks_core",
-]
-
-[[package]]
-name = "weeks_core"
-version = "0.0.0"
-dependencies = [
- "arc-swap",
- "chinese-lunisolar-calendar",
- "chrono",
- "cuid2",
- "diesel",
- "dotenvy",
- "homedir",
- "icu",
- "midstring",
- "notify-debouncer-mini",
- "once_cell",
- "ptime",
- "redb",
- "rusqlite",
- "serde",
- "thiserror",
- "time 0.1.45",
- "toml 0.8.19",
 ]
 
 [[package]]

@@ -4,11 +4,11 @@ use once_cell::sync::OnceCell;
 use std::sync::Mutex;
 use std::time::Instant;
 use tauri::{AppHandle, Manager, State};
-use weeks_core::calendar::Calendar;
-use weeks_core::calendar::CalendarView;
-use weeks_core::language::Language;
-use weeks_core::week::WeekView;
-use weeks_core::year::YearView;
+use ThisWeek_core::calendar::Calendar;
+use ThisWeek_core::calendar::CalendarView;
+use ThisWeek_core::language::Language;
+use ThisWeek_core::week::WeekView;
+use ThisWeek_core::year::YearView;
 
 #[derive(Clone, serde::Serialize, Default)]
 struct EventPayload {
@@ -44,15 +44,15 @@ fn refresh_data() {
     }
 }
 
-use weeks_core::config;
-use weeks_core::db_sqlite;
-use weeks_core::models::AsItemsList;
-use weeks_core::models::*;
-use weeks_core::notify::Notify;
-use weeks_core::ordering::Ordering;
-use weeks_core::today::Today;
-use weeks_core::week::Week;
-use weeks_core::year::Year;
+use ThisWeek_core::config;
+use ThisWeek_core::db_sqlite;
+use ThisWeek_core::models::AsItemsList;
+use ThisWeek_core::models::*;
+use ThisWeek_core::notify::Notify;
+use ThisWeek_core::ordering::Ordering;
+use ThisWeek_core::today::Today;
+use ThisWeek_core::week::Week;
+use ThisWeek_core::year::Year;
 
 struct MyAppState {
     today: Mutex<Today>,
@@ -188,7 +188,13 @@ fn switch_objectives_calendar(page: i32, state: State<MyAppState>) -> bool {
 
 // return the result with newly item's id
 #[tauri::command]
-fn add_new_item(page: i32, kind: i32, text: String, after_id: Option<i32>, state: State<MyAppState>) -> i32 {
+fn add_new_item(
+    page: i32,
+    kind: i32,
+    text: String,
+    after_id: Option<i32>,
+    state: State<MyAppState>,
+) -> i32 {
     if page == LIST_TYPE_WEEKS {
         let mut week = state.week.lock().unwrap();
         let result = week.add_new_item(kind, text, after_id);
@@ -297,7 +303,7 @@ fn reorder_item(page: i32, src_index: usize, dest_index: usize, state: State<MyA
     let mut result = false;
     if page == LIST_TYPE_WEEKS {
         let mut week = state.week.lock().unwrap();
-        if let Some(Item{id, ..}) = week.items.get(src_index).as_ref() {
+        if let Some(Item { id, .. }) = week.items.get(src_index).as_ref() {
             if let Ok(key) = week.generate_key_for_reordering_item_index(src_index, dest_index) {
                 let id: i32 = id.clone();
                 result = db_sqlite::update_item_week_ordering_key(id, key).is_ok()
@@ -306,7 +312,7 @@ fn reorder_item(page: i32, src_index: usize, dest_index: usize, state: State<MyA
         let _ = week.update();
     } else if page == LIST_TYPE_OBJECTIVES {
         let mut year = state.year.lock().unwrap();
-        if let Some(Item{id, ..}) = year.items.get(src_index).as_ref() {
+        if let Some(Item { id, .. }) = year.items.get(src_index).as_ref() {
             if let Ok(key) = year.generate_key_for_reordering_item_index(src_index, dest_index) {
                 let id: i32 = id.clone();
                 result = db_sqlite::update_item_year_ordering_key(id, key).is_ok()
