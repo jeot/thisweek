@@ -28,7 +28,7 @@ fn send_event_to_frontend(name: &str, payload: &EventPayload) {
 fn config_changed_callback() {
     println!("config file changed!");
     // we need to triger the config to be reloaded
-    let _ = config::init_config();
+    let _ = config::reload_config_file();
     // we need to reload the backend data
     refresh_data();
     // send command to front to be reloaded!
@@ -353,13 +353,15 @@ fn backup_database_file(_state: State<MyAppState>) -> bool {
 fn main() {
     println!("Hello, tauri.");
 
+    db_sqlite::run_migrations();
+
     tauri::Builder::default()
         .manage(MyAppState {
             today: Mutex::new(Today::new()),
             week: Mutex::new(Week::new()),
             year: Mutex::new(Year::new()),
             notify: Mutex::new(Notify::new(
-                &config::default_config_path(),
+                &config::get_config_path(),
                 config_changed_callback,
             )),
         })
