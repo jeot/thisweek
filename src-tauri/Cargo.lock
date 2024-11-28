@@ -4,7 +4,7 @@ version = 3
 
 [[package]]
 name = "ThisWeek"
-version = "0.0.7"
+version = "0.0.8"
 dependencies = [
  "ThisWeek_core",
  "once_cell",
