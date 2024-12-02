@@ -1,3 +1,0 @@
-[submodule "thisweek_core"]
-	path = thisweek_core
-	url = git@gitlab.com:jeot/weeks_core.git
