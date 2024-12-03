@@ -4,10 +4,10 @@ import { open } from '@tauri-apps/api/shell';
 import './styles.css'
 
 const openLandingPage = () => {
-  open("https://www.google.com/")
+  open("https://planthisweek.com/")
 }
 const openGithubPage = () => {
-  open("https://www.github.com/")
+  open("https://github.com/jeot/thisweek")
 }
 
 export default function SettingAbout() {
