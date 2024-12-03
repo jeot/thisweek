@@ -4,11 +4,11 @@ use once_cell::sync::OnceCell;
 use std::sync::Mutex;
 use std::time::Instant;
 use tauri::{AppHandle, Manager, State};
-use ThisWeek_core::calendar::Calendar;
-use ThisWeek_core::calendar::CalendarView;
-use ThisWeek_core::language::Language;
-use ThisWeek_core::week::WeekView;
-use ThisWeek_core::year::YearView;
+use thisweek_core::calendar::Calendar;
+use thisweek_core::calendar::CalendarView;
+use thisweek_core::language::Language;
+use thisweek_core::week::WeekView;
+use thisweek_core::year::YearView;
 
 #[derive(Clone, serde::Serialize, Default)]
 struct EventPayload {
@@ -44,15 +44,15 @@ fn refresh_data() {
     }
 }
 
-use ThisWeek_core::config;
-use ThisWeek_core::db_sqlite;
-use ThisWeek_core::models::AsItemsList;
-use ThisWeek_core::models::*;
-use ThisWeek_core::notify::Notify;
-use ThisWeek_core::ordering::Ordering;
-use ThisWeek_core::today::Today;
-use ThisWeek_core::week::Week;
-use ThisWeek_core::year::Year;
+use thisweek_core::config;
+use thisweek_core::db_sqlite;
+use thisweek_core::models::AsItemsList;
+use thisweek_core::models::*;
+use thisweek_core::notify::Notify;
+use thisweek_core::ordering::Ordering;
+use thisweek_core::today::Today;
+use thisweek_core::week::Week;
+use thisweek_core::year::Year;
 
 struct MyAppState {
     today: Mutex<Today>,
