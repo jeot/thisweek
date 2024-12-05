@@ -131,8 +131,13 @@ fn set_items_display_direction_config(items_direction: String) -> bool {
 }
 
 #[tauri::command]
-fn set_database_file(filepath: String) -> bool {
-    config::set_database_file(filepath).is_ok()
+fn move_database(filepath: String) -> bool {
+    config::move_database(filepath).is_ok()
+}
+
+#[tauri::command]
+fn open_database(filepath: String) -> bool {
+    config::open_database(filepath).is_ok()
 }
 
 #[tauri::command]
@@ -371,7 +376,8 @@ fn main() {
             get_year,
             get_calendar_views,
             get_config,
-            set_database_file,
+            move_database,
+            open_database,
             set_main_cal_config,
             set_secondary_cal_config,
             set_items_display_direction_config,

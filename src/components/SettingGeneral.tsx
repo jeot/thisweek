@@ -1,7 +1,7 @@
 import { Button, FormControl, FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, Stack, Typography } from '@mui/material';
 import { ConfigView } from '../my_types';
 import { invoke } from "@tauri-apps/api/tauri";
-import { save } from '@tauri-apps/api/dialog';
+import { save, open } from '@tauri-apps/api/dialog';
 import './styles.css'
 
 
@@ -29,16 +29,37 @@ export default function SettingGeneral(props: any) {
   const handleChangeDatabaseLocation = () => {
     save({
       defaultPath: config.database,
-      title: "Choose a WeeksApp Database or a new Location...",
+      title: "Choose a new location and filename...",
       filters: [{
-        name: 'WeeksApp Database',
+        name: 'ThisWeek Database File',
         extensions: ['db']
       }]
     }).then((filepath) => {
       if (filepath !== null) {
-        console.log("chosen database filepath", filepath);
-        invoke("set_database_file", { filepath: filepath }).then((result: any) => {
-          console.log("set_database_filepath ", result);
+        console.log("move_database filepath:", filepath);
+        invoke("move_database", { filepath: filepath }).then((result: any) => {
+          console.log("move_database result:", result);
+        });
+      }
+      props.reloadConfig();
+    });
+  }
+
+  const handleOpenAnotherDatabase = () => {
+    open({
+      defaultPath: config.database,
+      title: "Open another databsae file",
+      directory: false,
+      multiple: false,
+      filters: [{
+        name: 'ThisWeek Database File',
+        extensions: ['db']
+      }]
+    }).then((filepath) => {
+      if (filepath !== null) {
+        console.log("open_database filepath:", filepath);
+        invoke("open_database", { filepath: filepath }).then((result: any) => {
+          console.log("open_database result:", result);
         });
       }
       props.reloadConfig();
@@ -82,14 +103,23 @@ export default function SettingGeneral(props: any) {
 
   return (
     <div className="setting-content-general">
-      <Typography variant="h5">Database Location</Typography>
-      <Typography variant="body2" color="textSecondary">{config.database}</Typography>
-      <Button variant="outlined" size='small' onClick={handleChangeDatabaseLocation}>Switch Database or Change Location</Button>
-
-      <Typography variant="h5">&nbsp;</Typography>
-      <Typography variant="h5">Main Calendar</Typography>
 
       <div className="form-control-group">
+        <Typography variant="h5">Database Location</Typography>
+        <Typography variant="body2" color="textSecondary">{config.database}</Typography>
+        <FormControl size="small" sx={{ m: 1, minWidth: 180 }}>
+          <Stack direction="row">
+            <Button variant="outlined" size='small' onClick={handleChangeDatabaseLocation}>Move Database Location</Button>
+            <span>&nbsp;</span>
+            <Button variant="outlined" size='small' onClick={handleOpenAnotherDatabase}>Open Another Database</Button>
+          </Stack>
+        </FormControl>
+      </div>
+
+
+      <div className="form-control-group">
+        <Typography variant="h5">&nbsp;</Typography>
+        <Typography variant="h5">Main Calendar</Typography>
         <Stack>
           <FormControl size="small" sx={{ m: 1, minWidth: 180 }}>
             <InputLabel id="main-cal-select-label">Calendar</InputLabel>
@@ -157,10 +187,10 @@ export default function SettingGeneral(props: any) {
         </Stack>
       </div>
 
-      <Typography variant="h5">&nbsp;</Typography>
-      <Typography variant="h5">Secondary Calendar</Typography>
 
       <div className="form-control-group">
+        <Typography variant="h5">&nbsp;</Typography>
+        <Typography variant="h5">Secondary Calendar</Typography>
         <FormControl size="small" sx={{ m: 1, minWidth: 180 }}>
           <InputLabel id="secondary-cal-select-label">Calendar</InputLabel>
           <Select
@@ -195,6 +225,6 @@ export default function SettingGeneral(props: any) {
           </FormControl>
         }
       </div>
-    </div>
+    </div >
   );
 }
