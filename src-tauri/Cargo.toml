@@ -1,6 +1,6 @@
 [package]
 name = "thisweek"
-version = "0.0.10"
+version = "0.0.11"
 description = "A Weekly Task Manager with Yearly Objectives"
 authors = ["Shamim Keshani <sh.keshani@gmail.com>"]
 edition = "2021"
