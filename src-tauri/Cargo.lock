@@ -3860,7 +3860,9 @@ dependencies = [
 
 [[package]]
 name = "thisweek-core"
-version = "0.1.0"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "954764acf1accc39be3e06071fdae180e1d2dfbaa74f670148bfd090dabbee6c"
 dependencies = [
  "arc-swap",
  "chinese-lunisolar-calendar",
