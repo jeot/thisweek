@@ -19,7 +19,7 @@ jobs:
             args: '--target aarch64-apple-darwin'
           - platform: 'macos-latest' # for Intel based macs.
             args: '--target x86_64-apple-darwin'
-          - platform: 'ubuntu-20.04' # for Tauri v1 ubuntu-20.04, for v2 ubuntu-22.04
+          - platform: 'ubuntu-22.04' # for Tauri v1 ubuntu-20.04, for v2 ubuntu-22.04
             args: ''
           - platform: 'windows-latest'
             args: ''
@@ -50,7 +50,9 @@ jobs:
       - name: install frontend dependencies
         run: npm install
 
+      - name: install some things for mac
+        if: matrix.platform == 'macos-latest' # This must match the platform value defined above.
+        run: npm i @tauri-apps/cli-darwin-arm64
+
       - uses: JonasKruckenberg/tauri-build@tauri-build-v1.5.11
         id: tauri_build
-        with:
-          target: ${{ matrix.platform.rust_target }}
