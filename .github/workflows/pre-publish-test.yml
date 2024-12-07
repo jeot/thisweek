@@ -22,8 +22,8 @@ jobs:
           - platform: 'ubuntu-20.04' # for Tauri v1 ubuntu-20.04, for v2 ubuntu-22.04
             args: ''
           - platform: 'windows-latest'
-            args: ''    
-    
+            args: ''
+
     runs-on: ${{ matrix.platform.os }}
     steps:
       - uses: actions/checkout@v4
