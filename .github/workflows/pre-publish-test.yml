@@ -37,10 +37,10 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           # Those targets are only used on macos runners so it's in an `if` to slightly speed up windows and linux builds.
-          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+          targets: ${{ matrix.platform.os == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
       - name: install dependencies (ubuntu only)
-        if: matrix.platform == 'ubuntu-22.04' # This must match the platform value defined above.
+        if: matrix.platform.os == 'ubuntu-22.04' # This must match the platform value defined above.
         run: |
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.0-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libgtk-3-dev webkit2gtk-4.0
@@ -51,7 +51,7 @@ jobs:
         run: npm install
 
       - name: install Tauri cli for mac
-        if: matrix.platform == 'macos-latest' # This must match the platform value defined above.
+        if: matrix.platform.os == 'macos-latest' # This must match the platform value defined above.
         run: npm install --save-dev @tauri-apps/cli
 
       - uses: JonasKruckenberg/tauri-build@v1.2.2
