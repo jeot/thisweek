@@ -1,44 +1,18 @@
-            - name: kingmojang-app-action
+            - name: tauri-build
   # You may pin to the exact commit or the version.
-  # uses: canyonfrs/kingmojang-app-action@7e817df4e54b0de733742fb1cac9240020302e22
-  
-  uses: canyonfrs/kingmojang-app-action@v0.1.0
-  
+  # uses: JonasKruckenberg/tauri-build@406f9292d464c04add8c74e8ed1ed4105b91a20e
+  uses: JonasKruckenberg/tauri-build@v1.0.3
   with:
-    # The id of the release to upload artifacts as release assets
-    releaseId: # optional
-    # The tag name of the release to create
-    tagName: # optional
-    # The name of the release to create
-    releaseName: # optional
-    # The body of the release to create
-    releaseBody: # optional
-    # Whether the release to create is a draft or not
-    releaseDraft: # optional, default is false
-    # Whether the release to create is a prerelease or not
-    prerelease: # optional, default is false
-    # Any branch or commit SHA the Git tag is created from, unused if the Git tag already exists. Default: SHA of current commit
-    releaseCommitish: # optional
-    # path to the root of the project that will be built
-    projectPath: # optional, default is .
-    # path to the distributable folder with your index.html and JS/CSS
-    distPath: # optional
-    # path to the PNG icon to use as app icon, relative to the projectPath
-    iconPath: # optional
-    # whether to include a debug build or not
-    includeDebug: # optional, default is false
-    # whether to include a release build or not
-    includeRelease: # optional, default is true
-    # whether to upload a static JSON file for the updater using GitHub Releases as the CDN
-    includeUpdaterJson: # optional, default is true
-    # whether the action will use the NSIS (setup.exe) or WiX (.msi) bundles for the updater JSON if both types exist. Will default to false for Tauri v1 and true for Tauri v2+
-    updaterJsonPreferNsis: # optional
-    # whether the updater JSON file should add universal macOS as darwin-universal on top of using it in the darwin-aarch64 and darwin-x86_64 fields if no native builds exist.
-    updaterJsonKeepUniversal: # optional, default is false
-    # the script to run to build the Tauri app
-    tauriScript: # optional
-    # arguments for the tauri command
+    # Binary to use to build the application
+    runner: # optional
+    # Additional arguments for the build command
     args: # optional
-    # the bundle identifier to inject when initializing the Tauri app
-    bundleIdentifier: # optional
+    # Path to the root of the project
+    projectPath: # optional
+    # Path to the tauri.conf.json file if you want a configuration different from the default one
+    configPath: # optional
+    # The target triple to build against
+    target: # optional
+    # Builds with the debug flag
+    debug: # optional
           
