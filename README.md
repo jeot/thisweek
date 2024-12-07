@@ -1,10 +1,21 @@
+
+<p align="center">
+    <img width="200" alt="ThisWeek Logo" src="./src-tauri/icons/icon.png">
+</p>
+
+<h1 align="center">ThisWeek - A weekly, multi-calendar, cross-platform, task-management application</h1>
+
+<p align="center">
+  <img alt="ThisWeek - A weekly, multi-calendar, cross-platform, task-management application"
+       width="700" src="./extra/screenshots/v0.1.0/s1.png">
+</p>
+
 # ThisWeek
 
 Weekly task-management desktop app designed to help you organize, track, and achieve your goals and objectives with an intuitive weekly/yearly calendar interface.
 
-![s1](./extra/screenshots/v0.1.0/s1.png)
-
 ## Features
+
 - **Task Management**: Create goals (tasks) for each week, edit, and mark them as complete.
 - **Note Taking**: Keep important notes within the week (near your related goals).
 - **Calendar View (Weekly)**: Visualize and navigate your goals/notes on a weekly calendar-like interface.
@@ -20,12 +31,20 @@ Go to the release section to download and install.
 
 ## Screenshots
 
-![s2](./extra/screenshots/v0.1.0/s2.png)
-![s3](./extra/screenshots/v0.1.0/s3.png)
-![s4](./extra/screenshots/v0.1.0/s4.png)
-![s5](./extra/screenshots/v0.1.0/s5.png)
-![s6](./extra/screenshots/v0.1.0/s6.png)
-![s7](./extra/screenshots/v0.1.0/s7.png)
+<table>
+  <tr>
+    <td style="padding: 10px;"><img src="./extra/screenshots/v0.1.0/s2.png" alt="Tile 1" width="400"></td>
+    <td style="padding: 10px;"><img src="./extra/screenshots/v0.1.0/s3.png" alt="Tile 2" width="400"></td>
+  </tr>
+  <tr>
+    <td style="padding: 10px;"><img src="./extra/screenshots/v0.1.0/s4.png" alt="Tile 3" width="400"></td>
+    <td style="padding: 10px;"><img src="./extra/screenshots/v0.1.0/s5.png" alt="Tile 4" width="400"></td>
+  </tr>
+  <tr>
+    <td style="padding: 10px;"><img src="./extra/screenshots/v0.1.0/s6.png" alt="Tile 5" width="400"></td>
+    <td style="padding: 10px;"><img src="./extra/screenshots/v0.1.0/s7.png" alt="Tile 6" width="400"></td>
+  </tr>
+</table>
 
 ## Building in Develpement
 
