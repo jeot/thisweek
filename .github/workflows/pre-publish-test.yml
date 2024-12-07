@@ -50,9 +50,9 @@ jobs:
       - name: install frontend dependencies
         run: npm install
 
-      - name: install some things for mac
+      - name: install Tauri cli for mac
         if: matrix.platform == 'macos-latest' # This must match the platform value defined above.
-        run: npm i @tauri-apps/cli-darwin-arm64
+        run: npm install --save-dev @tauri-apps/cli
 
       - uses: JonasKruckenberg/tauri-build@v1.2.2
         id: tauri_build
