@@ -1,2 +1,0 @@
-- name: tauri-build
-  uses: JonasKruckenberg/tauri-build@tauri-build-v1.5.11
