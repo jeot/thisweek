@@ -1,8 +1,6 @@
 // https://styled-icons.dev/
 import styled from 'styled-components'
-// import { Calendar2Week as WeekIcon } from '@styled-icons/bootstrap/Calendar2Week'
 import { CalendarWeek as WeekIcon } from '@styled-icons/fa-solid/CalendarWeek'
-// import { Target as TargetsIcon } from '@styled-icons/fluentui-system-regular/Target'
 import { CalendarStar as TargetsIcon } from '@styled-icons/fluentui-system-filled/CalendarStar'
 import { Settings as SettingsIcon } from '@styled-icons/fluentui-system-regular/Settings'
 
