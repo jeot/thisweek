@@ -1,6 +1,6 @@
 import { Button, Typography } from '@mui/material';
 import { getWeekAppVersion } from '../Globals';
-import { open } from '@tauri-apps/api/shell';
+import { open } from '@tauri-apps/plugin-shell';
 import './styles.css'
 
 const openLandingPage = () => {

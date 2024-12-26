@@ -1,7 +1,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 use once_cell::sync::OnceCell;
 use std::sync::Mutex;
-use std::time::Instant;
+use tauri::Emitter;
 use tauri::{AppHandle, Manager, State};
 use thisweek_core::calendar::Calendar;
 use thisweek_core::calendar::CalendarView;
@@ -20,14 +20,14 @@ static GLOBAL_APP_HANDLE: OnceCell<AppHandle> = OnceCell::new();
 // this execute on my other script
 fn send_event_to_frontend(name: &str, payload: &EventPayload) {
     if let Some(app_handle) = GLOBAL_APP_HANDLE.get() {
-        app_handle.emit_all(name, payload.clone()).unwrap();
+        app_handle.emit(name, payload.clone()).unwrap();
     }
 }
 
 fn config_changed_callback() {
     println!("config file changed!");
     // we need to triger the config to be reloaded
-    let _ = config::reload_config_file();
+    config::reload_config_file();
     // we need to reload the backend data
     refresh_data();
     // send command to front to be reloaded!
@@ -360,6 +360,8 @@ pub fn run() {
     db_sqlite::run_migrations();
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_shell::init())
         .manage(MyAppState {
             today: Mutex::new(Today::new()),
             week: Mutex::new(Week::new()),

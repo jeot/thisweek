@@ -1,5 +1,5 @@
 import { CalendarView } from "./my_types";
-import { invoke } from "@tauri-apps/api/tauri";
+import { invoke } from "@tauri-apps/api/core";
 import { getVersion } from '@tauri-apps/api/app';
 
 let mainCalendarView: CalendarView;

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { useState, useEffect } from "react";
 import useStateRef from 'react-usestateref'
-import { invoke } from "@tauri-apps/api/tauri";
-import { appWindow } from '@tauri-apps/api/window'
+import { invoke } from "@tauri-apps/api/core";
+import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow'
 
 import { listen } from "@tauri-apps/api/event";
 
@@ -30,6 +30,7 @@ import * as Globals from "./Globals.ts"
 import { Action, ID, ItemKind, Page } from './constants.ts';
 import type { Today, ItemView, ItemsData, ConfigView } from "./my_types.ts"
 import { items_data_init, today_init } from './my_types_init.ts';
+const appWindow = getCurrentWebviewWindow()
 
 // same type as payload
 type EventPayload = {

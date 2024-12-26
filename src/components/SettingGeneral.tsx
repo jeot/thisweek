@@ -1,7 +1,7 @@
 import { Button, FormControl, FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, Stack, Typography } from '@mui/material';
 import { ConfigView } from '../my_types';
-import { invoke } from "@tauri-apps/api/tauri";
-import { save, open } from '@tauri-apps/api/dialog';
+import { invoke } from "@tauri-apps/api/core";
+import { save, open } from '@tauri-apps/plugin-dialog';
 import './styles.css'
 
 
