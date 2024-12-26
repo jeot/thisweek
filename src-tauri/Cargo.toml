@@ -5,7 +5,9 @@ description = "A Weekly Task Manager with Yearly Objectives"
 authors = ["Shamim Keshani <sh.keshani@gmail.com>"]
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "thisweek_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]
 tauri-build = { version = "1.5", features = [] }
