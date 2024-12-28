@@ -205,7 +205,7 @@ function GoalNoteItem(props: any) {
             className={style_input}
             inputProps={{ style: inputPropsStyle(kind), ref: inputRef }}
             multiline={true}
-            maxRows={(kind == ItemKind.note) ? 15 : 5}
+            maxRows={100}
             fullWidth
             autoFocus
             onFocus={onFocus}
@@ -229,7 +229,7 @@ function GoalNoteItem(props: any) {
               }
             }}
             multiline={true}
-            maxRows={(kind == ItemKind.note) ? 15 : 5}
+            maxRows={100}
             fullWidth
             value={fixedText}
             onMouseDown={() => { onToggleSelect(id); }}

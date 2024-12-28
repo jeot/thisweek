@@ -105,7 +105,7 @@ export default function NewItem(props: any) {
         className={style_input}
         inputProps={{ style: inputPropsStyle(kind) }}
         multiline={true}
-        maxRows={(kind == ItemKind.note) ? 15 : 5}
+        maxRows={7}
         fullWidth
         autoFocus
         onFocus={onFocus}
