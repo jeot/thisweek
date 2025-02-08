@@ -31,8 +31,7 @@
         "resizable": true,
         "title": "This Week",
         "width": 800,
-        "height": 600,
-        "useHttpsScheme": true
+        "height": 600
       }
     ]
   }
