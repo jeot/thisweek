@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Page } from "../constants";
 import { ItemView } from "../my_types";
 import GoalNoteItem from "./GoalNoteItem";
-import { DragDropContext, Droppable, DroppableProps, Draggable, DropResult } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, DroppableProps, Draggable, DropResult, ResponderProvided, DragStart } from 'react-beautiful-dnd';
 
 
 interface ItemsListProps {
@@ -58,6 +58,14 @@ export default function ItemsList(props: ItemsListProps) {
   }, [props.items.length, props.page]);
 
 
+  const onDragStart = (start: DragStart, provided: ResponderProvided) => {
+    console.log(start);
+    console.log(provided);
+    const id: number = Number(start.draggableId);
+    if (Number.isNaN(id)) return;
+    props.onSelect(id);
+  }
+
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) return;
     props.onDragAndDropEnd(result.source.index, result.destination.index);
@@ -69,7 +77,7 @@ export default function ItemsList(props: ItemsListProps) {
   };
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
+    <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
       <StrictModeDroppable droppableId="droppable-items">
         {(provided) => (
           <div
@@ -77,6 +85,11 @@ export default function ItemsList(props: ItemsListProps) {
             className={listStyle}
             {...provided.droppableProps}
             ref={provided.innerRef}
+            onClick={(e) => {
+              if (e.target === e.currentTarget) {
+                console.log("hi");
+              }
+            }}
           // style={{ border: snapshot.isDraggingOver ? 'solid 1px' : 'none' }}
           >
             {props.items.map((item: ItemView, index: number) => {
