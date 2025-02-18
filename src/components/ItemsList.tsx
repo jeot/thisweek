@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { Page } from "../constants";
 import { ItemView } from "../my_types";
 import GoalNoteItem from "./GoalNoteItem";
-import { DragDropContext, Droppable, DroppableProps, Draggable, DropResult, ResponderProvided, DragStart } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, DroppableProps, Draggable, DropResult, DragStart } from 'react-beautiful-dnd';
 
+import { eventEmitter } from "../eventEmitter.ts"
 
 interface ItemsListProps {
   items: ItemView[];
@@ -11,6 +12,7 @@ interface ItemsListProps {
   selectedId?: number;
   page: Page;
   config: any;
+  onCancelSelect: () => void;
   onEditSubmit: (id: number, text: string) => void;
   onEdit: (id: number) => void;
   onSelect: (id: number) => void;
@@ -58,9 +60,7 @@ export default function ItemsList(props: ItemsListProps) {
   }, [props.items.length, props.page]);
 
 
-  const onDragStart = (start: DragStart, provided: ResponderProvided) => {
-    console.log(start);
-    console.log(provided);
+  const onDragStart = (start: DragStart) => {
     const id: number = Number(start.draggableId);
     if (Number.isNaN(id)) return;
     props.onSelect(id);
@@ -69,6 +69,7 @@ export default function ItemsList(props: ItemsListProps) {
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) return;
     props.onDragAndDropEnd(result.source.index, result.destination.index);
+    props.onCancelSelect();
 
     // const items = Array.from(yourItemsArray);
     // const [reorderedItem] = items.splice(result.source.index, 1);
@@ -85,9 +86,14 @@ export default function ItemsList(props: ItemsListProps) {
             className={listStyle}
             {...provided.droppableProps}
             ref={provided.innerRef}
-            onClick={(e) => {
+            onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
               if (e.target === e.currentTarget) {
-                console.log("hi");
+                // empty area of the items list clicked.
+                // unselect selected item.
+                // cancel any new empty input
+                // console.log("empty area clicked!");
+                props.onCancelSelect();
+                eventEmitter.dispatchEvent(new CustomEvent("NewItem:CancelIfEmpty"));
               }
             }}
           // style={{ border: snapshot.isDraggingOver ? 'solid 1px' : 'none' }}

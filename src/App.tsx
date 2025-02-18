@@ -59,9 +59,9 @@ function App() {
   // });
 
   const onDragAndDropEnd = (srcIndex: number, destIndex: number) => {
-    console.log("drag-and-drop!");
-    console.log(srcIndex);
-    console.log(destIndex);
+    // console.log("drag-and-drop!");
+    // console.log(srcIndex);
+    // console.log(destIndex);
     if (srcIndex == destIndex) return;
 
     // to avoid glitching, temporary rearange the items
@@ -246,6 +246,10 @@ function App() {
   const handleOnSelect = function(id: number) {
     if (id < 0) return;
     setSelectedId(id);
+  }
+
+  const handleOnCancelSelect = function() {
+    setSelectedId(ID.none);
   }
 
   const handleOnToggleSelect = function(id: number) {
@@ -561,6 +565,7 @@ function App() {
               onEditSubmit={handleOnEditSubmit}
               onEdit={handleOnEdit}
               onSelect={handleOnSelect}
+              onCancelSelect={handleOnCancelSelect}
               onToggleSelect={handleOnToggleSelect}
               onDelete={handleOnDelete}
               onCancel={cancelEditingOrNewItem}

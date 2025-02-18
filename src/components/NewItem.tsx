@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import IconButton from '@mui/material/IconButton';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -10,11 +10,33 @@ import { ItemKind } from "../constants";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import ToggleButton from "@mui/material/ToggleButton";
 
+import { eventEmitter } from "../eventEmitter.ts"
+
 export default function NewItem(props: any) {
 
   const { initKind, onSubmit, onCancel } = props;
   const [editingText, setEditingText] = useState<string>("");
   const [kind, setKind] = useState<number>(initKind);
+
+  useEffect(() => {
+    if (editingText.trim() != "")
+      return;
+
+    const handleEvent = () => {
+      // alert("Child received event!");
+      // console.log("new event received -> NewItem:CancelIfEmpty");
+      if (editingText.trim() === "") {
+        // console.log("cancelling the new item...");
+        onCancel();
+      }
+    };
+
+    eventEmitter.addEventListener("NewItem:CancelIfEmpty", handleEvent);
+
+    return () => {
+      eventEmitter.removeEventListener("NewItem:CancelIfEmpty", handleEvent);
+    };
+  }, [editingText]);
 
   const textFieldRef = useRef<any>(null);
 
@@ -22,7 +44,7 @@ export default function NewItem(props: any) {
     _event: React.MouseEvent<HTMLElement>,
     newKind: number,
   ) => {
-    if (newKind != null)
+    if (newKind)
       setKind(newKind);
     if (textFieldRef.current) {
       textFieldRef.current.focus();
@@ -58,12 +80,10 @@ export default function NewItem(props: any) {
     if (event.key === 'Enter') enter = true;
     if (event.shiftKey) shift = true;
 
-    if ((enter) && editingText == "") {
+    if ((enter && !shift) && editingText.trim() === "") {
       event.preventDefault();
       onCancel();
-      return;
-    }
-    if (enter && !shift) {
+    } else if (enter && !shift) {
       // console.log("submitting text: ", editingText);
       onSubmit(kind, editingText, true);
       setEditingText("");
@@ -119,8 +139,12 @@ export default function NewItem(props: any) {
         size="small"
         color="success"
         onClick={() => {
-          onSubmit(kind, editingText, false);
-          setEditingText("");
+          if (editingText.trim() === "") {
+            onCancel();
+          } else {
+            onSubmit(kind, editingText, false);
+            setEditingText("");
+          }
         }}
       >
         <CheckCircleIcon fontSize="small" />
